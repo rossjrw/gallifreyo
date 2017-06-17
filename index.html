@@ -128,8 +128,7 @@
                   </div>
                   <div class="col s3 switch right-align">
                     <label>
-                      <input type="checkbox" ng-model="host.debug" ng-change="host.instant ? host.generate() : null">
-                      <span class="lever"></span>
+                      <input type="text" ng-model="host.structure" ng-change="host.instant ? host.generate() : null">
                     </label>
                   </div>
                 </div>
@@ -247,8 +246,16 @@
               <div class="section">
                 <div id="drawing">
                   <svg id="render" xmlns="http://www.w3.org/2000/svg" height="100%" width="100%" preserveAspectRatio="none">
-                    <g stroke-width="1" fill="none" stroke="black" style="display:block;margin:auto;" transform="translate(60,10)"> <!-- ng repeat for words and sentences -->
-                      <path ng-repeat="letter in host.paragraph.sentences[0].words[0].letters" ng-attr-d="{{letter.d}}" ng-attr-transform="{{letter.transform}}" value="{{letter[0].value}}"></path>
+                    <g stroke-width="1" fill="none" stroke="black" transform="scale(1,-1)"> <!-- this flips it so it's not the wrong way round -->
+                      <g level="paragraph">
+                        <g level="sentence">
+                          <g level="word" ng-repeat="word in host.paragraph.sentences[0].words">
+                            <g level="letter" ng-attr-transform="translate()" ng-repeat="letter in word.letters">
+                              <path ng-attr-d="{{letter.d}}" ng-attr-transform="{{letter.transform}}"></path>
+                            </g>
+                          </g>
+                        </g>
+                      </g>
                     </g>
                   </svg>
                 </div>

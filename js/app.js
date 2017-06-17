@@ -26,13 +26,8 @@
     
     $scope.ShermanStorage = ShermanStorage;
     
-    const LETTERS_ENABLED = false;
-    const WORDS_ENABLED = false;
-    const SENTENCES_ENABLED = false;
-    const PARAGRAPHS_ENABLED = false;
-    
     host.text = "Insert";
-    // the text
+    // the text - this should NOT be in settings
     
     $scope.langs = {
       model: "Monocentric Sherman's",
@@ -43,6 +38,9 @@
     };
     //$scope.lang = 0;
     // 0 is Sherman's
+    
+    host.structure ="Simple";
+    // dropdown from simple/spiral/size-scaled/auto
     
     host.instant = true;
     // toggles instant translation
@@ -92,6 +90,11 @@
         sentence: 0.5
       }
     };
+    
+    // we will now reconfigure host.settings for easy ng-repeat access
+    // our model is as such: we will have categories for each variable.
+    
+    // format will be host.settings.CATEGORY.VALUE.VALUE.etc
     
     function report(){
       // this is for debugging. r stands for "report"
@@ -244,49 +247,46 @@
       for(let w = 0; w < sentence.words.length; w++){
         var B = w * (angle + angle*buffer);
         // B is the angular distance from k_alpha to k_0
-        renderWord(sentence.words[w],s_,w,B);
+        renderWord(sentence.words[w],s_,w,50);
+        // output is in word.letters[l].d and word.letters[l].path
+        // having said that, this isn't even relevant
       }
       // in order to support spiral-rendering later, we will need to draw a path and then render circles at distances along that
       // for the pre-spiral case, a circle is good enough, however it would be wise to use instead a broken arc with an end at the first and last sentence
       // we would also be able to modify this path for the sentence-scaling case - a smaller "circle" with an off-centre centre to accommodate larger and smaller circles however as yet I have no clue how to calculate this. we may even need to remove the arc completely for this method
+      console.log(host.structure);
+      (function switchStructure(){
+        switch(host.structure){
+          default:
+          case "Simple":
+            // this is the default case
+            // for simple, we basically do the exact same thing to our words that we do to our letters
+            // we should just dump each word at the right position
+            // the fist word should be at the top of the circle (bottom in render)
+            // we will also have to pass the radius down to the word - define as 50, again, for now?
+            break;
+          case "Size-Scaled":
+            break;
+          case "Spiral":
+            break;
+          case "Automatic":
+            host.structure = "Simple";
+            switchStructure();
+            break;
+        }
+      })();
     };
     
-    var renderWord = function(word,s_,w_,B_){
+    var renderWord = function(word,s_,w_,radius){
       // for each letter, render it
-      var radius = 50; //radius is 50 to start, we can change later
       var rx = 0;
       var ry = 0;
-      
-      word.xml = [];
-      
-      /*var angularDifference = 2*Math.PI / word.letters.length;*/
-      //var buffer = host.settings.buffer.letter; // f^o is the angular spacing between letters, buffer is the ratio of f^o to A because javascript
-      /*var angle = angularDifference / (1 + buffer);*/
-      // angle is A. buffer is f^o. angularDifference is A+f^o.
-      
-      // as we now have the angularConstant, we will have to recalculate the angle on a per-letter basis
-      // so this logic can just be moved down into the letter. however, we still need to keep B, which does depend on all of them.
-      // therefore we may as well just keep the logic up here.
-      // buffer is the ratio of f^o to A, therefore when A = 1, buffer = f^o
-      // so we need to take the sums of all the As and the buffers, and then make them add up to 2PI
-      // this should be easy
-      // step one: iterate through all the letters and collect the relative angles
-      // we now have a getLetterAngle function which does not get the angle but does get the block
       var angles = [];
       report(angles);
       for(let l = 0; l < word.letters.length; l++){
         angles.push(getRelativeLetterAngle(word.letters[l],s_,w_,l));
       }
-      //report(angles);
-      //angles = angles.reduce((p, n) => n.map((_, i) => [...(p[i] || []), n[i]]), []); // transpose
-      report(angles);
-      // now angles is an array of relative angles
-      // we just need to make them absolute
-      var relativeAngleSum = angles.reduce((a, b) => a + b, 0)/* + buffer * word.letters.length*/; // this is the same as =SUM(angles)
-      // angleSum is now a number that we need to make equal to 2PI
-      // to do that we need to multiply by 2PI/angleSum
-      // this is the multiplier that will convert relative angles to absolute angles
-      //console.log(angles,buffer,angles.reduce((a, b) => a + b, 0) + buffer * word.letters.length);
+      var relativeAngleSum = angles.reduce((a, b) => a + b, 0);
       for(let a = 0; a < angles.length; a++){
         angles[a] = angles[a] * 2 * Math.PI / relativeAngleSum;
       }
@@ -295,12 +295,6 @@
       for(let l = 0; l < word.letters.length; l++){
         // B is the sum of all previous letter angles and their buffers
         var B;
-        //B = angles.slice(0,l).reduce((a, b) => a + b, 0)/* + l*buff*/; // this sums the first l angles
-        // to get B for the 2nd letter, we're taking the angles of the first letter and its buffer
-        // we SHOULD be taking half the angle of the first letter, the whole angle of the buffer, and then half the angle of the current letter
-        // for additional values we just add the previous value of B.
-        // for the first letter, B is always 0.
-        // for buffers, atm we'll just say they always get the full angle.
         if(l === 0){
           B = 0;
         //} else if(word.letters[l][0].block == "buffer"){
@@ -309,13 +303,13 @@
         } else if(l >= 1){
           B = angles[l-1]/2 + /*angles[l-1] +*/ angles[l]/2 + B;
         }
-        
-        report("("+l+") Rendering letter "+word.letters[l][0].value+" with subtension "+angles[l]+" at angle "+B.toDeg());
+        //report("("+l+") Rendering letter "+word.letters[l][0].value+" with subtension "+angles[l]+" at angle "+B.toDeg());
         renderLetter(word.letters[l],s_,w_,l,angles[l],vAngle,radius);
         
         word.letters[l].d = word.letters[l][0].path;
         word.letters[l].transform = ["rotate(",B.toDeg(),",",0,",",radius,")"].join("");
       }
+      // we need to return something so that renderSentence gets something to play with
     };
     
     var getRelativeLetterAngle = function(letter,s_,w_,l_){
@@ -348,6 +342,9 @@
         // console.log(ShermanStorage.getLetter("A").block);
         // if there is a second character it is always a vowel
         tempArray[l] = ShermanStorage.getLetter(tempArray[l]);
+        switchBlock(l);
+      }
+      function switchBlock(l){
         switch(tempArray[l].block){
           case "s":
             tempArray[l].b = host.settings.s.b;
@@ -392,9 +389,10 @@
             break;
           default:
             // this happens if the character isn't in the alphabet
-            // we need a backup option for this
-            // can't GOTO so need to define all the data here
-            tempArray[l] = {value: "else", block: "s", dots: 1, lines: 0, b: 0.9, full: false};
+            tempArray[l].block = "s";
+            tempArray[l].dots = 1;
+            tempArray[l].lines = 0;
+            switchBlock(l);
         }
       }
       // HERE we split up the function for the angle getting thing. yeah I know it's a fucking mess
@@ -774,7 +772,8 @@
       {value: "GH", block: "f", dots: 1, lines: 3},
       {value: "C", block: "p", dots: 4, lines: 0}, // discouraged characters
       {value: "Q", block: "f", dots: 4, lines: 0}, // maybe even remove these in favour of else?
-      {value: "BUFFER", block: "buffer"}
+      {value: "BUFFER", block: "buffer"},
+      //{value: "else", block: "s", dots: 1, lines: 0},
     ];
     // I'm gonna write the formula here too
     // because each block has its circle at a different height, circles of the same radius will subtend a different angle
@@ -790,7 +789,12 @@
     return { // the following functions are available to controllers with ShermanStorage as dependency
       getLetter: function(letter){
         // find the entry with name "letter" and returns it
-        return $.grep(alphabet, function(e){return e.value === letter;})[0];
+        grep = $.grep(alphabet, function(e){return e.value === letter;})[0];
+        if(grep === undefined){
+          return {}; // support unknown characters
+        } else {
+          return grep;
+        }
       },
       getAlphabet: function(){
         // dump the whole alphabet as JSON
