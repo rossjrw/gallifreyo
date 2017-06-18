@@ -26,7 +26,7 @@
     
     $scope.ShermanStorage = ShermanStorage;
     
-    host.text = "Insert text here";
+    host.text = "where is the fucking lamb sauce you imbecile";
     // the text - this should NOT be in settings
     
     $scope.langs = {
@@ -54,7 +54,7 @@
     host.width = 1024;
     // size of the final PNG
     
-    host.debug = true; // change this to false when it's finished
+    host.debug = false; // change this to false when it's finished
     // enables debug messages in console
     
     host.fore = "#000000";
@@ -92,6 +92,10 @@
         letter: 0.5,
         word: 0.5,
         sentence: 0.5,
+      },
+      automatic: {
+        scaledLessThan: 6,
+        spiralMoreThan: 8,
       },
     };
     
@@ -260,62 +264,64 @@
       var ry = 0;
       var sentenceRadius = 50; // change this when we do size-scaled (for which the switch statement may have to be called in the loop)
       
-      // first thing we need to do is shuffle in a bunch of buffer sentences
-      // sentence.words[w].letters = "buffer" then detect where typeof is string not array. we can use .isArray() for that
-      /*tempArray = [];
-      for(let w = 0; w < sentence.words.length; w++){
-        tempArray[w*2] = {letters: sentence.words[w].letters};
-        tempArray[(w*2)+1] = {letters: "BUFFER"};
-      }
-      sentence.words = tempArray;
-      tempArray = [];*/
-      
       var angles = [];
       for(let w = 0; w < sentence.words.length; w++){
         angles.push(getRelativeWordAngle(sentence.words[w],s_,w)); // we don't need to do this as all words are the same
         // EXCEPT THAT THEY'RE NOT. SIZE-SCALED BOOOOOOIIIIII
       }
-      var relativeAngleSum = angles.reduce((a, b) => a + b, 0);
+      
+      // as the buffers don't need to be rendered it should be fine to just chuck them in here
+      var relativeAngleSum = angles.reduce((a, b) => a + b, 0) + host.settings.buffer.word*sentence.words.length;
+      console.log(relativeAngleSum);
       for(let a = 0; a < angles.length; a++){
         angles[a] = angles[a] * 2 * Math.PI / relativeAngleSum;
       }
+      
+      console.log(angles.reduce((a, b) => a + b, 0) + host.settings.buffer.word*sentence.words.length);
+      
       for(let w = 0; w < sentence.words.length; w++){
         var B;
         if(w === 0){
           B = 0;
         } else {
-          B = angles[w-1]/2 + angles[w]/2 + B;
+          B = angles[w-1]/2 + (host.settings.buffer.word * 2 * Math.PI / relativeAngleSum) + angles[w]/2 + B;
         }
         // B is the angular distance from k_alpha to k_0
         //renderWord(sentence.words[w],s_,w,wordRadius); this gets called in switchStructure
         // output is in word.letters[l].d and word.letters[l].path
         // having said that, this isn't even relevant because ngRepeat
-        switchStructure(w,sentenceRadius,angles[w],B);
+        switchStructure(w,sentenceRadius,angles[w],B,host.structure);
       }
       // in order to support spiral-rendering later, we will need to draw a path and then render circles at distances along that
       // for the pre-spiral case, a circle is good enough, however it would be wise to use instead a broken arc with an end at the first and last sentence
       // we would also be able to modify this path for the sentence-scaling case - a smaller "circle" with an off-centre centre to accommodate larger and smaller circles however as yet I have no clue how to calculate this. we may even need to remove the arc completely for this method
       console.log(host.structure);
-      function switchStructure(w,sentenceRadius,angleSubtended,B){
+      function switchStructure(w,sentenceRadius,angleSubtended,B,structure){
         var N = angleSubtended / 2;
-        switch(host.structure){
+        // we mustn't change host.structure
+        switch(structure){
           default:
           case "Simple":
             var wordRadius = sentence.words.length > 2 ? (sentenceRadius*Math.cos(Math.PI/2-N))/(host.settings.word.b*Math.cos(Math.PI/2-N)+1) : sentenceRadius;
             // we somehow need to work out exactly where the location of each letter is
             // x = (-R+br)cosB = (-sentenceRadius + host.settings.word.b) * Math.cos(B)
             // y = (-R+br)sinB = (-sentenceRadius + host.settings.word.b) * Math.sin(B)
-            console.log(B);
-            sentence.words[w].transform = "translate(" + (-sentenceRadius + host.settings.word.b*wordRadius) * Math.cos(B) + "," + (-sentenceRadius + host.settings.word.b*wordRadius) * Math.sin(B) + ")";
+            sentence.words[w].transform = "translate(" + (-sentenceRadius + host.settings.word.b*wordRadius) * Math.cos(B+Math.PI/2) + "," + (-sentenceRadius + host.settings.word.b*wordRadius) * Math.sin(B+Math.PI/2) + ")";
             break;
           case "Size-Scaled":
             break;
           case "Spiral":
             break;
           case "Automatic":
-            host.structure = "Simple";
-            switchStructure();
-            break;
+            if(sentence.words.length < host.settings.automatic.scaledLessThan){
+              structure = "Size-Scaled";
+            } else if(sentence.words.length > host.settings.automatic.spiralMoreThan){
+              structure = "Spiral";
+            } else {
+              structure = "Simple";
+            }
+            switchStructure(w,sentenceRadius,angleSubtended,B,structure);
+            break; // this doesn't work at all
         }
         if(/*Array.isArray(sentence.words[w].letters)*/ true){
           renderWord(sentence.words[w],s_,w,wordRadius);
