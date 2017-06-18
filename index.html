@@ -250,7 +250,7 @@
                       <g level="paragraph">
                         <g level="sentence">
                           <g level="word" ng-repeat="word in host.paragraph.sentences[0].words">
-                            <g level="letter" ng-attr-transform="translate()" ng-repeat="letter in word.letters">
+                            <g level="letter" ng-attr-transform="{{word.transform}}" ng-repeat="letter in word.letters">
                               <path ng-attr-d="{{letter.d}}" ng-attr-transform="{{letter.transform}}"></path>
                             </g>
                           </g>

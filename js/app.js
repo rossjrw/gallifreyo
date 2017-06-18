@@ -26,13 +26,13 @@
     
     $scope.ShermanStorage = ShermanStorage;
     
-    host.text = "Insert";
+    host.text = "Insert text here";
     // the text - this should NOT be in settings
     
     $scope.langs = {
-      model: "Monocentric Sherman's",
+      model: "Sherman's Gallifreyan",
       availableOptions: [
-        "Monocentric Sherman's",
+        "Sherman's Gallifreyan",
         "Test Option"
       ]
     };
@@ -54,7 +54,7 @@
     host.width = 1024;
     // size of the final PNG
     
-    host.debug = false; // change this to false when it's finished
+    host.debug = true; // change this to false when it's finished
     // enables debug messages in console
     
     host.fore = "#000000";
@@ -65,30 +65,34 @@
     host.settings = {
       s: {
         b: 0.9,
-        a: 1
+        a: 1,
       },
       p: {
         b: 1.2,
-        a: 1
+        a: 1,
       },
       d: {
-        b: 0,
-        a: 2
+        b: -0.4,
+        a: 2,
       },
       f: {
         b: 0,
-        a: 0.75
+        a: 0.75,
       },
       v: {
         b: 2,
         a: 1,
-        r: 0.1
+        r: 0.1,
+      },
+      word: {
+        b: 1.2,
+        a: 1,
       },
       buffer: {
         letter: 0.5,
         word: 0.5,
-        sentence: 0.5
-      }
+        sentence: 0.5,
+      },
     };
     
     // we will now reconfigure host.settings for easy ng-repeat access
@@ -125,7 +129,6 @@
     
     var tempArray; // this may be important I honestly have no clue at this point
     
-    // fill in the properties later as we name them. this is just a template
     var paragraph = {};
     
     host.generate = function(){
@@ -140,7 +143,7 @@
       if(!/^[a-zA-Z0-9\.\s]+$/.test(input) && input.length > 0){
         // input is bad
         /*alert("Please only use alphanumeric characters!");*/
-        // meh we can just ignore them or something
+        // meh we can just ignore them or something // we now have a backup character lol
       }
       if(input.length === 0){
         // input is empty!
@@ -211,9 +214,20 @@
             tempArray[l*2] = paragraph.sentences[s].words[w].letters[l];
             tempArray[(l*2)+1] = "BUFFER";
           }
+          // I hereby decree that, including buffers, a word shalt have no less than 4 characters
+          // therefore, if the length of the letters is 2, add 2 buffers
+          if(tempArray.length == 2){
+            tempArray.push("BUFFER");
+            tempArray.push("BUFFER");
+          }
           paragraph.sentences[s].words[w].letters = tempArray;
           tempArray = [];
         }
+        //for(let w = 0; w < paragraph.sentences[s].words.length; w++){
+        //  tempArray[w*2] = paragraph.sentences[s].words[w];
+        //  tempArray[(w*2)+1] = "BUFFER";
+        //}
+        //tempArray = [];
       }
       console.log("Current input",paragraph);
       // now we have a list of sentences, each of which is a list of words, each of which is a list of letters
@@ -234,36 +248,65 @@
       // at the time of writing, we can only render words, so we'll render that
       host.paragraph = paragraph;
       
-      doSVG();
+      sortOutTheFuckingBoundingBox();
     };
     
-    var renderSentence = function(sentence,s_){
+    function renderSentence(sentence,s_){
+      // VERY IMPORTANT! If there is 1 word, nothing is rendered. we will need to add an exception for this.
+      
       // for each word, render it
-      // determine the angle subtended by each letter, using no buffer
-      var angularDifference = 360 / sentence.words.length;
-      var buffer = host.settings.buffer.word; // f^o is the angular spacing between letters, buffer is the ratio of f^o to A because javascript
-      var angle = angularDifference / (1 + buffer);
-      // angle is A. buffer is f^o. angularDifference is A+f^o.
+      
+      var rx = 0;
+      var ry = 0;
+      var sentenceRadius = 50; // change this when we do size-scaled (for which the switch statement may have to be called in the loop)
+      
+      // first thing we need to do is shuffle in a bunch of buffer sentences
+      // sentence.words[w].letters = "buffer" then detect where typeof is string not array. we can use .isArray() for that
+      /*tempArray = [];
       for(let w = 0; w < sentence.words.length; w++){
-        var B = w * (angle + angle*buffer);
+        tempArray[w*2] = {letters: sentence.words[w].letters};
+        tempArray[(w*2)+1] = {letters: "BUFFER"};
+      }
+      sentence.words = tempArray;
+      tempArray = [];*/
+      
+      var angles = [];
+      for(let w = 0; w < sentence.words.length; w++){
+        angles.push(getRelativeWordAngle(sentence.words[w],s_,w)); // we don't need to do this as all words are the same
+        // EXCEPT THAT THEY'RE NOT. SIZE-SCALED BOOOOOOIIIIII
+      }
+      var relativeAngleSum = angles.reduce((a, b) => a + b, 0);
+      for(let a = 0; a < angles.length; a++){
+        angles[a] = angles[a] * 2 * Math.PI / relativeAngleSum;
+      }
+      for(let w = 0; w < sentence.words.length; w++){
+        var B;
+        if(w === 0){
+          B = 0;
+        } else {
+          B = angles[w-1]/2 + angles[w]/2 + B;
+        }
         // B is the angular distance from k_alpha to k_0
-        renderWord(sentence.words[w],s_,w,50);
+        //renderWord(sentence.words[w],s_,w,wordRadius); this gets called in switchStructure
         // output is in word.letters[l].d and word.letters[l].path
-        // having said that, this isn't even relevant
+        // having said that, this isn't even relevant because ngRepeat
+        switchStructure(w,sentenceRadius,angles[w],B);
       }
       // in order to support spiral-rendering later, we will need to draw a path and then render circles at distances along that
       // for the pre-spiral case, a circle is good enough, however it would be wise to use instead a broken arc with an end at the first and last sentence
       // we would also be able to modify this path for the sentence-scaling case - a smaller "circle" with an off-centre centre to accommodate larger and smaller circles however as yet I have no clue how to calculate this. we may even need to remove the arc completely for this method
       console.log(host.structure);
-      (function switchStructure(){
+      function switchStructure(w,sentenceRadius,angleSubtended,B){
+        var N = angleSubtended / 2;
         switch(host.structure){
           default:
           case "Simple":
-            // this is the default case
-            // for simple, we basically do the exact same thing to our words that we do to our letters
-            // we should just dump each word at the right position
-            // the fist word should be at the top of the circle (bottom in render)
-            // we will also have to pass the radius down to the word - define as 50, again, for now?
+            var wordRadius = sentence.words.length > 2 ? (sentenceRadius*Math.cos(Math.PI/2-N))/(host.settings.word.b*Math.cos(Math.PI/2-N)+1) : sentenceRadius;
+            // we somehow need to work out exactly where the location of each letter is
+            // x = (-R+br)cosB = (-sentenceRadius + host.settings.word.b) * Math.cos(B)
+            // y = (-R+br)sinB = (-sentenceRadius + host.settings.word.b) * Math.sin(B)
+            console.log(B);
+            sentence.words[w].transform = "translate(" + (-sentenceRadius + host.settings.word.b*wordRadius) * Math.cos(B) + "," + (-sentenceRadius + host.settings.word.b*wordRadius) * Math.sin(B) + ")";
             break;
           case "Size-Scaled":
             break;
@@ -274,15 +317,43 @@
             switchStructure();
             break;
         }
-      })();
-    };
+        if(/*Array.isArray(sentence.words[w].letters)*/ true){
+          renderWord(sentence.words[w],s_,w,wordRadius);
+        }
+      }
+      // after the switch statement, if there is more than one word, draw a circle around the sentence. otherwise, leave it.
+    }
     
-    var renderWord = function(word,s_,w_,radius){
+    function getRelativeWordAngle(word,s_,w){
+      // this should output the relative angles subtended by each word in the sentence
+      // for the spiral case, this should just be 1..0.5..1..0.5... etc
+      // for size-scaled the angles may vary
+      // we may be able to amalgamate the rendering for simple and size-scaled
+      // unlike getRelativeLetterAngle, we shouldn't have to process and format each word because they're pretty much fucking identical
+      // what do we need to differentiate between?
+      // a buffer has a flat angle of 0.5
+      // a word will have an angle of 1 IF it's simple. if not, then it depends on something. for now, that can be the number of letters
+      // this function won't be called for spirals so we hopefully don't need to worry about that
+      if(Array.isArray(word.letters)){
+        // this is a valid word
+        if(host.structure == "Size-Scaled"){
+          word.relativeAngle = word.letters.length;
+        } else {
+          word.relativeAngle = 1;
+        }
+      } else {
+        // this is a buffer
+        word.relativeAngle = host.settings.buffer.word;
+      }
+      paragraph.sentences[s_].words[w] = word;
+      return word.relativeAngle;
+    }
+    
+    function renderWord(word,s_,w_,radius){
       // for each letter, render it
       var rx = 0;
       var ry = 0;
       var angles = [];
-      report(angles);
       for(let l = 0; l < word.letters.length; l++){
         angles.push(getRelativeLetterAngle(word.letters[l],s_,w_,l));
       }
@@ -297,9 +368,6 @@
         var B;
         if(l === 0){
           B = 0;
-        //} else if(word.letters[l][0].block == "buffer"){
-        //  // buffers should always have odd indexes
-        //  B = angles[l-1]/2 + /*angles[l-1] +*/ angles[l]/2 + B;
         } else if(l >= 1){
           B = angles[l-1]/2 + /*angles[l-1] +*/ angles[l]/2 + B;
         }
@@ -310,9 +378,9 @@
         word.letters[l].transform = ["rotate(",B.toDeg(),",",0,",",radius,")"].join("");
       }
       // we need to return something so that renderSentence gets something to play with
-    };
+    }
     
-    var getRelativeLetterAngle = function(letter,s_,w_,l_){
+    function getRelativeLetterAngle(letter,s_,w_,l_){
       // letter: the letter being processed
       // s_: index of sentences
       // w_: index of words
@@ -403,9 +471,9 @@
       paragraph.sentences[s_].words[w_].letters[l_] = tempArray;
       tempArray = [];
       return paragraph.sentences[s_].words[w_].letters[l_][0].relativeAngle;
-    };
+    }
     
-    var renderLetter = function(letter,s_,w_,l_,angleSubtended,angleSubtendedByVowel,wordRadius){
+    function renderLetter(letter,s_,w_,l_,angleSubtended,angleSubtendedByVowel,wordRadius){
       tempArray = paragraph.sentences[s_].words[w_].letters[l_];
       // we know A and b so now we can work out r
       // var r = (wordRadius*Math.cos(90-(angleSubtended/2)))/(b*Math.cos(90-(angleSubtended/2))+1);
@@ -417,7 +485,6 @@
       if(tempArray[0].block != "v" && tempArray[0].block !== "buffer"){
         // 0,0 is our relative starting point for k_0 so we need to move from there to leftmost part of the word-circle curve
         if(tempArray[0].full === false){
-          report("Non-full curve");
           // if the letter is unfull, render to where it crosses the line (k_1)
           path.push("A R R 0 0 1 k1x k1y");
           // next we render from k_1 to k_2 via the curve of the letter itself.
@@ -430,7 +497,6 @@
           path.push("A R R 0 0 1 k4x k4y");
           // that seems too easy. I wonder what errors this will throw
         } else {
-          report("Full curve");
           // if the letter is full, render to k_4 (come back after!)
           path.push("A R R 0 0 1 k4x k4y");
           // full letters are p and f
@@ -441,7 +507,6 @@
           path.push("M k4x k4y"); // back to k_4 because this letter is done (except vowels, lines and dots)
         }
         if(tempArray.length == 2){
-          report("Secondary vowel");
           // this is where letters that go onto the vowel go
           // we shouldn't need to differentiate between full and unfull, but if we do, we can do that later
           // an important feature of vowels are the extensors, but we're doing all that later on anyway
@@ -455,7 +520,6 @@
           path.push("M k4x k4y"); // back to k_4, again, I guess
         }
       } else if(tempArray[0].block == "buffer"){
-        report("Buffer");
         // it's buffer time!
         // in this experiment we'll be rendering the buffer as if it were a normal letter.
         // we'll be commenting out the original buffer curve as well as the k5 calculations.
@@ -463,7 +527,6 @@
         path.push("A R R 0 0 1 k4x k4y"); // that should be it.
         // now we just need to implement the functionality.
       } else { // the letter is a vowel
-        report("Primary vowel");
         path.push("A R R 0 0 1 k4x k4y"); // woosh
         // vowels need a radius. when attached to a letter their radius is 0.1 of the letter or something
         // but what about when they're on their own?
@@ -476,7 +539,7 @@
         // actually, I think I want vowels to be of a standard size
         // it would seem that w is probably fine to stay how it it, but we'll see about that
         // anyway, pure vowels only need to be rendered onto the word-circle, so at k0
-        path.push("M k0x k0y"); // ignore vx and vy for this one
+        path.push("M vx vy"); // ignore vx and vy for this one
         // next we need to draw the circle, using the full technique
         path.push("m -w 0"); // we're using w for the vowel radius
         path.push("a w w 0 1 1 2w 0"); // diameter arc
@@ -575,7 +638,6 @@
           vy = k0y; // this shouldn't happen, but just in case
       }
       
-      
       path = path.replace(/vy/g,vy);
       
       path = path.replace(/2r/g,2*r);
@@ -636,7 +698,7 @@
       // so the question is, how do we work out this relationship?
       // easy - the value of l:R is abitrary, so we set it to w:r
       
-      var placeholders = ["r0x","r0y","r","k0x","k0y","k1x","k1y","k2x","k2y","k3x","k3y","k4x","k4y",/*"k5x","k5y",*/"w","vy","vx"];
+      var placeholders = ["r0x","r0y","r","k0x","k0y","k1x","k1y","k2x","k2y","k3x","k3y","k4x","k4y","w","vy","vx"];
       if(host.debug){
         tempArray[0].attributes = [];
         for(let p = 0; p < placeholders.length; p++){
@@ -678,7 +740,7 @@
       // so now we just have to feed tempArray into paragraph.sentences[s].words[w].letters[l]
       paragraph.sentences[s_].words[w_].letters[l_] = tempArray;
       tempArray = [];
-    };
+    }
     
     // generate svg of the default text
     host.generate();
@@ -707,7 +769,7 @@
       return [xi, xi_prime, yi, yi_prime]; // xi is positive, xi_prime is negative for the word-letter situation
     }
     
-    async function doSVG(){ // jshint ignore:line fuck off, async is a thing
+    async function sortOutTheFuckingBoundingBox(){ // jshint ignore:line fuck off, async is a thing
       setTimeout(() => {
         var svg = document.querySelector("svg");
         // Get internal size of SVG
