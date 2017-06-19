@@ -11,7 +11,9 @@
   var gallifreyo = angular
     .module('gallifreyo',[])
     .controller('HostController',HostController)
-    .service('ShermanStorage',ShermanStorage);
+    .service('ShermanStorage',ShermanStorage)
+    .directive('displaySvg',displaySVGDirective)
+    .directive('downloads',downloadsDirective);
 
   //      __  __           __  ______            __             ____         
   //     / / / /___  _____/ /_/ ____/___  ____  / /__________  / / /__  _____
@@ -111,7 +113,7 @@
       }
     }
     
-    window.onResize = function(event){
+    window.onresize = function(event){
       host.generate();
     };
     
@@ -302,13 +304,12 @@
         switch(structure){
           default:
           case "Simple":
+          case "Size-Scaled":
             var wordRadius = sentence.words.length > 2 ? (sentenceRadius*Math.cos(Math.PI/2-N))/(host.settings.word.b*Math.cos(Math.PI/2-N)+1) : sentenceRadius;
             // we somehow need to work out exactly where the location of each letter is
             // x = (-R+br)cosB = (-sentenceRadius + host.settings.word.b) * Math.cos(B)
             // y = (-R+br)sinB = (-sentenceRadius + host.settings.word.b) * Math.sin(B)
             sentence.words[w].transform = "translate(" + (-sentenceRadius + host.settings.word.b*wordRadius) * Math.cos(B+Math.PI/2) + "," + (-sentenceRadius + host.settings.word.b*wordRadius) * Math.sin(B+Math.PI/2) + ")";
-            break;
-          case "Size-Scaled":
             break;
           case "Spiral":
             break;
@@ -777,12 +778,14 @@
     
     async function sortOutTheFuckingBoundingBox(){ // jshint ignore:line fuck off, async is a thing
       setTimeout(() => {
-        var svg = document.querySelector("svg");
+        var svgs = document.querySelectorAll("svg");
         // Get internal size of SVG
-        var bbox = svg.getBBox();
-        // Construct and set a viewBox for the SVG
-        var viewBox = [bbox.x, bbox.y, bbox.width, bbox.height].join(" ");
-        svg.setAttribute("viewBox", viewBox);
+        for(var svg of svgs){
+          var bbox = svg.getBBox();
+          // Construct and set a viewBox for the SVG
+          var viewBox = [bbox.x, bbox.y, bbox.width, bbox.height].join(" ");
+          svg.setAttribute("viewBox", viewBox);
+        }
       }, 1);
     }
   }
@@ -875,6 +878,15 @@
     };
   }
 
-
+  function displaySVGDirective(){
+    return {
+      templateUrl: "display-svg"
+    };
+  }
+  function downloadsDirective(){
+    return {
+      templateUrl: "downloads"
+    };
+  }
 
 })();

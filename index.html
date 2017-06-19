@@ -6,6 +6,7 @@
 	<title>Gallifreyo</title>
 	
 	<link rel="stylesheet" href="src/materialize.min.css">
+	<link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
 	<script type="text/javascript" src="src/jquery-2.1.1.min.js"></script>
 	<script src="src/materialize.min.js"></script>
 	<script src="src/angular.min.js"></script>
@@ -16,21 +17,54 @@
 	  $(document).ready(function() {
       $('select').material_select();
       $('ul.tabs').tabs();
+      $('.target').pushpin({
+        //top: 0,
+        //bottom: 1000,
+        //offset: 0
+      });
     });
     Number.prototype.toDeg = function(){
       return (this.valueOf() / Math.PI) * 180;
     };
   </script>
+  <script type="text/ng-template" id="display-svg">
+  <div id="drawing">
+    <svg id="render" xmlns="http://www.w3.org/2000/svg" height="100%" width="100%" preserveAspectRatio="none">
+      <g stroke-width="1" fill="none" stroke="black" transform="scale(1,-1)"> <!-- this flips it so it's not the wrong way round -->
+        <g level="paragraph">
+          <g level="sentence">
+            <g level="word" ng-repeat="word in host.paragraph.sentences[0].words">
+              <g level="letter" ng-attr-transform="{{word.transform}}" ng-repeat="letter in word.letters">
+                <path ng-attr-d="{{letter.d}}" ng-attr-transform="{{letter.transform}}"></path>
+              </g>
+            </g>
+          </g>
+        </g>
+      </g>
+    </svg>
+  </div>
+  </script>
+  <script type="text/ng-template" id="downloads">
+  <div class="card white">
+    <div class="card-content black-text">
+      <span class="card-title">Download</span>
+      <div class="section">
+        <div class="center-align">
+          <a class="waves-effect waves-light btn section">SVG</a>
+          <a class="waves-effect waves-light btn">PNG</a>
+          <a class="waves-effect waves-light btn">JSON</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  </script>
 </head>
   <body class="grey lighten-2">
-    <nav>
-      <div class="nav-wrapper indigo">
-        <a class="brand-logo center">Gallifreyo</a>
-      </div>
-    </nav>
     <div class="container">
       <div class="row">
-        <div class="col s12 l6">
+      
+        <div class="col s12 l6"> <!-- this is the scrolly column on the left -->
+        
           <!-- START INPUT CARD -->
           <div class="card white">
             <div class="card-content black-text">
@@ -43,6 +77,10 @@
             </div>
           </div>
           <!-- END INPUT CARD -->
+          
+          <display-svg class="hide-on-large-only"></display-svg>
+          <downloads class="hide-on-large-only"></downloads>
+          
           <!-- START OPTIONS CARD -->
           <div class="card white">
             <div class="card-content black-text">
@@ -237,46 +275,19 @@
             </div>
           </div>
           <!-- END OPTIONS CARD -->
+          
         </div>
-        <div class="col s12 l6">
+        
+        <div class="col s12 l6 hide-on-med-and-down" style="height: 100vh;">
+        <div class="targset" style="width: 35%; position: fixed;">
           <!-- START IMAGE CARD -->
-          <div class="card white">
-            <div class="card-content black-text">
-              <span class="card-title">Preview</span>
-              <div class="section">
-                <div id="drawing">
-                  <svg id="render" xmlns="http://www.w3.org/2000/svg" height="100%" width="100%" preserveAspectRatio="none">
-                    <g stroke-width="1" fill="none" stroke="black" transform="scale(1,-1)"> <!-- this flips it so it's not the wrong way round -->
-                      <g level="paragraph">
-                        <g level="sentence">
-                          <g level="word" ng-repeat="word in host.paragraph.sentences[0].words">
-                            <g level="letter" ng-attr-transform="{{word.transform}}" ng-repeat="letter in word.letters">
-                              <path ng-attr-d="{{letter.d}}" ng-attr-transform="{{letter.transform}}"></path>
-                            </g>
-                          </g>
-                        </g>
-                      </g>
-                    </g>
-                  </svg>
-                </div>
-              </div>
-            </div>
-          </div>
+          <display-svg class="hide-on-med-and-down"></display-svg>
           <!-- END IMAGE CARD -->
+          
           <!-- START DOWNLOAD CARD -->
-          <div class="card white">
-            <div class="card-content black-text">
-              <span class="card-title">Download</span>
-              <div class="section">
-                <div class="center-align">
-                  <a class="waves-effect waves-light btn section">SVG</a>
-                  <a class="waves-effect waves-light btn">PNG</a>
-                  <a class="waves-effect waves-light btn">JSON</a>
-                </div>
-              </div>
-            </div>
-          </div>
+          <downloads class="hide-on-med-and-down"></downloads>
           <!-- END DOWNLOAD CARD -->
+        </div>
         </div>
       </div>
       <div class="row">
