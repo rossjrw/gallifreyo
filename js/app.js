@@ -778,7 +778,7 @@
     
     async function sortOutTheFuckingBoundingBox(){ // jshint ignore:line fuck off, async is a thing
       setTimeout(() => {
-        var svgs = document.querySelectorAll("svg");
+        var svgs = document.querySelectorAll("#render");
         // Get internal size of SVG
         for(var svg of svgs){
           var bbox = svg.getBBox();

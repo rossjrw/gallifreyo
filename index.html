@@ -5,23 +5,19 @@
 	<meta name=viewport content="width=device-width, initial-scale=1">
 	<title>Gallifreyo</title>
 	
-	<link rel="stylesheet" href="src/materialize.min.css">
 	<link href="https://fonts.googleapis.com/css?family=Raleway:800" rel="stylesheet">
 	<script type="text/javascript" src="src/jquery-2.1.1.min.js"></script>
 	<script src="src/materialize.min.js"></script>
+	<link rel="stylesheet" href="src/materialize.min.css">
 	<script src="src/angular.min.js"></script>
 	<!-- REPLACE WITH CDN AFTER -->
 	
+	<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 	<script src="js/app.js"></script>
 	<script type="text/javascript">
 	  $(document).ready(function() {
       $('select').material_select();
-      $('ul.tabs').tabs();
-      $('.target').pushpin({
-        //top: 0,
-        //bottom: 1000,
-        //offset: 0
-      });
     });
     Number.prototype.toDeg = function(){
       return (this.valueOf() / Math.PI) * 180;
@@ -66,7 +62,7 @@
         <div class="col s12 l6"> <!-- this is the scrolly column on the left -->
         
         <div>
-          <svg xmlns="http://www.w3.org/2000/svg" style="width: 100%">
+          <svg xmlns="http://www.w3.org/2000/svg" style="width: 100%; margin: auto" viewBox="0 -13.859375 71.171875 17.515625">
             <text style="font-family: Raleway, Roboto, sans-serif; font-weight:800;">
               Gallifreyo
             </text>
@@ -80,7 +76,7 @@
               <p>Use the spacebar to separate words. Use a full-stop to separate sentences.</p>
               <div class="row input-field">
                 <input class="row col l8 push-l2 s10 push-s1" ng-model="host.text" ng-change="host.change()">
-                <a class="waves-effect waves-light btn row col s6 push-s3 center-align" ng-click="host.generate()">{{host.instant ? "Auto-translating" : "Translate"}}</a>
+                <a class="waves-effect waves-light btn row col s6 push-s3 center-align" ng-click="host.generate()">{{host.instant ? "Retransliterate" : "Transliterate"}}</a>
               </div>
             </div>
           </div>
@@ -93,11 +89,6 @@
           <div class="card white">
             <div class="card-content black-text">
               <span class="card-title">Options</span>
-              <ul class="tabs">
-                <li class="tab"><a href="#basic">Basic</a></li>
-                <li class="tab"><a href="#advanced">Advanced</a></li>
-                <li class="tab"><a href="#debug">Debug</a></li>
-              </ul>
               <div class="section" id="basic">
                 <div class="row valign-wrapper">
                   <div class="col s6">
@@ -117,6 +108,7 @@
                     <input class="center-align" type="number" ng-model="host.width" ng-change="host.instant ? host.generate() : null">
                   </div>
                 </div>
+                <div class="divider"></div>
                 <div class="row section">
                   <div class="col s9">
                     Enable instant translation while you type
@@ -179,8 +171,62 @@
                   </div>
                 </div>
               </div>
-              <div class="" id="debug">
-                <div class="row section">
+            </div>
+            <ul class="collapsible" data-collapsible="expandable" style="box-shadow: none;">
+              <li>
+                <div class="collapsible-header"><i class="material-icons">edit</i>DRAWING</div>
+                <div class="collapsible-body">
+                  content
+                </div>
+              </li>
+              <li>
+                <div class="collapsible-header"><i class="material-icons">image</i>OUTPUT</div>
+                <div class="collapsible-body">
+                  content
+                </div>
+              </li>
+              <li>
+                <div class="collapsible-header"><i class="material-icons">data_usage</i>ANGLE SIZES</div>
+                <div class="collapsible-body">
+                  <div class="col s6 input-field">
+                    <input class="center-align" type="number" id="1angle" step="0.1" ng-model="host.settings.s.a" ng-change="host.instant ? host.generate() : null">
+                    <label for="1angle">Angular constant for s-block</label>
+                  </div>
+                  <div class="col s6 input-field">
+                    <input class="center-align" type="number" id="2angle" step="0.1" ng-model="host.settings.p.a" ng-change="host.instant ? host.generate() : null">
+                    <label for="2angle">Angular constant for p-block</label>
+                  </div>
+                  <div class="col s6 input-field">
+                    <input class="center-align" type="number" id="3angle" step="0.1" ng-model="host.settings.d.a" ng-change="host.instant ? host.generate() : null">
+                    <label for="3angle">Angular constant for d-block</label>
+                  </div>
+                  <div class="col s6 input-field">
+                    <input class="center-align" type="number" id="4angle" step="0.1" ng-model="host.settings.f.a" ng-change="host.instant ? host.generate() : null">
+                    <label for="4angle">Angular constant for f-block</label>
+                  </div>
+                  <div class="col s6 input-field">
+                    <input class="center-align" type="number" id="5angle" step="0.1" ng-model="host.settings.buffer.letter" ng-change="host.instant ? host.generate() : null">
+                    <label for="5angle">Letter buffer to angle ratio</label>
+                  </div>
+                  <div class="col s6 input-field">
+                    <input class="center-align" type="number" id="6angle" step="0.1" ng-model="host.settings.buffer.word" ng-change="host.instant ? host.generate() : null">
+                    <label for="6angle">Word buffer to angle ratio</label>
+                  </div>
+                  <div class="col s6 input-field">
+                    <input class="center-align" type="number" id="7angle" step="0.1" ng-model="host.settings.buffer.sentence" ng-change="host.instant ? host.generate() : null">
+                    <label for="7angle">Sentence buffer to angle ratio</label>
+                  </div>
+                  <div class="col s6 input-field">
+                    <input class="center-align" type="number" id="8angle" step="0.1" ng-model="host.settings.buffer.sentence" ng-change="host.instant ? host.generate() : null">
+                    <label for="8angle">Sentence buffer to angle ratio</label>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div class="collapsible-header active"><i class="material-icons">code</i>DEBUG TOOLS</div>
+                <div class="collapsible-body">
+                  content
+                <div class="row">
                   <div class="col s9">
                     Enable debug mode
                   </div>
@@ -191,11 +237,10 @@
                     </label>
                   </div>
                 </div>
-                <div class="valign-wrapper">
-                  <div class="col s7 m9">
+                <div class="divider"></div>
+                <div class="row">
                     Value of b for s-block (moonrise)
-                  </div>
-                  <div class="col s5 m3 input-field right-align">
+                  <div class="input-field right-align inline">
                     <input class="center-align" type="number" step="0.1" ng-model="host.settings.s.b" ng-change="host.instant ? host.generate() : null">
                   </div>
                 </div>
@@ -207,6 +252,7 @@
                     <input class="center-align" type="number" step="0.1" ng-model="host.settings.p.b" ng-change="host.instant ? host.generate() : null">
                   </div>
                 </div>
+                <div class="divider"></div>
                 <div class="valign-wrapper">
                   <div class="col s7 m9">
                     Value of b for d-block (dawn)
@@ -215,6 +261,7 @@
                     <input class="center-align" type="number" step="0.1" ng-model="host.settings.d.b" ng-change="host.instant ? host.generate() : null">
                   </div>
                 </div>
+                <div class="divider"></div>
                 <div class="valign-wrapper">
                   <div class="col s7 m9">
                     Value of b for f-block (twilight)
@@ -223,70 +270,15 @@
                     <input class="center-align" type="number" step="0.1" ng-model="host.settings.f.b" ng-change="host.instant ? host.generate() : null">
                   </div>
                 </div>
-                <div class="valign-wrapper">
-                  <div class="col s7 m9">
-                    Angular constant for s-block
-                  </div>
-                  <div class="col s5 m3 input-field right-align">
-                    <input class="center-align" type="number" step="0.01" ng-model="host.settings.s.a" ng-change="host.instant ? host.generate() : null">
-                  </div>
                 </div>
-                <div class="valign-wrapper">
-                  <div class="col s7 m9">
-                    Angular constant for p-block
-                  </div>
-                  <div class="col s5 m3 input-field right-align">
-                    <input class="center-align" type="number" step="0.01" ng-model="host.settings.p.a" ng-change="host.instant ? host.generate() : null">
-                  </div>
-                </div>
-                <div class="valign-wrapper">
-                  <div class="col s7 m9">
-                    Angular constant for d-block
-                  </div>
-                  <div class="col s5 m3 input-field right-align">
-                    <input class="center-align" type="number" step="0.01" ng-model="host.settings.d.a" ng-change="host.instant ? host.generate() : null">
-                  </div>
-                </div>
-                <div class="valign-wrapper">
-                  <div class="col s7 m9">
-                    Angular constant for f-block
-                  </div>
-                  <div class="col s5 m3 input-field right-align">
-                    <input class="center-align" type="number" step="0.01" ng-model="host.settings.f.a" ng-change="host.instant ? host.generate() : null">
-                  </div>
-                </div>
-                <div class="valign-wrapper">
-                  <div class="col s7 m9">
-                    Letter buffer to angle ratio
-                  </div>
-                  <div class="col s5 m3 input-field right-align">
-                    <input class="center-align" type="number" step="0.1" ng-model="host.settings.buffer.letter" ng-change="host.instant ? host.generate() : null">
-                  </div>
-                </div>
-                <div class="valign-wrapper">
-                  <div class="col s7 m9">
-                    Word buffer to angle ratio
-                  </div>
-                  <div class="col s5 m3 input-field right-align">
-                    <input class="center-align" type="number" step="0.1" ng-model="host.settings.buffer.word" ng-change="host.instant ? host.generate() : null">
-                  </div>
-                </div>
-                <div class="valign-wrapper">
-                  <div class="col s7 m9">
-                    Sentence buffer to angle ratio
-                  </div>
-                  <div class="col s5 m3 input-field right-align">
-                    <input class="center-align" type="number" step="0.1" ng-model="host.settings.buffer.sentence" ng-change="host.instant ? host.generate() : null">
-                  </div>
-                </div>
-              </div>
-            </div>
+              </li>
+            </ul>
           </div>
           <!-- END OPTIONS CARD -->
           
         </div>
         
-        <div class="col s12 l6 hide-on-med-and-down" style="height: 100vh;">
+        <div class="col s12 l6 hide-on-med-and-down valign-wrapper" style="height: 100vh;">
         <div class="targset" style="width: 35%; position: fixed;">
           <!-- START IMAGE CARD -->
           <display-svg class="hide-on-med-and-down"></display-svg>
