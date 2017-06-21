@@ -18,6 +18,10 @@
 	<script type="text/javascript">
 	  $(document).ready(function() {
       $('select').material_select();
+      $('.collapsible').collapsible({
+        onOpen: function(el){el.context.parentNode.childNodes[1].children[1].textContent = "expand_less"},
+        onClose: function(el){el.context.parentNode.childNodes[1].children[1].textContent = "expand_more"},
+      });
     });
     Number.prototype.toDeg = function(){
       return (this.valueOf() / Math.PI) * 180;
@@ -174,35 +178,41 @@
             </div>
             <ul class="collapsible" data-collapsible="expandable" style="box-shadow: none;">
               <li>
-                <div class="collapsible-header"><i class="material-icons">edit</i>DRAWING</div>
+                <div class="collapsible-header"><i class="material-icons">edit</i>Drawing<i class="material-icons right">expand_more</i></div>
                 <div class="collapsible-body">
                   content
                 </div>
               </li>
               <li>
-                <div class="collapsible-header"><i class="material-icons">image</i>OUTPUT</div>
+                <div class="collapsible-header"><i class="material-icons">image</i>Output<i class="material-icons right">expand_more</i></div>
                 <div class="collapsible-body">
                   content
                 </div>
               </li>
               <li>
-                <div class="collapsible-header"><i class="material-icons">data_usage</i>ANGLE SIZES</div>
+                <div class="collapsible-header"><i class="material-icons">data_usage</i>Angle sizes<i class="material-icons right">expand_more</i></div>
                 <div class="collapsible-body">
+                  <div class="row">
+                  <p></p>
                   <div class="col s6 input-field">
                     <input class="center-align" type="number" id="1angle" step="0.1" ng-model="host.settings.s.a" ng-change="host.instant ? host.generate() : null">
-                    <label for="1angle">Angular constant for s-block</label>
+                    <label for="1angle">{{host.debug ? "s-block" : "Group 1"}}</label>
                   </div>
                   <div class="col s6 input-field">
                     <input class="center-align" type="number" id="2angle" step="0.1" ng-model="host.settings.p.a" ng-change="host.instant ? host.generate() : null">
-                    <label for="2angle">Angular constant for p-block</label>
+                    <label for="2angle">Group 2</label>
                   </div>
                   <div class="col s6 input-field">
                     <input class="center-align" type="number" id="3angle" step="0.1" ng-model="host.settings.d.a" ng-change="host.instant ? host.generate() : null">
-                    <label for="3angle">Angular constant for d-block</label>
+                    <label for="3angle">Group 3</label>
                   </div>
                   <div class="col s6 input-field">
                     <input class="center-align" type="number" id="4angle" step="0.1" ng-model="host.settings.f.a" ng-change="host.instant ? host.generate() : null">
-                    <label for="4angle">Angular constant for f-block</label>
+                    <label for="4angle">Group 4</label>
+                  </div>
+                  <div class="col s6 input-field">
+                    <input class="center-align" type="number" id="4angle" step="0.1" ng-model="host.settings.f.a" ng-change="host.instant ? host.generate() : null">
+                    <label for="4angle">Vowels</label>
                   </div>
                   <div class="col s6 input-field">
                     <input class="center-align" type="number" id="5angle" step="0.1" ng-model="host.settings.buffer.letter" ng-change="host.instant ? host.generate() : null">
@@ -220,10 +230,11 @@
                     <input class="center-align" type="number" id="8angle" step="0.1" ng-model="host.settings.buffer.sentence" ng-change="host.instant ? host.generate() : null">
                     <label for="8angle">Sentence buffer to angle ratio</label>
                   </div>
+                  </div>
                 </div>
               </li>
               <li>
-                <div class="collapsible-header active"><i class="material-icons">code</i>DEBUG TOOLS</div>
+                <div class="collapsible-header active"><i class="material-icons">code</i>Debug tools<i class="material-icons right">expand_more</i></div>
                 <div class="collapsible-body">
                   content
                 <div class="row">
