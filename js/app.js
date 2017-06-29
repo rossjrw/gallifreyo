@@ -42,6 +42,9 @@
     host.structure = {sentence: host.structures[3], paragraph: host.structures[3],};
     
     host.instant = true;
+    if(/Mobi/.test(navigator.userAgent) || /Android/.test(navigator.userAgent)){
+      host.instant = false;
+    }
     // toggles instant translation
     
     host.scaling = true;
@@ -116,16 +119,8 @@
     
     host.change = function(){
       // this is called when the user changes the input.
-      var t0 = performance.now();
       if(host.instant === true){
         host.generate();
-      }
-      var t1 = performance.now();
-      console.log(t1 - t0);
-      
-      if(t1 - t0 > 200){
-        Materialize.toast("Translation took too long - turning off automatic translation",4000);
-        host.instant = false;
       }
       
       // TODO: scrub certain characters from input based on consts defined above
