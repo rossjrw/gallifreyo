@@ -31,18 +31,15 @@
     host.text = "where is the fucking lamb sauce you imbecile";
     // the text - this should NOT be in settings
     
-    $scope.langs = {
-      model: "Sherman's Gallifreyan",
-      availableOptions: [
-        "Sherman's Gallifreyan",
-        "Test Option"
-      ]
-    };
-    //$scope.lang = 0;
-    // 0 is Sherman's
+    host.langs = [
+      "Sherman's Gallifreyan",
+    ];
+    host.lang = host.langs[0];
     
-    host.structure ="Simple";
-    // dropdown from simple/spiral/size-scaled/auto
+    host.structures = [
+      "Simple", "Size-Scaled", "Spiral", "Automatic"
+    ];
+    host.structure = {sentence: host.structures[3], paragraph: host.structures[3],};
     
     host.instant = true;
     // toggles instant translation
@@ -56,7 +53,7 @@
     host.width = 1024;
     // size of the final PNG
     
-    host.debug = false; // change this to false when it's finished
+    host.debug = true; // change this to false when it's finished
     // enables debug messages in console
     
     host.fore = "#000000";
@@ -97,7 +94,7 @@
       },
       automatic: {
         scaledLessThan: 6,
-        spiralMoreThan: 8,
+        spiralMoreThan: 9,
       },
     };
     
@@ -119,9 +116,18 @@
     
     host.change = function(){
       // this is called when the user changes the input.
+      var t0 = performance.now();
       if(host.instant === true){
         host.generate();
       }
+      var t1 = performance.now();
+      console.log(t1 - t0);
+      
+      if(t1 - t0 > 200){
+        Materialize.toast("Translation took too long - turning off automatic translation",4000);
+        host.instant = false;
+      }
+      
       // TODO: scrub certain characters from input based on consts defined above
     };
     
@@ -264,17 +270,17 @@
       
       var rx = 0;
       var ry = 0;
-      var sentenceRadius = 50; // change this when we do size-scaled (for which the switch statement may have to be called in the loop)
+      var sentenceRadius = 100; // change this when we do size-scaled (for which the switch statement may have to be called in the loop)
       
-      var angles = [];
+      var rAngles = [];
       for(let w = 0; w < sentence.words.length; w++){
-        angles.push(getRelativeWordAngle(sentence.words[w],s_,w)); // we don't need to do this as all words are the same
+        rAngles.push(getRelativeWordAngle(sentence.words[w],s_,w)); // we don't need to do this as all words are the same
         // EXCEPT THAT THEY'RE NOT. SIZE-SCALED BOOOOOOIIIIII
       }
       
+      var angles = rAngles;
       // as the buffers don't need to be rendered it should be fine to just chuck them in here
       var relativeAngleSum = angles.reduce((a, b) => a + b, 0) + host.settings.buffer.word*sentence.words.length;
-      console.log(relativeAngleSum);
       for(let a = 0; a < angles.length; a++){
         angles[a] = angles[a] * 2 * Math.PI / relativeAngleSum;
       }
@@ -292,13 +298,14 @@
         //renderWord(sentence.words[w],s_,w,wordRadius); this gets called in switchStructure
         // output is in word.letters[l].d and word.letters[l].path
         // having said that, this isn't even relevant because ngRepeat
-        switchStructure(w,sentenceRadius,angles[w],B,host.structure);
+        switchStructure(w,sentenceRadius,angles,B,host.structure.sentence,relativeAngleSum);
       }
       // in order to support spiral-rendering later, we will need to draw a path and then render circles at distances along that
       // for the pre-spiral case, a circle is good enough, however it would be wise to use instead a broken arc with an end at the first and last sentence
       // we would also be able to modify this path for the sentence-scaling case - a smaller "circle" with an off-centre centre to accommodate larger and smaller circles however as yet I have no clue how to calculate this. we may even need to remove the arc completely for this method
-      console.log(host.structure);
-      function switchStructure(w,sentenceRadius,angleSubtended,B,structure){
+      function switchStructure(w,sentenceRadius,subtensions,structure,rAS){
+        report(subtensions,"aaa");
+        var angleSubtended = subtensions[w];
         var N = angleSubtended / 2;
         // we mustn't change host.structure
         switch(structure){
@@ -310,8 +317,79 @@
             // x = (-R+br)cosB = (-sentenceRadius + host.settings.word.b) * Math.cos(B)
             // y = (-R+br)sinB = (-sentenceRadius + host.settings.word.b) * Math.sin(B)
             sentence.words[w].transform = "translate(" + (-sentenceRadius + host.settings.word.b*wordRadius) * Math.cos(B+Math.PI/2) + "," + (-sentenceRadius + host.settings.word.b*wordRadius) * Math.sin(B+Math.PI/2) + ")";
+            if(/*Array.isArray(sentence.words[w].letters)*/ true){
+              renderWord(sentence.words[w],s_,w,wordRadius);
+            }
             break;
           case "Spiral":
+            // spiral is going to be a lot more complex than the other rendering methods, even after we fix size-scaled
+            // so, what do we need to do?
+            // the first idea was to draw a hybrid arc-spiral and then render along a certain distance on that, but that seems really hard
+            // better idea (well, just an easier way of executing that) is to render normally up to the spiral limit, then draw a spiral from there
+            // this is probably easier because we don't need to make a hybrid path
+            
+            // on second thoughts we may not even need a spiral, just a buch of concentric circles may be good enough
+            // no. we will use a spiral.
+            
+            // third option: no preliminary arc or spiral. just circle.
+            
+            // there appear to be two types of spiral suitable for our needs: the Archimedean Spiral and the Circle Involute. both are basically the same
+            // PARAMETRIC ARCHIMEDEAN
+            // x = r t cos t
+            // y = r t sin t
+            // PARAMETRIC CIRCLE INVOLUTE
+            // x = r(cos t + t sin t)
+            // y = r(sin t - t cos t)
+            
+            // archimedean is a little bit easier so we'll go with that
+            
+            // now that we are dealing with spirals, not circles, we have three things to keep in mind
+            // 1. Line spacing.
+            //      as our words have radii, the space between the lines of the spiral must be greater than 2r at all times.
+            // 2. Start and end points.
+            //      an Archimedean spiral as its start point at 0,0, fortunately, however it has no end point. so we will need to set that artificially.
+            // 3. Centre point.
+            //      if we leave the centre point where it is, our words will be pulled back from the edges (esp top and left), leaving an ugly gap.
+            //      we'll need to shift the centre point to accommodate this
+            //            we may be able to do this by taking the average of the most external points on the spiral and moving the centre point accordingly
+            
+            // I have decided that we will go for the third option: just use a sprial with no arc.
+            // this is because that arranging the words on a spiral will mean that the radius will need to be much smaller. I will have difficulty calculating the radii of the words if they are arranged onto different curves.
+            
+            // okay I think we've decided most of the important stuff
+            
+            // what we need to determine now is how long the spiral is. If it is too short, then the words will overlap. too long, and they'll be far apart. much too long, and it won't look like a spiral.
+            // there is no possible way to make it look like a spiral for sentences shorter than ~5 words. but we'll just have to deal with that
+            
+            // we will need to find out how to place points equidistantly along the spiral which seems very complicated.
+            
+            // in order to place points equidistantly along the spiral we will use the Clackson Scroll Approximation.
+            // t = 2 pi sqrt(2s / a) where a is r and s is the distance between each point
+            // the distance between each point should be the angular distance, which has now become the spiral distance.
+            
+            // for now, we have no way of controlling exactly where the spiral ends so we'll just let it end wherever it wants to
+            // if we don't reverse the array this will mean that the first word will be at the middle of the spiral
+            
+            // SO. what we need to do HERE is calculate the wordRadius
+            
+            // the length of the sentence directly corresponds to the total angle of the spiral needed (subtensions.length)
+            // we have relativeAngleSum for this
+            
+            // WHAT DOES THIS SECTION NEED TO DO?
+            
+            // 1. Calculate the radius of each word
+            // 2. Make a translate(X,Y) for each word
+            // 3. Render each word (renderWord does this for us)
+            
+            // A spiral has three variables.
+            // s: the length of the spiral, from start to finish.
+            // r: the spacing between each turn.
+            // t: the angle of the spiral. t/360 (or t/2pi) is the number of turns.
+            // s = 1/(2*r) * (t * Sqrt(1 + t*t) + ln(t + Sqrt(1+t*t)))
+            
+            if(/*Array.isArray(sentence.words[w].letters)*/ true){
+              renderWord(sentence.words[w],s_,w,wordRadius);
+            }
             break;
           case "Automatic":
             if(sentence.words.length < host.settings.automatic.scaledLessThan){
@@ -323,9 +401,6 @@
             }
             switchStructure(w,sentenceRadius,angleSubtended,B,structure);
             break; // this doesn't work at all
-        }
-        if(/*Array.isArray(sentence.words[w].letters)*/ true){
-          renderWord(sentence.words[w],s_,w,wordRadius);
         }
       }
       // after the switch statement, if there is more than one word, draw a circle around the sentence. otherwise, leave it.
@@ -343,7 +418,7 @@
       // this function won't be called for spirals so we hopefully don't need to worry about that
       if(Array.isArray(word.letters)){
         // this is a valid word
-        if(host.structure == "Size-Scaled"){
+        if(host.structure.sentence == "Size-Scaled"){
           word.relativeAngle = word.letters.length;
         } else {
           word.relativeAngle = 1;
@@ -357,6 +432,7 @@
     }
     
     function renderWord(word,s_,w_,radius){
+      report(word,s_,w_,radius);
       // for each letter, render it
       var rx = 0;
       var ry = 0;
@@ -787,6 +863,10 @@
           svg.setAttribute("viewBox", viewBox);
         }
       }, 1);
+    }
+    
+    function download(filetype){
+      // this function is called when the user clicks one of the download buttons at the bottom
     }
   }
   
