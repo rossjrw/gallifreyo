@@ -28,7 +28,7 @@
     
     $scope.ShermanStorage = ShermanStorage;
     
-    host.text = "where is the fucking lamb sauce you imbecile";
+    host.text = "p pp ppp pppp ppppp pppppp ppppppp pppppppp ppppppppp pppppppppp";
     // the text - this should NOT be in settings
     
     host.langs = [
@@ -120,7 +120,7 @@
     host.change = function(){
       // this is called when the user changes the input.
       if(host.instant === true){
-        host.generate();
+        debounce(host.generate(),100);
       }
       
       // TODO: scrub certain characters from input based on consts defined above
@@ -293,16 +293,16 @@
         //renderWord(sentence.words[w],s_,w,wordRadius); this gets called in switchStructure
         // output is in word.letters[l].d and word.letters[l].path
         // having said that, this isn't even relevant because ngRepeat
-        switchStructure(w,sentenceRadius,angles,B,host.structure.sentence,relativeAngleSum);
+        switchStructure(w,sentenceRadius,angles,host.structure.sentence,relativeAngleSum,B);
       }
       // in order to support spiral-rendering later, we will need to draw a path and then render circles at distances along that
       // for the pre-spiral case, a circle is good enough, however it would be wise to use instead a broken arc with an end at the first and last sentence
       // we would also be able to modify this path for the sentence-scaling case - a smaller "circle" with an off-centre centre to accommodate larger and smaller circles however as yet I have no clue how to calculate this. we may even need to remove the arc completely for this method
-      function switchStructure(w,sentenceRadius,subtensions,structure,rAS){
-        report(subtensions,"aaa");
+      function switchStructure(w,sentenceRadius,subtensions,structure,rAS,B){
         var angleSubtended = subtensions[w];
         var N = angleSubtended / 2;
         // we mustn't change host.structure
+        console.log(structure);
         switch(structure){
           default:
           case "Simple":
@@ -382,20 +382,71 @@
             // t: the angle of the spiral. t/360 (or t/2pi) is the number of turns.
             // s = 1/(2*r) * (t * Sqrt(1 + t*t) + ln(t + Sqrt(1+t*t)))
             
+            // AIGHT SO we did the shit we needed to do and we did it on a spreadsheet. Now we just need to translate GSL to JS
+            
+            // if the rung is 1.5, I think wordRadiuus MIGHT be equal to the multiplier. but idk. we'll see lol
+            
+            // first we measure the p2p width of the spiral.
+            // to do this, we calculate the y-coord of the last point.
+            function getCoord(r,d,nmax,n,multiplier){
+              // there is no need to loop. this function should already be looped.
+              // we'll return an array of [x,y]
+              var x = (
+                (r / (2*Math.PI)) *
+                Math.sqrt( (2 * d * n) / (r / (2*Math.PI)) ) *
+                Math.cos( Math.sqrt( (2 * d * n) / (r / (2*Math.PI)) ) - Math.sqrt( (2 * d * nmax) / (r / (2*Math.PI)) ) ) - r/4 );
+              
+              var y = (
+                (r / (2*Math.PI)) *
+                Math.sqrt( (2 * d * n) / (r / (2*Math.PI)) ) *
+                Math.sin( Math.sqrt( (2 * d * n) / (r / (2*Math.PI)) ) - Math.sqrt( (2 * d * nmax) / (r / (2*Math.PI)) ) ) + r/4 +
+                (n === 0 ? r / 4 : 0 )); // this moves the middle dot so it looks more natural
+                
+              if(multiplier){
+                // a multiplier will not be passed for defining the calcWidth
+                x = x * multiplier;
+                y = y * multiplier;
+              }
+                
+              return [x,y]; // this does need to be multiplied by the multiplier to be usable
+            }
+            
+            // r and d are always 1.5, idk why they even exist tbh. [0] is x, [1] is y
+            
+            var calcWidth = getCoord(1.5,1.5,sentence.words.length,sentence.words.length)[0]; // distance from centre to outermost point
+            
+            // the multiplier is targetWidth/calcWidth;
+            // targetWidth is radius, sentenceRadius is radius
+            var targetWidth = sentenceRadius / 2; // need to modify this to account for word radius
+            var multiplier = targetWidth / calcWidth;
+            
+            // so now that we have the multiplier, we need to iterate over the sentence to determine the position of the words
+            
+            // but first, a test
+            // in which current n is 13 and the target width is 15
+            
+            console.log(calcWidth,targetWidth,multiplier);
+            
+            wordRadius = multiplier/2; // why does it need to be /2 ???
+            
+            sentence.words[w].transform = "translate(" + getCoord(1.5,1.5,sentence.words.length,w,multiplier).join(",") + ")";
+            
+            
+            
             if(/*Array.isArray(sentence.words[w].letters)*/ true){
               renderWord(sentence.words[w],s_,w,wordRadius);
             }
             break;
           case "Automatic":
-            if(sentence.words.length < host.settings.automatic.scaledLessThan){
+            if(subtensions.length < host.settings.automatic.scaledLessThan){
               structure = "Size-Scaled";
-            } else if(sentence.words.length > host.settings.automatic.spiralMoreThan){
+            } else if(subtensions.length > host.settings.automatic.spiralMoreThan){
               structure = "Spiral";
             } else {
               structure = "Simple";
             }
-            switchStructure(w,sentenceRadius,angleSubtended,B,structure);
-            break; // this doesn't work at all
+            switchStructure(w,sentenceRadius,subtensions,structure,rAS,B);
+            break;
         }
       }
       // after the switch statement, if there is more than one word, draw a circle around the sentence. otherwise, leave it.
@@ -845,6 +896,21 @@
       var yi = y2 + ry;
       var yi_prime = y2 - ry;
       return [xi, xi_prime, yi, yi_prime]; // xi is positive, xi_prime is negative for the word-letter situation
+    }
+    
+    function debounce(func, wait, immediate) {
+      var timeout;
+      return function() {
+        var context = this, args = arguments;
+        var later = function() {
+          timeout = null;
+          if (!immediate) func.apply(context, args);
+        };
+        var callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) func.apply(context, args);
+      };
     }
     
     async function sortOutTheFuckingBoundingBox(){ // jshint ignore:line fuck off, async is a thing

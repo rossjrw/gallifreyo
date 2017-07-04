@@ -8,13 +8,17 @@
 	<link href="https://fonts.googleapis.com/css?family=Raleway:800" rel="stylesheet">
 	<script type="text/javascript" src="src/jquery-2.1.1.min.js"></script>
 	<script src="src/materialize.min.js"></script>
-	<link rel="stylesheet" href="src/materialize.min.css">
 	<script src="src/angular.min.js"></script>
 	<!-- REPLACE WITH CDN AFTER -->
 	
+	<link rel="stylesheet" href="css/materialize_mod.css">
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 	<script src="js/app.js"></script>
+	
+	<script src="js/colpick.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="css/colpick.css" type="text/css"/>
+	
 	<script type="text/javascript">
 	  $(document).ready(function() {
       $('select').material_select();
@@ -22,6 +26,8 @@
         onOpen: function(el){el.context.parentNode.childNodes[1].children[1].textContent = "expand_less"},
         onClose: function(el){el.context.parentNode.childNodes[1].children[1].textContent = "expand_more"},
       });
+      
+$('#colorpicker').colpick();
     });
     Number.prototype.toDeg = function(){
       return (this.valueOf() / Math.PI) * 180;
@@ -63,7 +69,7 @@
     <div class="container">
       <div class="row">
       
-        <div class="col s12 l6"> <!-- this is the scrolly column on the left -->
+        <div class="col P12 L6"> <!-- this is the scrolly column on the left -->
         
         <div>
           <svg xmlns="http://www.w3.org/2000/svg" style="width: 100%; margin: auto" viewBox="0 -13.859375 71.171875 17.515625">
@@ -80,14 +86,14 @@
               <p>Use the spacebar to separate words. Use a full-stop to separate sentences.</p>
               <div class="row input-field">
                 <input class="row col l8 push-l2 s10 push-s1" ng-model="host.text" ng-change="host.change()">
-                <a class="waves-effect waves-light btn row col s6 push-s3 center-align" ng-click="host.generate()">{{host.instant ? "Retransliterate" : "Transliterate"}}</a>
+                <a class="waves-effect waves-light btn row col l6 push-l3 s10 push-s1 center-align" ng-click="host.generate()">{{host.instant ? "Retransliterate" : "Transliterate"}}</a>
               </div>
             </div>
           </div>
           <!-- END INPUT CARD -->
           
-          <display-svg class="hide-on-large-only"></display-svg>
-          <downloads class="hide-on-large-only"></downloads>
+          <display-svg class="hide-on-landscape"></display-svg>
+          <downloads class="hide-on-landscape"></downloads>
           
           <!-- START OPTIONS CARD -->
           <div class="card white">
@@ -99,14 +105,14 @@
                     Language
                   </div>
                   <div class="col s6 input-field right-align">
-                    <select ng-model="langs.model" class="center-align" ng-change="host.instant ? host.generate() : null">
-                      <option ng-repeat="lang in langs.availableOptions" ng-value="lang.$index">{{lang}}</option>
-                    </select>
+                    <select ng-model="host.lang" ng-options="lang for lang in host.langs" ng-change="host.instant ? host.generate() : null"></select>
                   </div>
                 </div>
                 <div class="row valign-wrapper">
                   <div class="col s6">
                     Width of image (px)
+                    <a class="btn" onclick="Materialize.toast('I am a toast', 4000)">Toast!</a>
+                    <button id="colorpicker">Show Color Picker</button>
                   </div>
                   <div class="col s6 input-field right-align">
                     <input class="center-align" type="number" ng-model="host.width" ng-change="host.instant ? host.generate() : null">
@@ -125,14 +131,19 @@
                   </div>
                 </div>
                 <div class="row section">
-                  <div class="col s9">
-                    Enable sentence size scaling <!-- this needs to be changed to MODE: basic | spiral | size scaling -->
+                  <div class="col s6">
+                    Sentence structure
                   </div>
-                  <div class="col s3 switch right-align">
-                    <label>
-                      <input type="checkbox" ng-model="host.scaling" ng-change="host.instant ? host.generate() : null">
-                      <span class="lever"></span>
-                    </label>
+                  <div class="col s6">
+                    <select ng-model="host.structure.sentence" ng-options="structure for structure in host.structures" ng-change="host.instant ? host.generate() : null"></select>
+                  </div>
+                </div>
+                <div class="row section">
+                  <div class="col s9">
+                    Paragraph structure
+                  </div>
+                  <div class="col s3">
+                    <select ng-model="host.structure.sentence" ng-options="structure for structure in host.structures" ng-change="host.instant ? host.generate() : null"></select>
                   </div>
                 </div>
                 <div class="row section">
@@ -302,14 +313,14 @@
           
         </div>
         
-        <div class="col s12 l6 hide-on-med-and-down valign-wrapper" style="height: 100vh;">
+        <div class="col P12 L6 hide-on-portrait valign-wrapper" style="height: 100vh;">
         <div class="targset" style="width: 35%; position: fixed;">
           <!-- START IMAGE CARD -->
-          <display-svg class="hide-on-med-and-down"></display-svg>
+          <display-svg class="hide-on-portrait"></display-svg>
           <!-- END IMAGE CARD -->
           
           <!-- START DOWNLOAD CARD -->
-          <downloads class="hide-on-med-and-down"></downloads>
+          <downloads class="hide-on-portrait"></downloads>
           <!-- END DOWNLOAD CARD -->
         </div>
         </div>
