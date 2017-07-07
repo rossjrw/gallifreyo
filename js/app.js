@@ -391,45 +391,59 @@
             function getCoord(r,d,nmax,n,multiplier){
               // there is no need to loop. this function should already be looped.
               // we'll return an array of [x,y]
+              n = nmax - n; // reverse the array
+              console.log(nmax,n);
+              
+              // Parametric equations to render the spiral
               var x = (
-                (r / (2*Math.PI)) *
-                Math.sqrt( (2 * d * n) / (r / (2*Math.PI)) ) *
-                Math.cos( Math.sqrt( (2 * d * n) / (r / (2*Math.PI)) ) - Math.sqrt( (2 * d * nmax) / (r / (2*Math.PI)) ) ) - r/4 );
+                (r / (2*Math.PI)) 
+                * Math.sqrt( (2 * d * n) / (r / (2*Math.PI)) ) 
+                * Math.cos( Math.sqrt( (2 * d * n) / (r / (2*Math.PI)) ) - (Math.PI/2) - Math.sqrt( (2 * d * nmax) / (r / (2*Math.PI)) ) ) 
+                - r/4 );
               
               var y = (
-                (r / (2*Math.PI)) *
-                Math.sqrt( (2 * d * n) / (r / (2*Math.PI)) ) *
-                Math.sin( Math.sqrt( (2 * d * n) / (r / (2*Math.PI)) ) - Math.sqrt( (2 * d * nmax) / (r / (2*Math.PI)) ) ) + r/4 +
-                (n === 0 ? r / 4 : 0 )); // this moves the middle dot so it looks more natural
-                
+                (r / (2*Math.PI)) 
+                * Math.sqrt( (2 * d * n) / (r / (2*Math.PI)) ) 
+                * Math.sin( Math.sqrt( (2 * d * n) / (r / (2*Math.PI)) ) + (Math.PI/2) - Math.sqrt( (2 * d * nmax) / (r / (2*Math.PI)) ) ) 
+                + r/4 );
+              
+              
+              // a multiplier will not be passed for defining the calcWidth
               if(multiplier){
-                // a multiplier will not be passed for defining the calcWidth
                 x = x * multiplier;
                 y = y * multiplier;
               }
                 
-              return [x,y]; // this does need to be multiplied by the multiplier to be usable
+              return [-x,-y]; // this does need to be multiplied by the multiplier to be usable
+              // why are they both negative? I do not know. but it works.
             }
             
             // r and d are always 1.5, idk why they even exist tbh. [0] is x, [1] is y
             
-            var calcWidth = getCoord(1.5,1.5,sentence.words.length,sentence.words.length)[0]; // distance from centre to outermost point
+            // shouldn't we be using the word buffer to determine the multiplier?
+            // we should. we need a new constant to replace 1.5. what should we call it?
+            var spiralBuffer = 1 + host.settings.buffer.word; // this is by default 1.5
+            
+            var calcWidth = -getCoord(spiralBuffer,spiralBuffer,sentence.words.length,0)[1]; // distance from centre to outermost point
             
             // the multiplier is targetWidth/calcWidth;
             // targetWidth is radius, sentenceRadius is radius
             var targetWidth = sentenceRadius / 2; // need to modify this to account for word radius
             var multiplier = targetWidth / calcWidth;
             
+            // // the last entry looks super weird. so, we'll average it with the next-last entry
+            // // the last entry is at n=1, not n=0, because we're sending length instead of length-1
+            // if(n == 1){
+            //   x = (x * getCoord(r,d,nmax,nmax)[0]) / 2;
+            //   y = (y * getCoord(r,d,nmax,nmax)[1]) / 2;
+            // }
+            
             // so now that we have the multiplier, we need to iterate over the sentence to determine the position of the words
             
-            // but first, a test
-            // in which current n is 13 and the target width is 15
+            wordRadius = multiplier/2; // why does it need to be /2 ??? // because the multiplier is the length of the unit diameter
             
-            console.log(calcWidth,targetWidth,multiplier);
-            
-            wordRadius = multiplier/2; // why does it need to be /2 ???
-            
-            sentence.words[w].transform = "translate(" + getCoord(1.5,1.5,sentence.words.length,w,multiplier).join(",") + ")";
+            sentence.words[w].transform = "translate(" + getCoord(spiralBuffer,spiralBuffer,sentence.words.length,w,multiplier).join(",") + ")";
+            // we SHOULD be sending length-1, not just length. but this is a hacky way og ignoring the last dot on the spiral
             
             
             
@@ -926,9 +940,29 @@
       }, 1);
     }
     
-    function download(filetype){
+    host.download = function(filetype){
       // this function is called when the user clicks one of the download buttons at the bottom
-    }
+      switch(filetype){
+        case "JSON":
+          // dump the paragraph's data as JSON in a new tab
+          console.log("gg");
+          jsonTab = window.open("data:text/json," + encodeURIComponent(JSON.stringify(host.paragraph)) + "_blank");
+          //jsonTab.focus();
+          
+          var myjson = JSON.stringify(host.paragraph, null, 2);
+    console.log(myjson);
+    var x = window.open();
+    x.document.open();
+    x.document.write('<html><body><pre>' + myjson + '</pre></body></html>');
+    x.document.close();
+          
+          break;
+        case "PNG":
+          break;
+        case "SVG":
+          break;
+      }
+    };
   }
   
   //     _____ __                                   _____ __                            

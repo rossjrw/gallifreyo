@@ -38,8 +38,9 @@ $('#colorpicker').colpick();
     <svg id="render" xmlns="http://www.w3.org/2000/svg" height="100%" width="100%" preserveAspectRatio="none">
       <g stroke-width="1" fill="none" stroke="black" transform="scale(1,-1)"> <!-- this flips it so it's not the wrong way round -->
         <g level="paragraph">
-          <g level="sentence">
-            <g level="word" ng-repeat="word in host.paragraph.sentences[0].words">
+          <g level="sentence" ng-repeat="sentence in host.paragraph.sentences">
+            <circle cx="0" cy="0" r="15"/>
+            <g level="word" ng-repeat="word in sentence.words">
               <g level="letter" ng-attr-transform="{{word.transform}}" ng-repeat="letter in word.letters">
                 <path ng-attr-d="{{letter.d}}" ng-attr-transform="{{letter.transform}}"></path>
               </g>
@@ -58,7 +59,7 @@ $('#colorpicker').colpick();
         <div class="center-align">
           <a class="waves-effect waves-light btn section">SVG</a>
           <a class="waves-effect waves-light btn">PNG</a>
-          <a class="waves-effect waves-light btn">JSON</a>
+          <a class="waves-effect waves-light btn" ng-click="host.download('JSON')">JSON</a>
         </div>
       </div>
     </div>
