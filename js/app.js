@@ -114,7 +114,7 @@
     }
     
     window.onresize = function(event){
-      host.generate();
+      host.change();
     };
     
     host.change = function(){
@@ -145,6 +145,7 @@
       reset();
       
       var input = host.text;
+      paragraph.input = input;
       // the first thing we need to do is detect errors in the input
       // errors: input contains any characters that are not A-Z, . or space
       if(!/^[a-zA-Z0-9\.\s]+$/.test(input) && input.length > 0){
@@ -428,6 +429,9 @@
             
             // the multiplier is targetWidth/calcWidth;
             // targetWidth is radius, sentenceRadius is radius
+            
+            // fuck it, we're having two multipliers, one for x, one for y.
+            
             var targetWidth = sentenceRadius / 2; // need to modify this to account for word radius
             var multiplier = targetWidth / calcWidth;
             
@@ -1019,6 +1023,7 @@
       {value: "C", block: "p", dots: 4, lines: 0}, // discouraged characters
       {value: "Q", block: "f", dots: 4, lines: 0}, // maybe even remove these in favour of else?
       {value: "BUFFER", block: "buffer"},
+      {value: "_", block: "buffer"},
       //{value: "else", block: "s", dots: 1, lines: 0},
     ];
     // I'm gonna write the formula here too
