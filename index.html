@@ -23,8 +23,22 @@
 	  $(document).ready(function() {
       $('select').material_select();
       $('.collapsible').collapsible({
-        onOpen: function(el){console.log(el);el.context.childNodes[2].childNodes[0].textContent = "expand_less"},
-        onClose: function(el){el.context.childNodes[2].childNodes[0].textContent = "expand_more"},
+        onOpen: function(el){
+          console.log(el);
+          if(el.context.classList[0] == "material-icons"){
+            el.context.parentNode.childNodes[2].childNodes[0].textContent = "expand_less";
+          } else {
+            el.context.childNodes[2].childNodes[0].textContent = "expand_less";
+          };
+        },
+        onClose: function(el){
+          console.log(el);
+          if(el.context.classList[0] == "material-icons"){
+            el.context.parentNode.childNodes[2].childNodes[0].textContent = "expand_more";
+          } else {
+            el.context.childNodes[2].childNodes[0].textContent = "expand_more";
+          };
+        },
       });
       
 $('#colorpicker').colpick();
@@ -39,7 +53,7 @@ $('#colorpicker').colpick();
       <g stroke-width="1" fill="none" stroke="black" transform="scale(1,-1)"> <!-- this flips it so it's not the wrong way round -->
         <g level="paragraph">
           <g level="sentence" ng-repeat="sentence in host.paragraph.sentences">
-            <circle cx="0" cy="0" r="15"/>
+            <circle cx="0" cy="40" r="100"/>
             <g level="word" ng-repeat="word in sentence.words">
               <g level="letter" ng-attr-transform="{{word.transform}}" ng-repeat="letter in word.letters">
                 <path ng-attr-d="{{letter.d}}" ng-attr-transform="{{letter.transform}}"></path>

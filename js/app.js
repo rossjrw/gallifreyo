@@ -28,7 +28,7 @@
     
     $scope.ShermanStorage = ShermanStorage;
     
-    host.text = "p pp ppp pppp ppppp pppppp ppppppp pppppppp ppppppppp pppppppppp";
+    host.text = "Gallifreyo Test";
     // the text - this should NOT be in settings
     
     host.langs = [
@@ -56,7 +56,7 @@
     host.width = 1024;
     // size of the final PNG
     
-    host.debug = true; // change this to false when it's finished
+    host.debug = false; // change this to false when it's finished
     // enables debug messages in console
     
     host.fore = "#000000";
@@ -276,7 +276,7 @@
       
       var angles = rAngles;
       // as the buffers don't need to be rendered it should be fine to just chuck them in here
-      var relativeAngleSum = angles.reduce((a, b) => a + b, 0) + host.settings.buffer.word*sentence.words.length;
+      var relativeAngleSum = angles.reduce((a, b) => a + b, 0) + host.settings.buffer.word*sentence.words.length; //sum all the angles of the word then add as many buffers as there are words
       for(let a = 0; a < angles.length; a++){
         angles[a] = angles[a] * 2 * Math.PI / relativeAngleSum;
       }
@@ -308,7 +308,7 @@
           default:
           case "Simple":
           case "Size-Scaled":
-            var wordRadius = sentence.words.length > 2 ? (sentenceRadius*Math.cos(Math.PI/2-N))/(host.settings.word.b*Math.cos(Math.PI/2-N)+1) : sentenceRadius;
+            var wordRadius = sentence.words.length > 1 ? (sentenceRadius*Math.cos(Math.PI/2-N))/(host.settings.word.b*Math.cos(Math.PI/2-N)+1) : sentenceRadius; // this is the line that fucked us up a while ago, the one was a two
             // we somehow need to work out exactly where the location of each letter is
             // x = (-R+br)cosB = (-sentenceRadius + host.settings.word.b) * Math.cos(B)
             // y = (-R+br)sinB = (-sentenceRadius + host.settings.word.b) * Math.sin(B)
