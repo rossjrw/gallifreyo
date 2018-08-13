@@ -1,11 +1,11 @@
-# gallifreyo
-Gallifreyan translator
+# Gallifreyo
 
-## things that have yet to be done
-* make the readme look real fine and swanky
-* change the credits bit to a proper bottom-bar thing, and have the sticky section do some fancy scrollfire stuff to not overlap it
-* sort out the options
-* add usage instructions to the readme for everything
-* fix sizescaled mode (average the angles)
-* make spiral mode somehow
-* paragraphs
+An English-to-Gallifreyan transliterator, based on Sherman's Gallifreyan.
+
+Planned to eventually supoort multiple sentences and possibly multiple paragraphs per transliteration.
+
+See it live: https://rossjrw.github.io/gallifreyo/
+
+## Project status
+
+Incomplete.
