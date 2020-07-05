@@ -987,43 +987,7 @@
     // for d block, b = 0  and cut circle
     // for f block, b = 0 and full circle
     var alphabet = [
-      {value: "B", block: "s", dots: 0, lines: 0},
-      {value: "CH", block: "s", dots: 2, lines: 0},
-      {value: "D", block: "s", dots: 3, lines: 0},
-      {value: "F", block: "s", dots: 0, lines: 3},
-      {value: "G", block: "s", dots: 0, lines: 1},
-      {value: "H", block: "s", dots: 0, lines: 2},
-      {value: "J", block: "p", dots: 0, lines: 0},
-      {value: "K", block: "p", dots: 2, lines: 0},
-      {value: "L", block: "p", dots: 3, lines: 0},
-      {value: "M", block: "p", dots: 0, lines: 3},
-      {value: "N", block: "p", dots: 0, lines: 1},
-      {value: "P", block: "p", dots: 0, lines: 2},
-      {value: "T", block: "d", dots: 0, lines: 0},
-      {value: "SH", block: "d", dots: 2, lines: 0},
-      {value: "R", block: "d", dots: 3, lines: 0},
-      {value: "S", block: "d", dots: 0, lines: 3},
-      {value: "V", block: "d", dots: 0, lines: 1},
-      {value: "W", block: "d", dots: 0, lines: 2},
-      {value: "TH", block: "f", dots: 0, lines: 0},
-      {value: "Y", block: "f", dots: 2, lines: 0},
-      {value: "Z", block: "f", dots: 3, lines: 0},
-      {value: "NG", block: "f", dots: 0, lines: 3},
-      //{name: "QU", block: "f", dots: 0, lines: 1},
-      {value: "Q#", block: "f", dots: 0, lines: 1}, // because fuck QU
-      {value: "X", block: "f", dots: 0, lines: 2},
-      {value: "A", block: "v", vert: -1, line: 0}, // vert: -1 = down, 1 = up
-      {value: "E", block: "v", vert: 0, line: 0}, // line: 1 = in, -1 = out
-      {value: "I", block: "v", vert: 0, line: 1},
-      {value: "O", block: "v", vert: 1, line: 0},
-      {value: "U", block: "v", vert: 0, line: -1},
-      {value: "WH", block: "p", dots: 1, lines: 0},
-      {value: "PH", block: "d", dots: 1, lines: 0},
-      {value: "GH", block: "f", dots: 1, lines: 3},
-      {value: "C", block: "p", dots: 4, lines: 0}, // discouraged characters
-      {value: "Q", block: "f", dots: 4, lines: 0}, // maybe even remove these in favour of else?
-      {value: "BUFFER", block: "buffer"},
-      {value: "_", block: "buffer"},
+      // TODO get from TOML
       //{value: "else", block: "s", dots: 1, lines: 0},
     ];
     // I'm gonna write the formula here too
