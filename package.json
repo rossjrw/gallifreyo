@@ -68,8 +68,5 @@
       ],
       "babel-preset-typescript-vue"
     ]
-  },
-  "dependencies": {
-    "toml": "^3.0.0"
   }
 }
