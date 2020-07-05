@@ -1,8 +1,7 @@
 {
-  "name": "series-replace",
+  "name": "gallifreyo",
   "version": "0.0.1",
-  "description": "Make a series of regex find-and-replacements.",
-  "main": "index.js",
+  "description": "A Gallifreyan translator",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --config webpack.config.js --mode development",
@@ -10,18 +9,20 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rossjrw/series-replace.git"
+    "url": "git+https://github.com/rossjrw/gallifreyo.git"
   },
   "keywords": [
-    "regex",
-    "find-and-replace"
+    "gallifreyan",
+    "translator",
+    "transliterator",
+    "doctor-who"
   ],
   "author": "Ross Williams",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/rossjrw/series-replace/issues"
+    "url": "https://github.com/rossjrw/gallifreyo/issues"
   },
-  "homepage": "https://github.com/rossjrw/series-replace#readme",
+  "homepage": "https://github.com/rossjrw/gallifreyo#readme",
   "browserslist": "cover 99.5%",
   "devDependencies": {
     "@babel/core": "^7.10.2",
@@ -36,19 +37,13 @@
     "babel-preset-typescript-vue": "^1.1.1",
     "bulma": "^0.8.2",
     "clean-webpack-plugin": "^3.0.0",
-    "copy-to-clipboard": "^3.3.1",
     "core-js": "^3.6.5",
     "css-loader": "^3.5.3",
     "eslint": "^7.1.0",
     "eslint-plugin-vue": "^6.2.2",
-    "fancy-log": "^1.3.3",
-    "fibers": "^5.0.0",
     "html-webpack-plugin": "^4.3.0",
     "lodash": "^4.17.15",
     "node-sass": "^4.14.1",
-    "postcss": "^7.0.32",
-    "postcss-grid-kiss": "^2.3.0",
-    "query-string": "^6.12.1",
     "sass": "^1.26.7",
     "sass-loader": "^8.0.2",
     "source-map-loader": "^0.2.4",
@@ -58,7 +53,6 @@
     "vue-loader": "^15.9.2",
     "vue-style-loader": "^4.1.2",
     "vue-template-compiler": "^2.6.11",
-    "vuedraggable": "^2.23.2",
     "vuex": "^3.4.0",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11"

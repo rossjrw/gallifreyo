@@ -49,7 +49,7 @@ module.exports = {
     new CleanWebpackPlugin(),
     new VueLoaderPlugin(),
     new HtmlWebpackPlugin({
-      title: "Series Replace",
+      title: "Gallifreyo",
       template: './src/template.ejs',
     }),
   ],
