@@ -44,10 +44,12 @@
     "html-webpack-plugin": "^4.3.0",
     "lodash": "^4.17.15",
     "node-sass": "^4.14.1",
+    "raw-loader": "^4.0.1",
     "sass": "^1.26.7",
     "sass-loader": "^8.0.2",
     "source-map-loader": "^0.2.4",
     "style-loader": "^1.2.1",
+    "toml": "^3.0.0",
     "typescript": "^3.9.3",
     "vue": "^2.6.11",
     "vue-loader": "^15.9.2",
@@ -68,5 +70,6 @@
       ],
       "babel-preset-typescript-vue"
     ]
-  }
+  },
+  "dependencies": {}
 }

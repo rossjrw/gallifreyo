@@ -37,6 +37,12 @@ module.exports = {
           'css-loader',
         ],
       },
+      {
+        test: /\.toml$/,
+        use: [
+          'raw-loader',
+        ],
+      },
     ],
   },
   resolve: {
