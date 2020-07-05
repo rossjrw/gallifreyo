@@ -22,10 +22,6 @@ export default new Vuex.Store({
     // TODO mutation to change 'debug' settings
   },
   actions: {
-    initialState({ commit }, inputText: string) {
-      commit("modifyInput", inputText)
-      commit("transliterate")
-    },
     updateInputText({ commit }, inputText: string) {
       commit("modifyInput", inputText)
       commit("transliterate")

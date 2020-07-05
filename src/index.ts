@@ -15,6 +15,6 @@ const vm = new Vue({
   render: h => h(App),
   store,
   mounted() {
-    /* this.$store.dispatch("initialRules", getDataFromUrl(location.search)) */
+    this.$store.dispatch("updateInputText", "Gallifreyo Test")
   }
 })
