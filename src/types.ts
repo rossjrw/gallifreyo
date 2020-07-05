@@ -4,11 +4,16 @@ export interface State {
 }
 
 export interface Alphabet {
+  priority: number
+  letters: Array<Letter>
+}
+
+export interface Letter {
   value: string
   block: string
 }
 
-export interface ShermanAlphabet extends Alphabet {
+export interface ShermanLetter extends Letter {
   dots?: number
   vert?: number
   lines: number
