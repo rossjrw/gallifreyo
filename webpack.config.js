@@ -1,7 +1,8 @@
 const path = require('path');
+const toml = require('toml');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 module.exports = {
   entry: './src/index.ts',
@@ -36,6 +37,13 @@ module.exports = {
           'vue-style-loader',
           'css-loader',
         ],
+      },
+      {
+        test: /\.toml$/,
+        type: 'json',
+        parser: {
+          parse: toml.parse
+        },
       },
     ],
   },
