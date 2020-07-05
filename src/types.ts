@@ -1,11 +1,11 @@
 export interface State {
   inputText: string
-  alphabets: Array<Alphabet>
+  alphabets: Alphabet[]
 }
 
 export interface Alphabet {
   priority: number
-  letters: Array<Letter>
+  letters: Letter[]
 }
 
 export interface Letter {
