@@ -1,7 +1,8 @@
 # Blocks:
 # s: circle intersects partially with line but is mostly enclosed
 # p: circle is detached from line
-# d: circle 
+# d: circle intersects halfway with line, with part below line removed
+# f: circle intersects halway with line
 
 [Base]
 priority = 0
