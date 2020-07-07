@@ -1,27 +1,27 @@
 export interface State {
-  alphabets: Alphabet[]
+  text: string
+  alphabets: AlphabetData[]
   settings: Settings
   structures: string[]
 }
 
-export interface Alphabet {
+export interface AlphabetData {
   priority: number
-  letters: Letter[]
+  letters: LetterData[]
 }
 
-export interface Letter {
+export interface LetterData {
   value: string
   block: string
 }
 
-export interface ShermanLetter extends Letter {
+export interface ShermanLetterData extends LetterData {
   dots?: number
   vert?: number
   lines: number
 }
 
 export interface Settings {
-  text: string
   structure: string
   scaling: boolean
   watermark: boolean
@@ -51,6 +51,7 @@ export interface BlockConfig {
 }
 
 export interface VowelBlockConfig extends BlockConfig {
+  // What is r???????
   r: number
 }
 
@@ -64,4 +65,18 @@ export interface AutomaticConfig {
   // The naming scheme here is terrible
   scaledLessThan: number
   spiralMoreThan: number
+}
+
+export type TokenisedPhrase = TokenisedSentence | TokenisedWord
+
+export interface TokenisedSentence {
+  [index: number]: TokenisedPhrase
+}
+
+export interface TokenisedWord {
+  [index: number]: TokenisedLetter
+}
+
+export interface TokenisedLetter {
+  value: string
 }
