@@ -1,8 +1,12 @@
 export interface State {
   text: string
-  alphabets: AlphabetData[]
+  alphabets: AlphabetsData
   settings: Settings
   structures: string[]
+}
+
+export interface AlphabetsData {
+  [name: string]: AlphabetData
 }
 
 export interface AlphabetData {
