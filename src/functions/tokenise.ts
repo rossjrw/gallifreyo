@@ -1,20 +1,26 @@
-import { TokenisedPhrase, TokenisedWord } from '@/types'
+import {
+  LetterData, TokenisedPhrase, TokenisedWord, TokenisedLetter
+} from '@/types'
+import { getLetters } from '@/functions/alphabets'
 
 export function tokeniseSentence(
   sentence: string,
   splitBy: string[],
   alphabets: string[],
-): TokenisedPhrase[] {
+): TokenisedPhrase {
   /**
    * Takes a string and converts it to tokens. Tokens are dicts that instruct
    * the renderer on what to draw e.g. what letters and shapes are present.
    * The renderer will decide how to draw those things e.g. what size
    * everything is.
    * 
-   * @param sentence: a string containing the sentence to be tokenised.
+   * @param sentence: A string containing the sentence to be tokenised.
    * Gallifreyo's definition of a sentence is a series of words, but what those
    * words are can be anything. Most words will also be sentences.
-   * @param splitBy: an array of strings by which to split
+   * @param splitBy: An array of strings by which to split
+   * @param alphabets: List of alphabet names to use
+   * @returns A recursively-nested list of tokenised sentences containing
+   * tokenised words, to be passed to the renderer.
    */
   // This is a recursive function that pops from splitBy. There are two
   // possible return values:
@@ -24,29 +30,54 @@ export function tokeniseSentence(
   //    2. If all the delimiters have been used up, then the string is a word.
   //    It needs to be broken up into letters and tokenised, and then returned.
   // As a result, a nested structure of tokenised words should be produced.
-  if (splitBy.length > 0) {
+  const phrases: TokenisedPhrase[] = []
+  for (const phrase of sentence.split(splitBy.shift())) {
     // Split the sentence by the first splitBy into a series of phrases.
     // Right now, we don't care what those phrases actually are. I'm using
     // "phrases" to ambiguously mean either a sentence or a word.
-    const phrases: TokenisedPhrase[] = []
-    for (const phrase of sentence.split(splitBy.shift())) {
-      // splitBy[0] is the delimiter for this sentence depth
-      // At depth 0, delimiter is "\n\n", therefore each phrase is paragraph
-      // This phrase should be further split
+    if (splitBy.length > 0) {
+      // This phrase should be split further
       const tokenisedPhrase = tokeniseSentence(phrase, splitBy, alphabets)
       phrases.push(tokenisedPhrase)
+    } else {
+      // The delimiters have been used up, so sentence is a word.
+      return tokeniseWord(sentence, alphabets)
     }
-    return phrases
-  } else {
-    // The delimiters have been used up, so sentence is a word.
-    return tokeniseWord(sentence, alphabets)
   }
-  return null
+  return phrases
 }
 
 export function tokeniseWord(
   word: string,
   alphabets: string[],
 ): TokenisedWord {
-  return null
+  /**
+   * Takes a word and converts it to tokens. I guess for now a token is just
+   * the letter's data from the alphabet file.
+   *
+   * @param word: A string to be tokenised into letters
+   * @param alphabets: List of alphabet names to use
+   * @returns The tokenised word as a list of letters
+   */
+  // Grab the letter data for the selected alphabets
+  const letters: LetterData[] = getLetters(alphabets) 
+  // For each letter, compare it against that letter's length's worth of
+  // characters from the start of the word
+  // If there is a match, save that token and remove those letters
+  // If there is not a match, add a null token and remove one letter
+  const tokens: TokenisedWord = []
+  while (word.length > 0) {
+    let token: TokenisedLetter = null
+    for (const letter of letters) {
+      if (word.startsWith(letter.value)) {
+        token = letter
+        break
+      }
+    }
+    // If there was no match, mill a letter anyway
+    word = word.slice(token ? token.value.length : 1)
+    tokens.push(token)
+    // Renderer should be able to handle null tokens
+  }
+  return tokens
 }

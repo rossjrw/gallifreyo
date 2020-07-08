@@ -11,7 +11,8 @@ const getLetters = memoize(function getLetters(
   wantedAlphabets: string[],
 ): LetterData[] {
   /**
-   * Finds the entry with value `letter` and returns it.
+   * Selects alphabets from the alphabet data file and returns their letters in
+   * order of priority, to be passed to the tokeniser.
    *
    * @param wantedAlphabets: list of alphabet names that are wanted
    * @returns all letters from the selected alphabets in priority order

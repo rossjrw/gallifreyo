@@ -5,26 +5,6 @@ export interface State {
   structures: string[]
 }
 
-export interface AlphabetsData {
-  [name: string]: AlphabetData
-}
-
-export interface AlphabetData {
-  priority: number
-  letters: LetterData[]
-}
-
-export interface LetterData {
-  value: string
-  block: string
-}
-
-export interface ShermanLetterData extends LetterData {
-  dots?: number
-  vert?: number
-  lines: number
-}
-
 export interface Settings {
   structure: string
   scaling: boolean
@@ -71,16 +51,30 @@ export interface AutomaticConfig {
   spiralMoreThan: number
 }
 
+export interface AlphabetsData {
+  [name: string]: AlphabetData
+}
+
+export interface AlphabetData {
+  priority: number
+  letters: LetterData[]
+}
+
+export interface LetterData {
+  value: string
+  block: string
+}
+
+export interface ShermanLetterData extends LetterData {
+  dots?: number
+  vert?: number
+  lines: number
+}
+
 export type TokenisedPhrase = TokenisedSentence | TokenisedWord
 
-export interface TokenisedSentence {
-  [index: number]: TokenisedPhrase
-}
+export type TokenisedSentence = TokenisedPhrase[]
 
-export interface TokenisedWord {
-  [index: number]: TokenisedLetter
-}
+export type TokenisedWord = TokenisedLetter[]
 
-export interface TokenisedLetter {
-  value: string
-}
+export type TokenisedLetter = LetterData
