@@ -1,5 +1,4 @@
-import { TokenisedPhrase } from '@/types'
-import { tokeniseWord } from '@/functions/tokeniseWord'
+import { TokenisedPhrase, TokenisedWord } from '@/types'
 
 export function tokeniseSentence(
   sentence: string,
@@ -42,5 +41,12 @@ export function tokeniseSentence(
     // The delimiters have been used up, so sentence is a word.
     return tokeniseWord(sentence, alphabets)
   }
+  return null
+}
+
+export function tokeniseWord(
+  word: string,
+  alphabets: string[],
+): TokenisedWord {
   return null
 }
