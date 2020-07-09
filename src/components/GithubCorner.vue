@@ -1,6 +1,6 @@
 <!-- http://tholman.com/github-corners/ -->
 <template>
-  <a href="https://github.com/rossjrw/series-replace"
+  <a href="https://github.com/rossjrw/gallifreyo"
      target="_blank"
      class="github-corner"
      aria-label="View source on GitHub">
@@ -46,3 +46,9 @@
   }
 }
 </style>
+
+<script lang="ts">
+import Vue from "vue"
+
+export default Vue.extend({})
+</script>
