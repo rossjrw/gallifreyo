@@ -3,8 +3,11 @@
     "baseUrl": ".",
     "outDir": "./dist/",
     "noImplicitAny": true,
-    "module": "es6",
-    "target": "es5",
+    "module": "esnext",
+    "target": "esnext",
+    "strict": true,
+    "importHelpers": true,
+    "esModuleInterop": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "lib": [
@@ -21,10 +24,5 @@
   ],
   "exclude": [
     "node_modules"
-  ],
-  "types": [
-    "node",
-    "src/shims-vue.d.ts",
-    "src/shims-raw-loader.d.ts"
   ]
 }
