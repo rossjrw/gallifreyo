@@ -2,7 +2,7 @@ import toml from "toml"
 import { memoize, orderBy, pickBy, values } from "lodash"
 
 import { AlphabetsData, LetterData, AlphabetData } from '@/types'
-import alphabets from '!!raw-loader!./alphabets.toml'
+import alphabets from '!!raw-loader!@/alphabets.toml'
 
 
 // Why waste time calling this function over and over for the same parameters?
