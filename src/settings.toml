@@ -1,7 +1,3 @@
-text = "Gallifreyo Test"
-
-structures = [ "Simple", "Size-Scaled", "Spiral", "Automatic" ]
-
 [settings]
 structure = { sentence = "Automatic", paragraph = "Automatic" }
 scaling = true # sentence size scaling (?)
