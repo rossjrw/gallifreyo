@@ -9,12 +9,12 @@
         sentences.
       </p>
       <div class="row input-field">
-        <input class="row col l8 push-l2 s10 push-s1"
-               ng-model="host.text"
-               ng-change="host.change()">
+        <textarea class="row col l8 push-l2 s10 push-s1"
+                  v-model="text">
+        </textarea>
         <a class="waves-effect waves-light btn row col l6 push-l3 s10 push-s1 center-align"
            ng-click="host.generate()">
-          {{host.instant ? "Retransliterate" : "Transliterate"}}
+          Retransliterate
         </a>
       </div>
     </div>
@@ -24,5 +24,17 @@
 <script lang="ts">
 import Vue from "vue"
 
-export default Vue.extend({})
+export default Vue.extend({
+  name: "TextInput",
+  computed: {
+    text: {
+      get(): string {
+        return this.$store.state.text
+      },
+      set(text: string): void {
+        this.$store.dispatch("updateInputText", text)
+      },
+    },
+  },
+})
 </script>
