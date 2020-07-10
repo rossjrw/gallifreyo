@@ -6,10 +6,9 @@
 export interface State {
   text: string
   alphabets: AlphabetsData
-  settings: Settings
-  structures: string[]
   tokenisedInput: TokenisedPhrase[]
   renderedInput: RenderedPhrase[]
+  settings: Settings
 }
 
 /*
@@ -19,13 +18,12 @@ export interface State {
  */
 
 export interface Settings {
-  structure: string
+  structure: string[]
   scaling: boolean
   watermark: boolean
   width: number
   foregroundColour: string
   backgroundColour: string
-  button: string
   config: Config
 }
 
@@ -99,7 +97,7 @@ export type TokenisedSentence = TokenisedPhrase[]
 
 export type TokenisedWord = TokenisedLetter[]
 
-export type TokenisedLetter = LetterData
+export type TokenisedLetter = LetterData | null
 
 /*
  * Rendered Input
