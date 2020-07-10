@@ -25,15 +25,15 @@ const getLetters = memoize(function getLetters(
     (_, key) => wantedAlphabets.includes(key)
   )
   // Sort the results into priority order
-  const combinedAlphabetData: LetterData[] = [].concat(
-    orderBy(
-      values(alphabetsData),
-      (alphabet: AlphabetData) => alphabet.priority,
-      'desc'
-    ).map(
-      (alphabet: AlphabetData) => alphabet.letters
-    )
+  const alphabetsByPriority: AlphabetData[] = orderBy(
+    values(alphabetsData),
+    (alphabet: AlphabetData) => alphabet.priority,
+    'desc'
   )
+  const lettersByPriority: LetterData[][] = alphabetsByPriority.map(
+    (alphabet: AlphabetData) => alphabet.letters
+  )
+  const combinedAlphabetData: LetterData[] = lettersByPriority.flat()
   return combinedAlphabetData
 })
 
