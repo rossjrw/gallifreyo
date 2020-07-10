@@ -31,7 +31,7 @@ export default new Vuex.Store({
         automatic: { scaledLessThan: 6, spiralMoreThan: 9 },
       },
     },
-  }  as State,
+  } as State,
   mutations: {
     transliterate(state: State) {
       state.tokenisedInput = tokeniseSentence(
