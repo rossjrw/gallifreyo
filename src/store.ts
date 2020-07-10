@@ -1,8 +1,8 @@
 import Vue from "vue"
 import Vuex from "vuex"
 
-import { State } from './types'
-/* import { execute } from './replace' */
+import { State } from '@/types'
+import { tokeniseSentence } from '@/functions/tokenise'
 
 Vue.use(Vuex)
 
@@ -20,7 +20,6 @@ export default new Vuex.Store({
       width: 1024,
       foregroundColour: "#000000",
       backgroundColour: "#FFFFFF",
-      button: "Translate",
       config: {
         s: { b: 0.9, a: 1 },
         p: { b: 1.2, a: 1 },
@@ -35,7 +34,11 @@ export default new Vuex.Store({
   }  as State,
   mutations: {
     transliterate(state: State) {
-      /* state.outputText = execute(state.inputText, state.rules) */
+      state.tokenisedInput = tokeniseSentence(
+        state.text,
+        ["\n\n", "\n", " "],
+        [], // TODO get selected alphabets
+      )
     },
     modifyInput(state: State, newInput: string) {
       state.text = newInput
@@ -45,7 +48,7 @@ export default new Vuex.Store({
   actions: {
     updateInputText({ commit }, inputText: string) {
       commit("modifyInput", inputText)
-      commit("transliterate")
+      commit("transliterate", inputText)
     },
   },
 })
