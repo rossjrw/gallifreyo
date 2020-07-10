@@ -29,9 +29,9 @@
         style="box-shadow: none; border-right: none; border-left: none;">
       <li>
         <div class="collapsible-header">
-          <i class="material-icons">
-            edit</i>Drawing<i class="material-icons right">expand_more
-          </i>
+          <i class="material-icons">edit</i>
+          Drawing
+          <i class="material-icons right">expand_more </i>
         </div>
         <div class="collapsible-body">
           <div class="row valign-wrapper">
@@ -71,9 +71,9 @@
       </li>
       <li>
         <div class="collapsible-header">
-          <i class="material-icons">
-            image</i>Output<i class="material-icons right">expand_more
-          </i>
+          <i class="material-icons">image</i>
+          Output
+          <i class="material-icons right">expand_more</i>
         </div>
         <div class="collapsible-body">
           <div class="row valign-wrapper">
@@ -132,3 +132,5 @@
 <script lang="ts">
 import Vue from "vue"
 
+export default Vue.extend({})
+</script>
