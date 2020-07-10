@@ -115,11 +115,12 @@ export type RenderedPhrase = RenderedSentence | RenderedWord
 export interface RenderedSentence {
   id: string
   phrases: RenderedPhrase[]
+  transform: string
 }
 
 export interface RenderedWord {
   id: string
-  letters: RenderedLetter[]
+  phrases: RenderedLetter[]
   transform: string
 }
 

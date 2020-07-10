@@ -8,28 +8,8 @@
       <g stroke-width="1"
          fill="none"
          stroke="black"
-         transform="scale(1,-1)"> <!-- not wrong way around -->
-        <g level="paragraph">
-          <g level="sentence"
-             v-for="sentence in host.paragraph.sentences"
-             :key="sentence.id"> <!-- TODO property doesn't exist -->
-            <circle cx="0"
-                    cy="40"
-                    r="100"/>
-            <g level="word"
-               v-for="word in sentence.words"
-               :key="word.id">
-              <g level="letter"
-                 :transform="word.transform"
-                 v-for="letter in word.letters"
-                 :key="letter.id">
-                <path :d="letter.d"
-                      :transform="letter.transform">
-                </path>
-              </g>
-            </g>
-          </g>
-        </g>
+         transform="scale(1,-1)">
+        <RenderedPhrase></RenderedPhrase>
       </g>
     </svg>
   </div>
@@ -37,6 +17,17 @@
 
 <script lang="ts">
 import Vue from "vue"
+import { mapState } from "vuex"
 
-export default Vue.extend({})
+import RenderedPhrase from '@/components/RenderedPhrase.vue'
+
+export default Vue.extend({
+  name: "RenderedImage",
+  components: {
+    RenderedPhrase
+  },
+  computed: mapState({
+    tokenisedInput: 'tokenisedInput'
+  })
+})
 </script>
