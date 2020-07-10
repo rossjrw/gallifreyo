@@ -10,6 +10,7 @@
       <RenderedLetter v-else
                       :letter="childPhrase"/>
     </g>
+  </g>
 </template>
 
 <script lang="ts">
