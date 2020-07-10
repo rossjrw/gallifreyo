@@ -8,8 +8,8 @@ export interface State {
   alphabets: AlphabetsData
   settings: Settings
   structures: string[]
-  tokenisedInput: TokenisedPhrase
-  renderedInput: RenderedPhrase
+  tokenisedInput: TokenisedPhrase[]
+  renderedInput: RenderedPhrase[]
 }
 
 /*
