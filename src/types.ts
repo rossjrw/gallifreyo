@@ -9,7 +9,7 @@ export interface State {
   settings: Settings
   structures: string[]
   tokenisedInput: TokenisedPhrase
-  renderedInput: Circle[]
+  renderedInput: RenderedPhrase
 }
 
 /*
@@ -124,5 +124,6 @@ export interface RenderedWord {
 
 export interface RenderedLetter {
   id: string
-
+  d: string          // SVG path
+  transform: string  // SVG orientation/sizing
 }
