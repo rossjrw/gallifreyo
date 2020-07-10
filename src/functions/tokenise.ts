@@ -45,7 +45,7 @@ export function tokeniseSentence(
       phrases.push(tokenisedPhrase)
     } else {
       // The delimiters have been used up, so sentence is a word.
-      phrases.push(tokeniseWord(sentence, alphabets))
+      phrases.push(tokeniseWord(phrase, alphabets))
     }
   }
   return phrases
@@ -73,7 +73,7 @@ export function tokeniseWord(
   while (word.length > 0) {
     let token: TokenisedLetter = null
     for (const letter of letters) {
-      if (word.startsWith(letter.value)) {
+      if (word.toUpperCase().startsWith(letter.value)) {
         token = letter
         break
       }
