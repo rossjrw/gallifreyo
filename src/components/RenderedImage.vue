@@ -9,7 +9,9 @@
          fill="none"
          stroke="black"
          transform="scale(1,-1)">
-        <RenderedPhrase></RenderedPhrase>
+        <RenderedPhrase v-for="phrase in tokenisedInput"
+                        :key="phrase.id"
+                        :phrase="phrase"/>
       </g>
     </svg>
   </div>
