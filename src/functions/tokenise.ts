@@ -7,13 +7,13 @@ export function tokeniseSentence(
   sentence: string,
   splitBy: string[],
   alphabets: string[],
-): TokenisedPhrase {
+): TokenisedPhrase[] {
   /**
    * Takes a string and converts it to tokens. Tokens are dicts that instruct
    * the renderer on what to draw e.g. what letters and shapes are present.
    * The renderer will decide how to draw those things e.g. what size
    * everything is.
-   * 
+   *
    * @param sentence: A string containing the sentence to be tokenised.
    * Gallifreyo's definition of a sentence is a series of words, but what those
    * words are can be anything. Most words will also be sentences.
@@ -31,17 +31,21 @@ export function tokeniseSentence(
   //    It needs to be broken up into letters and tokenised, and then returned.
   // As a result, a nested structure of tokenised words should be produced.
   const phrases: TokenisedPhrase[] = []
-  for (const phrase of sentence.split(splitBy.shift())) {
+  for (const phrase of sentence.split(splitBy[0])) {
     // Split the sentence by the first splitBy into a series of phrases.
     // Right now, we don't care what those phrases actually are. I'm using
     // "phrases" to ambiguously mean either a sentence or a word.
-    if (splitBy.length > 0) {
+    if (splitBy.length > 1) {
       // This phrase should be split further
-      const tokenisedPhrase = tokeniseSentence(phrase, splitBy, alphabets)
+      const tokenisedPhrase = tokeniseSentence(
+        phrase,
+        splitBy.slice(1),
+        alphabets,
+      )
       phrases.push(tokenisedPhrase)
     } else {
       // The delimiters have been used up, so sentence is a word.
-      return tokeniseWord(sentence, alphabets)
+      phrases.push(tokeniseWord(sentence, alphabets))
     }
   }
   return phrases
@@ -60,7 +64,7 @@ export function tokeniseWord(
    * @returns The tokenised word as a list of letters
    */
   // Grab the letter data for the selected alphabets
-  const letters: LetterData[] = getLetters(alphabets) 
+  const letters: LetterData[] = getLetters(alphabets)
   // For each letter, compare it against that letter's length's worth of
   // characters from the start of the word
   // If there is a match, save that token and remove those letters
