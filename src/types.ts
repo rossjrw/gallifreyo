@@ -1,9 +1,22 @@
+/*
+ * State
+ * The Vuex store state
+ */
+
 export interface State {
   text: string
   alphabets: AlphabetsData
   settings: Settings
   structures: string[]
+  tokenisedInput: TokenisedPhrase
+  renderedInput: Circle[]
 }
+
+/*
+ * Settings
+ * Used for fine-tuning the output and stuff. Any of them can be
+ * user-configurable if they're exposed to the UI
+ */
 
 export interface Settings {
   structure: string
@@ -51,6 +64,10 @@ export interface AutomaticConfig {
   spiralMoreThan: number
 }
 
+/*
+ * Alphabet storage
+ */
+
 export interface AlphabetsData {
   [name: string]: AlphabetData
 }
@@ -71,6 +88,11 @@ export interface ShermanLetterData extends LetterData {
   lines: number
 }
 
+/*
+ * Tokenised Input
+ * The list of unrendered tokens derived from the input text
+ */
+
 export type TokenisedPhrase = TokenisedSentence | TokenisedWord
 
 export type TokenisedSentence = TokenisedPhrase[]
@@ -78,3 +100,29 @@ export type TokenisedSentence = TokenisedPhrase[]
 export type TokenisedWord = TokenisedLetter[]
 
 export type TokenisedLetter = LetterData
+
+/*
+ * Rendered Input
+ * The list of rendered tokens. Each phrase is represented by a single circle
+ * on the image, which contains other phrases. A phrase is eventually a list
+ * of words, which is a list of letters, and the letters contain drawing info.
+ * Each circle needs an ID that is a hash of its contents, for caching.
+ * RenderedPhrase should map to SVG.
+ */
+
+export type RenderedPhrase = RenderedSentence | RenderedWord
+
+export interface RenderedSentence {
+  id: string
+  phrases: RenderedPhrase[]
+}
+
+export interface RenderedWord {
+  id: string
+  letters: RenderedLetter[]
+}
+
+export interface RenderedLetter {
+  id: string
+
+}
