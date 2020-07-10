@@ -120,6 +120,7 @@ export interface RenderedSentence {
 export interface RenderedWord {
   id: string
   letters: RenderedLetter[]
+  transform: string
 }
 
 export interface RenderedLetter {
