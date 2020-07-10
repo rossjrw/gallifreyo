@@ -37,7 +37,7 @@ export default new Vuex.Store({
       state.tokenisedInput = tokeniseSentence(
         state.text,
         ["\n\n", "\n", " "],
-        [], // TODO get selected alphabets
+        ["base", "Sherman"], // TODO get selected alphabets
       )
     },
     modifyInput(state: State, newInput: string) {

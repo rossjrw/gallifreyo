@@ -4,7 +4,7 @@
 # d: circle intersects halfway with line, with part below line removed
 # f: circle intersects halway with line
 
-[Base]
+[base]
 priority = 0
 letters = [
   { value = "BUFFER", block = "buffer" },
