@@ -15,3 +15,7 @@ import Vue from "vue"
 
 export default Vue.extend({})
 </script>
+
+<style>
+@import url("https://fonts.googleapis.com/css?family=Raleway:800");
+</style>
