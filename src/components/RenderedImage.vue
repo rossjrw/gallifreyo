@@ -9,7 +9,7 @@
          fill="none"
          stroke="black"
          transform="scale(1,-1)">
-        <RenderedPhrase v-for="phrase in tokenisedInput"
+        <RenderedPhrase v-for="phrase in renderedInput"
                         :key="phrase.id"
                         :phrase="phrase"/>
       </g>
@@ -29,7 +29,7 @@ export default Vue.extend({
     RenderedPhrase
   },
   computed: mapState({
-    tokenisedInput: 'tokenisedInput'
+    renderedInput: 'renderedInput'
   })
 })
 </script>
