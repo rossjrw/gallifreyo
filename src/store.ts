@@ -15,7 +15,8 @@ export default new Vuex.Store({
     tokenisedInput: [],
     renderedInput: [],
     settings: {
-      structure: [ "Automatic", "Automatic" ],
+      splits: [ "\n\n", "\n", " " ],
+      structure: [ "Automatic", "Automatic", "Automatic" ],
       scaling: true, // sentence size scaling
       watermark: true,
       width: 1024,
