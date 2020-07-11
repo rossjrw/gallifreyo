@@ -3,6 +3,7 @@ import Vuex from "vuex"
 
 import { State } from '@/types'
 import { tokeniseSentence } from '@/functions/tokenise'
+import { renderTokenisedInput } from '@/functions/render'
 
 Vue.use(Vuex)
 
@@ -38,6 +39,9 @@ export default new Vuex.Store({
         state.text,
         ["\n\n", "\n", " "],
         ["base", "Sherman"], // TODO get selected alphabets
+      )
+      state.renderedInput = renderTokenisedInput(
+        state.tokenisedInput
       )
     },
     modifyInput(state: State, newInput: string) {
