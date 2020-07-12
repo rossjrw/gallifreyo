@@ -6,8 +6,7 @@
 export interface State {
   text: string
   alphabets: AlphabetsData
-  tokenisedInput: TokenisedPhrase[]
-  renderedInput: RenderedPhrase[]
+  phrases: Phrase[]
   settings: Settings
 }
 
