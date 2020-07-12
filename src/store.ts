@@ -12,8 +12,7 @@ export default new Vuex.Store({
   state: {
     text: "Gallifreyo Test",
     alphabets: {},
-    tokenisedInput: [],
-    renderedInput: [],
+    phrases: [],
     settings: {
       splits: [ "\n\n", "\n", " " ],
       structure: [ "Automatic", "Automatic", "Automatic" ],
