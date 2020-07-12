@@ -18,7 +18,7 @@ export interface State {
 
 export interface Settings {
   splits: string[]
-  structure: string[]
+  structure: string
   scaling: boolean
   watermark: boolean
   width: number

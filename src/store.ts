@@ -15,7 +15,7 @@ export default new Vuex.Store({
     phrases: [],
     settings: {
       splits: [ "\n\n", "\n", " " ],
-      structure: [ "Automatic", "Automatic", "Automatic" ],
+      structure: "Automatic",
       scaling: true, // sentence size scaling
       watermark: true,
       width: 1024,
