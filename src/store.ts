@@ -35,13 +35,13 @@ export default new Vuex.Store({
   } as State,
   mutations: {
     transliterate(state: State) {
-      state.tokenisedInput = tokeniseSentence(
-        state.text,
-        ["\n\n", "\n", " "],
-        ["base", "Sherman"], // TODO get selected alphabets
-      )
-      state.renderedInput = renderTokenisedInput(
-        state.tokenisedInput
+      state.phrases = renderTokenisedInput(
+        tokeniseSentence(
+          state.text,
+          ["\n\n", "\n", " "],
+          ["base", "Sherman"], // TODO get selected alphabets
+        ),
+        state.settings
       )
     },
     modifyInput(state: State, newInput: string) {
