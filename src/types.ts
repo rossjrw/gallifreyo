@@ -114,17 +114,52 @@ export type RenderedPhrase = RenderedSentence | RenderedWord
 export interface RenderedSentence {
   id: string
   phrases: RenderedPhrase[]
-  transform: string
+  transform?: string
 }
 
 export interface RenderedWord {
   id: string
   phrases: RenderedLetter[]
-  transform: string
+  transform?: string
 }
 
 export interface RenderedLetter {
   id: string
-  d: string          // SVG path
-  transform: string  // SVG orientation/sizing
+  d?: string          // SVG path
+  transform?: string  // SVG orientation/sizing
+}
+
+/*
+ * Tokenised and Rendered Input
+ *
+ * The list of rendered tokens derived from user input.
+ *
+ * Each phrase is represented by a single circle on the image, which contains
+ * other phrases. A phrase is eventually a list of words, which is a list of
+ * letters, and the letters contain drawing info.  Each circle needs an ID
+ * that is a hash of its contents, for caching.
+ *
+ * Optional properties denote those that will be calculated during render.
+ * During tokenisation, these properties will not exist.
+ */
+
+export type Phrase = Sentence | Word
+
+export interface Sentence {
+  id: string
+  phrases: Phrase[]
+  transform?: string
+}
+
+export interface Word {
+  id: string
+  phrases: (Letter | null)[]
+  transform?: string
+}
+
+export interface Letter {
+  id: string
+  subletters: LetterData[]
+  d?: string
+  transform?: string
 }
