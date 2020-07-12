@@ -88,48 +88,6 @@ export interface ShermanLetterData extends LetterData {
 }
 
 /*
- * Tokenised Input
- * The list of unrendered tokens derived from the input text
- */
-
-export type TokenisedPhrase = TokenisedSentence | TokenisedWord
-
-export type TokenisedSentence = TokenisedPhrase[]
-
-export type TokenisedWord = TokenisedLetter[]
-
-export type TokenisedLetter = LetterData | null
-
-/*
- * Rendered Input
- * The list of rendered tokens. Each phrase is represented by a single circle
- * on the image, which contains other phrases. A phrase is eventually a list
- * of words, which is a list of letters, and the letters contain drawing info.
- * Each circle needs an ID that is a hash of its contents, for caching.
- * RenderedPhrase should map to SVG.
- */
-
-export type RenderedPhrase = RenderedSentence | RenderedWord
-
-export interface RenderedSentence {
-  id: string
-  phrases: RenderedPhrase[]
-  transform?: string
-}
-
-export interface RenderedWord {
-  id: string
-  phrases: RenderedLetter[]
-  transform?: string
-}
-
-export interface RenderedLetter {
-  id: string
-  d?: string          // SVG path
-  transform?: string  // SVG orientation/sizing
-}
-
-/*
  * Tokenised and Rendered Input
  *
  * The list of rendered tokens derived from user input.
