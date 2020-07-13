@@ -55,7 +55,7 @@ module.exports = {
     new CleanWebpackPlugin(),
     new VueLoaderPlugin(),
     new HtmlWebpackPlugin({
-      title: "Gallifreyo",
+      title: "Gallifreyo · Gallifreyan Translator",
       template: './src/template.ejs',
     }),
   ],
