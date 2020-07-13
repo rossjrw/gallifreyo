@@ -103,14 +103,22 @@ export interface ShermanLetterData extends LetterData {
 export type Phrase = Sentence | Word
 
 export interface Sentence {
+  // Token properties
   id: string
   phrases: Phrase[]
+  // Render properties
+  relativeAngle?: number
+  // Drawing properties
   transform?: string
 }
 
 export interface Word {
+  // Token properties
   id: string
   phrases: (Letter | null)[]
+  // Render properties
+  relativeAngle?: number
+  // Drawing properties
   transform?: string
 }
 
@@ -120,7 +128,6 @@ export interface Letter {
   subletters: Subletter[]
   // Render properties
   b?: number              // Still not sure what this is
-  relativeAngle?: number  // Relative angle subtended by this letter in word
   // Drawing properties
   d?: string
   transform?: string
