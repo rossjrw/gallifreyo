@@ -115,8 +115,23 @@ export interface Word {
 }
 
 export interface Letter {
+  // Token properties
   id: string
-  subletters: LetterData[]
+  subletters: Subletter[]
+  // Render properties
+  b?: number              // Still not sure what this is
+  relativeAngle?: number  // Relative angle subtended by this letter in word
+  // Drawing properties
   d?: string
   transform?: string
+}
+
+export interface Subletter extends LetterData {
+  // Render properties
+  b?: number
+  full?: boolean          // Circle is full or cut off by word line
+  relativeAngle?: number  // Relative angle subtended by this subletter
+  attached?: boolean      // For vowels, attached to letter TODO deprecate
+  // Drawing properties
+  path?: string
 }
