@@ -103,6 +103,7 @@ export interface ShermanLetterData extends LetterData {
 export type Phrase = Sentence | Word
 
 export interface Sentence {
+  depth: "sentence"
   // Token properties
   id: string
   phrases: Phrase[]
@@ -113,6 +114,7 @@ export interface Sentence {
 }
 
 export interface Word {
+  depth: "word"
   // Token properties
   id: string
   phrases: (Letter | null)[]
@@ -123,6 +125,7 @@ export interface Word {
 }
 
 export interface Letter {
+  depth: "letter"
   // Token properties
   id: string
   subletters: Subletter[]
@@ -134,6 +137,7 @@ export interface Letter {
 }
 
 export interface Subletter extends LetterData {
+  depth: "subletter"
   [_: string]: unknown    // Allows string-based assignment
   // Render properties
   b?: number

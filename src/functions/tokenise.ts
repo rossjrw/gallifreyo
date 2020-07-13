@@ -38,6 +38,7 @@ export function tokeniseSentence(
     if (splitBy.length > 1) {
       // This phrase should be split further
       const tokenisedSentence: Sentence = {
+        depth: "sentence",
         id: phrase,
         phrases: tokeniseSentence(
           phrase,
@@ -80,8 +81,14 @@ export function tokeniseWord(
     for (const sourceLetter of sourceLetters) {
       if (wordString.startsWith(sourceLetter.value)) {
         tokenisedLetter = {
+          depth: "letter",
           id: sourceLetter.value,
-          subletters: [sourceLetter], // TODO multiple subletters
+          subletters: [
+            {
+              depth: "subletter",
+              ...sourceLetter
+            }
+          ], // TODO multiple subletters
         }
         break
       }
@@ -103,6 +110,7 @@ export function tokeniseWord(
     // Renderer should be able to handle null tokens
   }
   const tokenisedWord: Word = {
+    depth: "word",
     id: word,
     phrases: tokenisedLetters
   }
