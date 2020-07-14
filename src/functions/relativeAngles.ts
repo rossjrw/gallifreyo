@@ -23,15 +23,15 @@ export function setRelativePhraseAngle(
   if(Array.isArray(phrase.phrases)){
     // this is a valid word
     if (settings.structure == "Size-Scaled"){
-      phrase.relativeAngle = phrase.phrases.length;
+      phrase.relativeAngularSize = phrase.phrases.length;
     } else {
-      phrase.relativeAngle = 1;
+      phrase.relativeAngularSize = 1;
     }
   } else {
     // this is a buffer
-    phrase.relativeAngle = settings.config.buffer.word;
+    phrase.relativeAngularSize = settings.config.buffer.word;
   }
-  // Phrase object has been modified to retain relativeAngle
+  // Phrase object has been modified to retain relativeAngularSize
 }
 
 export function setRelativeLetterAngle(
@@ -53,5 +53,6 @@ export function setRelativeLetterAngle(
    * @returns The angle subtended by the letter in its word.
    */
   letterDataFromBlock(letter, settings)
-  // Letter object has been modified such that subletters retain relativeAngle
+  // Letter object has been modified such that subletters retain
+  // relativeAngularSize
 }
