@@ -33,7 +33,10 @@ export function renderSentence(
     if(w === 0){
       B = 0;
     } else {
-      B = angles[w-1]/2 + (host.settings.buffer.word * 2 * Math.PI / relativeAngleSum) + angles[w]/2 + B;
+      B = angles[w-1]/2 +
+        (settings.config.buffer.word * 2 * Math.PI / relativeAngleSum) +
+        angles[w]/2 +
+        B;
     }
     // B is the angular distance from k_alpha to k_0
     //renderWord(phrase.words[w],s_,w,wordRadius); this gets called in switchStructure
