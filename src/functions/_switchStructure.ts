@@ -1,6 +1,6 @@
 import { Settings, Sentence } from '@/types'
 
-export function switchStructure(
+export function calculateSubphraseGeometry(
   sentence: Sentence,
   w: number, // the index
   sentenceRadius: number, // the radius of the sentence
@@ -10,12 +10,27 @@ export function switchStructure(
   B: number,  // angular distance between "k_alpha" and "k_0" (???)
   settings: Settings,
 ): void {
+  /**
+   * Calculates a phrase's geometry relative to its parent phrase. The parent
+   * phrase should be a sentence, i.e. this phrase should not be a letter.
+   *
+   * @param sentence: The parent phrase.
+   * @param w: The index of the subphrase in the parent phrase.
+   * @param sentenceRadius: The radius of the parent phrase.
+   * @param subtensions: The array of angles subtended by each subphrase,
+   * including the one that this function has been called for.
+   * @param structure: The algorithm to use for positioning and sizing.
+   * @param rAS: The sum of relative angles for all phrases and buffers in the
+   * sentence.
+   * @param B: The angular distance between k_alpha and k_0 XXX ???
+   * @returns something
+   */
   // This function is being called in a loop, once for each letter
 
   // the angle subtended by this letter
-  const angleSubtended = subtensions[w];
+  const angleSubtended = subtensions[w]
   // half of that angle, for some reason
-  const N = angleSubtended / 2;
+  const N = angleSubtended / 2
   // we mustn't change host.structure
   if (structure === "Simple" || structure === "Size-Scaled") {
     let wordRadius: number
@@ -40,14 +55,15 @@ export function switchStructure(
 
     // If the phrase in question consists of letters, render the word
     // TODO if it doesn't, render the phrase
-    renderWord(sentence.phrases[w],w,wordRadius);
+    renderWord(sentence.phrases[w],w,wordRadius)
 
   } else if (structure === "Spiral") {
     // For long sentences is is likely appropriate to place each word on the
     // path of a spiral, to avoid excessive wasted space in the middle of the
     // circle.
 
-    // Spiral buffer is both the distance between spiral rungs and the 
+    // Spiral buffer is both the distance between spiral rungs and the distance
+    // between words, to ensure visually consistent spacing.
     const spiralBuffer = 1 + settings.config.buffer.word
 
     // Use the y coordinate of a theoretical final letter to estimate the
@@ -63,30 +79,49 @@ export function switchStructure(
     // Spirals are slightly smaller than circles, so calculate the wanted
     // radius into a multiplier value
     // TODO more refined process including centre shifting
+    // XXX I don't think /2 is correct
     const targetSpiralRadius = sentenceRadius / 2
-    const multiplier = targetSpiralRadius / estimatedSpiralRadius;
+    const multiplier = targetSpiralRadius / estimatedSpiralRadius
 
-    // so now that we have the multiplier, we need to iterate over the sentence to determine the position of the words
+    const wordRadius = multiplier/2
+    // why does it need to be /2 ??? // because the multiplier is the length of the unit diameter
 
-    wordRadius = multiplier/2; // why does it need to be /2 ??? // because the multiplier is the length of the unit diameter
-
-    sentence.words[w].transform = "translate(" + getCoord(spiralBuffer,spiralBuffer,sentence.words.length,w,multiplier).join(",") + ")";
-    // we SHOULD be sending length-1, not just length. but this is a hacky way og ignoring the last dot on the spiral
-
-
-
-    if(/*Array.isArray(sentence.words[w].letters)*/ true){
-      renderWord(sentence.words[w],s_,w,wordRadius);
+    // Calculate coordinates for transformation
+    const translate = {
+      coords: getSpiralCoord(
+        spiralBuffer,
+        spiralBuffer,
+        sentence.phrases.length,
+        // length is sent instead of length-1 to ignore the final point of the
+        // spiral - do not want to render a word exactly in the centre
+        w,
+        multiplier,
+      )
     }
+    sentence.phrases[w].transform = `translate(${translate.coords.join(",")})`
+
+    // If the phrase in question consists of letters, render the word
+    // TODO if it doesn't, render the phrase
+    renderWord(sentence.phrases[w],w,wordRadius)
+
   } else if (structure === "Automatic") {
-    if(subtensions.length < host.settings.automatic.scaledLessThan){
-      structure = "Size-Scaled";
-    } else if(subtensions.length > host.settings.automatic.spiralMoreThan){
-      structure = "Spiral";
+    if(subtensions.length < settings.config.automatic.scaledLessThan){
+      structure = "Size-Scaled"
+    } else if(subtensions.length > settings.config.automatic.spiralMoreThan){
+      structure = "Spiral"
     } else {
-      structure = "Simple";
+      structure = "Simple"
     }
-    switchStructure(w,sentenceRadius,subtensions,structure,rAS,B);
+    calculateSubphraseGeometry(
+      sentence,
+      w,
+      sentenceRadius,
+      subtensions,
+      structure,
+      rAS,
+      B,
+      settings
+    )
   }
 }
 
@@ -116,14 +151,14 @@ function getSpiralCoord(
   // Parametric equations to render the spiral
   const x =
     (rungWidth / (2 * Math.PI)
-     * 
-    Math.sqrt( 
+     *
+    Math.sqrt(
       (2 * pointSpacing * selectedPoint) / (rungWidth / (2 * Math.PI))
-    ) 
-    * 
-    Math.cos( 
+    )
+    *
+    Math.cos(
       Math.sqrt(
-        (2 * pointSpacing * selectedPoint) / (rungWidth / (2 * Math.PI)) 
+        (2 * pointSpacing * selectedPoint) / (rungWidth / (2 * Math.PI))
       ) -
       (Math.PI/2) -
       Math.sqrt(
@@ -134,11 +169,11 @@ function getSpiralCoord(
   ) * multiplier
 
   const y = (
-    (rungWidth / (2 * Math.PI)) 
+    (rungWidth / (2 * Math.PI))
     *
     Math.sqrt(
       (2 * pointSpacing * selectedPoint) / (rungWidth / (2 * Math.PI))
-    ) 
+    )
     *
     Math.sin(
       Math.sqrt(
