@@ -108,6 +108,9 @@ export interface Sentence {
   id: string
   phrases: Phrase[]
   // Render properties
+  x?: number
+  y?: number
+  radius?: number
   relativeAngle?: number
   // Drawing properties
   transform?: string
@@ -119,6 +122,9 @@ export interface Word {
   id: string
   phrases: (Letter | null)[]
   // Render properties
+  x?: number
+  y?: number
+  radius?: number
   relativeAngle?: number
   // Drawing properties
   transform?: string
