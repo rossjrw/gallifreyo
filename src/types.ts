@@ -111,7 +111,9 @@ export interface Sentence {
   x?: number
   y?: number
   radius?: number
-  relativeAngle?: number
+  relativeAngularSize?: number
+  absoluteAngularSize?: number
+  angularLocation?: number
   // Drawing properties
   transform?: string
 }
@@ -125,7 +127,9 @@ export interface Word {
   x?: number
   y?: number
   radius?: number
-  relativeAngle?: number
+  relativeAngularSize?: number
+  absoluteAngularSize?: number
+  angularLocation?: number
   // Drawing properties
   transform?: string
 }
@@ -148,7 +152,8 @@ export interface Subletter extends LetterData {
   // Render properties
   b?: number
   full?: boolean          // Circle is full or cut off by word line
-  relativeAngle?: number  // Relative angle subtended by this subletter
+  relativeAngularSize?: number
+  absoluteAngularSize?: number
   attached?: boolean      // For vowels, attached to letter TODO deprecate
   // Drawing properties
   path?: string

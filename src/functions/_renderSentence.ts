@@ -16,17 +16,17 @@ export function renderSentence(
     return setRelativePhraseAngle(phrase, settings)
   })
   let angles: number[] = sentence.phrases.map((phrase: Phrase) => {
-    return phrase.relativeAngle ?? 1
+    return phrase.relativeAngularSize ?? 1
   })
 
   // Calculate the sum of the relative angles
   // Note that this calculation includes buffers between letters, which at this
   // point do not yet exist
-  const relativeAngleSum = angles.reduce((a, b) => a + b, 0) +
+  const relativeAngularSizeSum = angles.reduce((a, b) => a + b, 0) +
     (settings.config.buffer.word * sentence.phrases.length)
 
   // Convert relative angles to absolute angles (radians)
-  angles = angles.map(angle => angle * 2 * Math.PI / relativeAngleSum)
+  angles = angles.map(angle => angle * 2 * Math.PI / relativeAngularSizeSum)
 
   for(let w = 0; w < sentence.words.length; w++){
     var B;
@@ -34,7 +34,7 @@ export function renderSentence(
       B = 0;
     } else {
       B = angles[w-1]/2 +
-        (settings.config.buffer.word * 2 * Math.PI / relativeAngleSum) +
+        (settings.config.buffer.word * 2 * Math.PI / relativeAngularSizeSum) +
         angles[w]/2 +
         B;
     }
@@ -42,6 +42,6 @@ export function renderSentence(
     //renderWord(phrase.words[w],s_,w,wordRadius); this gets called in switchStructure
     // output is in word.letters[l].d and word.letters[l].path
     // having said that, this isn't even relevant because ngRepeat
-    switchStructure(w,sentence.radius,angles,host.structure.sentence,relativeAngleSum,B);
+    switchStructure(w,sentence.radius,angles,host.structure.sentence,relativeAngularSizeSum,B);
   }
 }

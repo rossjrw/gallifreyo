@@ -10,7 +10,7 @@ type TypeOrFunc<T> = T | ((letter: Letter, settings: Settings) => T)
 interface BlockSetting {
   b?: TypeOrFunc<number>
   full?: TypeOrFunc<boolean>
-  relativeAngle?: TypeOrFunc<number>
+  relativeAngularSize?: TypeOrFunc<number>
   attached?: TypeOrFunc<boolean>
 }
 
@@ -18,31 +18,31 @@ const BLOCK_SETTINGS = {
   s: {
     b: (_: Letter, settings: Settings) => settings.config.s.b,
     full: false,
-    relativeAngle: (_: Letter, settings: Settings) => settings.config.s.a,
+    relativeAngularSize: (_: Letter, settings: Settings) => settings.config.s.a,
   },
   p: {
     b: (_: Letter, settings: Settings) => settings.config.p.b,
     full: true,
-    relativeAngle: (_: Letter, settings: Settings) => settings.config.p.a,
+    relativeAngularSize: (_: Letter, settings: Settings) => settings.config.p.a,
   },
   d: {
     b: (_: Letter, settings: Settings) => settings.config.d.b,
     full: false,
-    relativeAngle: (_: Letter, settings: Settings) => settings.config.d.a,
+    relativeAngularSize: (_: Letter, settings: Settings) => settings.config.d.a,
   },
   f: {
     b: (_: Letter, settings: Settings) => settings.config.f.b,
     full: true,
-    relativeAngle: (_: Letter, settings: Settings) => settings.config.f.a,
+    relativeAngularSize: (_: Letter, settings: Settings) => settings.config.f.a,
   },
   v: {
     b: (_: Letter, settings: Settings) => settings.config.v.b,
     attached: (letter: Letter, _: Settings) => letter.subletters.length === 1,
-    relativeAngle: 1,
+    relativeAngularSize: 1,
     // there was buffer property but I'm not sure what it did
   },
   buffer: {
-    relativeAngle: (_: Letter, settings: Settings) => {
+    relativeAngularSize: (_: Letter, settings: Settings) => {
       return settings.config.buffer.letter
     }
   },
