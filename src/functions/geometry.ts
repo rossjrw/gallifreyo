@@ -5,7 +5,6 @@ export function calculateSubphraseGeometry(
   sentence: Sentence,
   w: number, // XXX only used as index
   sentenceRadius: number, // the radius of the sentence
-  subtensions: number[], // the absolute angles for each letter
   structure: string, // the selected structure type
   relativeAngularSizeSum: number, // the sum of relative angles
   settings: Settings,
@@ -17,8 +16,6 @@ export function calculateSubphraseGeometry(
    * @param sentence: The parent phrase.
    * @param w: The index of the subphrase in the parent phrase.
    * @param sentenceRadius: The radius of the parent phrase.
-   * @param subtensions: The array of angles subtended by each subphrase,
-   * including the one that this function has been called for.
    * @param structure: The algorithm to use for positioning and sizing.
    * @param relativeAngularSizeSum: The sum of relative angles for all phrases
    * and buffers in the parent phrase.
@@ -111,9 +108,13 @@ export function calculateSubphraseGeometry(
     sentence.phrases[w].radius = subphraseRadius
 
   } else if (structure === "Automatic") {
-    if(subtensions.length < settings.config.automatic.scaledLessThan){
+    if (
+      sentence.phrases.length < settings.config.automatic.scaledLessThan
+    ) {
       structure = "Size-Scaled"
-    } else if(subtensions.length > settings.config.automatic.spiralMoreThan){
+    } else if (
+      sentence.phrases.length > settings.config.automatic.spiralMoreThan
+    ) {
       structure = "Spiral"
     } else {
       structure = "Simple"
@@ -122,7 +123,6 @@ export function calculateSubphraseGeometry(
       sentence,
       w,
       sentenceRadius,
-      subtensions,
       structure,
       relativeAngularSizeSum,
       settings
