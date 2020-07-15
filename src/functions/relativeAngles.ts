@@ -50,7 +50,6 @@ export function setRelativeLetterAngle(
    *
    * @param letter: A letter whose relative angle will be calculated.
    * @param settings: The entire settings object.
-   * @returns The angle subtended by the letter in its word.
    */
   letterDataFromBlock(letter, settings)
   // Letter object has been modified such that subletters retain
