@@ -1,13 +1,13 @@
-import { Settings, Sentence } from '@/types'
+import { sum } from "lodash"
+import { Settings, Sentence, Phrase } from '@/types'
 
 export function calculateSubphraseGeometry(
   sentence: Sentence,
-  w: number, // the index
+  w: number, // XXX only used as index
   sentenceRadius: number, // the radius of the sentence
   subtensions: number[], // the absolute angles for each letter
   structure: string, // the selected structure type
-  rAS: number, // the sum of relative angles
-  B: number,  // angular distance between "k_alpha" and "k_0" (???)
+  relativeAngularSizeSum: number, // the sum of relative angles
   settings: Settings,
 ): void {
   /**
@@ -20,42 +20,49 @@ export function calculateSubphraseGeometry(
    * @param subtensions: The array of angles subtended by each subphrase,
    * including the one that this function has been called for.
    * @param structure: The algorithm to use for positioning and sizing.
-   * @param rAS: The sum of relative angles for all phrases and buffers in the
+   * @param relativeAngularSizeSum: The sum of relative angles for all phrases
+   * and buffers in the parent phrase.
    * sentence.
-   * @param B: The angular distance between k_alpha and k_0 XXX ???
-   * @returns something
+   * @returns void; Modifies the subphrase in place to add x, y, radius, and
+   * angularLocation
    */
-  // This function is being called in a loop, once for each letter
-
-  // the angle subtended by this letter
-  const angleSubtended = subtensions[w]
   // half of that angle, for some reason
-  const N = angleSubtended / 2
-  // we mustn't change host.structure
   if (structure === "Simple" || structure === "Size-Scaled") {
-    let wordRadius: number
+    let subphraseRadius: number
+    // Calculate the angle subtended by the subphrase's radius
+    const radialSubtension = sentence.phrases[w].relativeAngularSize! / 2
     if (sentence.phrases.length > 1) {
-      wordRadius = (
-        sentenceRadius * Math.cos(Math.PI / 2-N)
+      subphraseRadius = (
+        sentenceRadius * Math.cos(Math.PI / 2-radialSubtension)
       ) / (
-        settings.config.word.b * Math.cos(Math.PI / 2-N) + 1
+        settings.config.word.b * Math.cos(Math.PI / 2-radialSubtension) + 1
       )
     } else {
-      wordRadius = sentenceRadius
+      subphraseRadius = sentenceRadius
     }
+
+    // Calculate the angle that this subphrase is at relative to its parent
+    // phrase
+    const angularLocation = sum([
+      sentence.phrases[0].relativeAngularSize! / 2,
+      sentence.phrases.slice(1, w).reduce(
+        (total: number, phrase: Phrase) => {
+          return total + phrase.relativeAngularSize!
+        }, 0
+      ),
+      sentence.phrases[w].relativeAngularSize! / 2
+    ])
 
     // Calculate coordinates for transformation
     const translate = {
-      x: Math.cos(B + Math.PI / 2) *
-        (-sentenceRadius + (settings.config.word.b * wordRadius)),
-      y: Math.sin(B + Math.PI / 2) *
-        (-sentenceRadius + (settings.config.word.b * wordRadius)),
+      x: Math.cos(angularLocation + Math.PI / 2) *
+        (-sentenceRadius + (settings.config.word.b * subphraseRadius)),
+      y: Math.sin(angularLocation + Math.PI / 2) *
+        (-sentenceRadius + (settings.config.word.b * subphraseRadius)),
     }
     sentence.phrases[w].transform = `translate(${translate.x},${translate.y})`
 
-    // If the phrase in question consists of letters, render the word
-    // TODO if it doesn't, render the phrase
-    renderWord(sentence.phrases[w],w,wordRadius)
+    sentence.phrases[w].radius = subphraseRadius
 
   } else if (structure === "Spiral") {
     // For long sentences is is likely appropriate to place each word on the
@@ -83,8 +90,9 @@ export function calculateSubphraseGeometry(
     const targetSpiralRadius = sentenceRadius / 2
     const multiplier = targetSpiralRadius / estimatedSpiralRadius
 
-    const wordRadius = multiplier/2
-    // why does it need to be /2 ??? // because the multiplier is the length of the unit diameter
+    const subphraseRadius = multiplier/2
+    // why does it need to be /2 ???
+    // because the multiplier is the length of the unit diameter
 
     // Calculate coordinates for transformation
     const translate = {
@@ -100,9 +108,7 @@ export function calculateSubphraseGeometry(
     }
     sentence.phrases[w].transform = `translate(${translate.coords.join(",")})`
 
-    // If the phrase in question consists of letters, render the word
-    // TODO if it doesn't, render the phrase
-    renderWord(sentence.phrases[w],w,wordRadius)
+    sentence.phrases[w].radius = subphraseRadius
 
   } else if (structure === "Automatic") {
     if(subtensions.length < settings.config.automatic.scaledLessThan){
@@ -112,14 +118,13 @@ export function calculateSubphraseGeometry(
     } else {
       structure = "Simple"
     }
-    calculateSubphraseGeometry(
+    return calculateSubphraseGeometry(
       sentence,
       w,
       sentenceRadius,
       subtensions,
       structure,
-      rAS,
-      B,
+      relativeAngularSizeSum,
       settings
     )
   }
