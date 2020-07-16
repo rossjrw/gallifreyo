@@ -45,19 +45,21 @@ export function renderLetter(
     x: letterCentre.x + 0,
     y: letterBase.y, // Placeholder for vert-dependent calculation
   }
-  if (subletters[1].vert === -1) {
-    vowelCentre.y = letterBase.y - 2 * vowelRadius
-  } else if (subletters[1].vert === 0) {
-    if (["s", "p"].includes(subletters[0].block)) {
-      vowelCentre.y = letterCentre.y
-    } else if (["d", "f", "v"].includes(subletters[0].block)) {
-      vowelCentre.y = letterBase.y
-    }
-  } else if (subletters[1].vert === 1) {
-    if (["s", "p", "d", "f"].includes(subletters[0].block)) {
-      vowelCentre.y = letterCentre.y + letterRadius
-    } else if (["v"].includes(subletters[0].block)) {
-      vowelCentre.y = letterBase.y + 2 * vowelRadius
+  if (subletters.length > 1) {
+    if (subletters[1].vert === -1) {
+      vowelCentre.y = letterBase.y - 2 * vowelRadius
+    } else if (subletters[1].vert === 0) {
+      if (["s", "p"].includes(subletters[0].block)) {
+        vowelCentre.y = letterCentre.y
+      } else if (["d", "f", "v"].includes(subletters[0].block)) {
+        vowelCentre.y = letterBase.y
+      }
+    } else if (subletters[1].vert === 1) {
+      if (["s", "p", "d", "f"].includes(subletters[0].block)) {
+        vowelCentre.y = letterCentre.y + letterRadius
+      } else if (["v"].includes(subletters[0].block)) {
+        vowelCentre.y = letterBase.y + 2 * vowelRadius
+      }
     }
   }
 
