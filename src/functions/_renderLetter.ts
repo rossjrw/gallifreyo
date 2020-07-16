@@ -10,112 +10,104 @@ export function renderLetter(
   wordRadius: number,
   settings: Settings,
 ): any {
-  let subletters = letter.subletters
 
-  // There are five points in a letter to be aware of.
-  // k0: The centre of the word relative to this letter. This is directly above
-  // the midline of the letter.
-  // k3: The leftmost point of the curve of this letter that sits on the word
-  // circle.
-  // k4: The rightmost point of this letter on the word circle. The combined
-  // sweep from k3 to k4 for all letters in a word are what makes up the word
-  // circle.
-  // k1: If the letter intersects with the word, this is the leftmost
-  // intersection.
-  // k2: If the letter intersects with the word, this is the rightmost
-  // intersection.
-  const _ = [
-    "R", // radius of word
-    "r0.x", "r0.y", // center of letter
-    "r", // radius of letter
-    "k0.x", "k0.y", // centre of word
-    "k1.x", "k1.y", // start of intersection
-    "k2.x", "k2.y", // end of intersection
-    "k3.x", "k3.y", // start of word segment
-    "k4.x", "k4.y", // end of word segment
-    "w", // radius of a vowel
-    "v.y", "v.x", // centre of vowel (a letter can only have 1 vowel so ok)
-  ]
+  const subletters = letter.subletters
 
-
-  let N
-  if(subletters[0].block == "buffer"){
-    N = angleSubtended / 2
-  } else {
-    N = angleSubtended / 2
-  }
-
-  const k0 = {
+  const letterBase = {
     x: 0,
     y: 0,
   }
 
-  const r = (
-    (wordRadius * Math.cos(Math.PI / 2 - N))
-    / (subletters[0].b! * Math.cos(Math.PI / 2 - N) + 1)
+  const letterRadius = (
+    (wordRadius * Math.cos(Math.PI / 2 - angleSubtended / 2))
+    / (subletters[0].b! * Math.cos(Math.PI / 2 - angleSubtended / 2) + 1)
   )
-  const w = (
+  const vowelRadius = (
     (wordRadius * Math.cos(Math.PI / 2 - angleSubtendedByVowel / 2))
     / 4
   )
-  // w is one quarter of r for a standard letter, where b = 0.
-  // The 'standard letter' here is the v block.
+  // vowelRadius is one quarter of letterRadius for a standard letter,
+  // where b = 0.  The 'standard letter' here is the v block.
 
-  const r0 = {
-    x: k0.x + 0,
-    y: k0.y + subletters[0].b! * r,
+  const letterCentre = {
+    x: letterBase.x + 0,
+    y: letterBase.y + subletters[0].b! * letterRadius,
   }
 
-  const v = {
-    x: r0.x + 0,
-    y: k0.y, // Placeholder for vert-dependent calculation
+  const vowelCentre = {
+    x: letterCentre.x + 0,
+    y: letterBase.y, // Placeholder for vert-dependent calculation
   }
   if (subletters[1].vert === -1) {
-    v.y = k0.y - 2 * w
+    vowelCentre.y = letterBase.y - 2 * vowelRadius
   } else if (subletters[1].vert === 0) {
     if (["s", "p"].includes(subletters[0].block)) {
-      v.y = r0.y
+      vowelCentre.y = letterCentre.y
     } else if (["d", "f", "v"].includes(subletters[0].block)) {
-      v.y = k0.y
+      vowelCentre.y = letterBase.y
     }
   } else if (subletters[1].vert === 1) {
     if (["s", "p", "d", "f"].includes(subletters[0].block)) {
-      v.y = r0.y + r
+      vowelCentre.y = letterCentre.y + letterRadius
     } else if (["v"].includes(subletters[0].block)) {
-      v.y = k0.y + 2 * w
+      vowelCentre.y = letterBase.y + 2 * vowelRadius
     }
   }
 
-  const R = {
+  const wordCentre = {
     x: 0,
     y: wordRadius,
   }
 
-  const k1 = {
-    x: circleIntersectionPoints(R.x, R.y, wordRadius, r0.x, r0.y, r)[1],
-    y: circleIntersectionPoints(R.x, R.y, wordRadius, r0.x, r0.y, r)[3],
+  const letterStart = {
+    x: circleIntersectionPoints(
+      wordCentre.x, wordCentre.y, wordRadius,
+      letterCentre.x, letterCentre.y, letterRadius
+    )[1],
+    y: circleIntersectionPoints(
+      wordCentre.x, wordCentre.y, wordRadius,
+      letterCentre.x, letterCentre.y, letterRadius
+    )[3],
   }
 
-  const k2 = {
-    x: circleIntersectionPoints(R.x, R.y, wordRadius, r0.x, r0.y, r)[0],
-    y: circleIntersectionPoints(R.x, R.y, wordRadius, r0.x, r0.y, r)[2],
+  const letterEnd = {
+    x: circleIntersectionPoints(
+      wordCentre.x, wordCentre.y, wordRadius,
+      letterCentre.x, letterCentre.y, letterRadius
+    )[0],
+    y: circleIntersectionPoints(
+      wordCentre.x, wordCentre.y, wordRadius,
+      letterCentre.x, letterCentre.y, letterRadius
+    )[2],
   }
 
-  const k3 = {
-    x: R.x + (k0.x - R.x) * Math.cos(-N) - (k0.y - R.y) * Math.sin(-N),
-    y: R.y + (k0.x - R.x) * Math.sin(-N) + (k0.y - R.y) * Math.cos(-N),
+  const wordStart = {
+    x: (wordCentre.x +
+        (letterBase.x - wordCentre.x) * Math.cos(-angleSubtended / 2) -
+        (letterBase.y - wordCentre.y) * Math.sin(-angleSubtended / 2)
+       ),
+    y: (wordCentre.y +
+        (letterBase.x - wordCentre.x) * Math.sin(-angleSubtended / 2) +
+        (letterBase.y - wordCentre.y) * Math.cos(-angleSubtended / 2)
+       ),
   }
 
-  const k4 = {
-    x: R.x + (k0.x - R.x) * Math.cos(N) - (k0.y - R.y) * Math.sin(N),
-    y: R.y + (k0.x - R.x) * Math.sin(N) + (k0.y - R.y) * Math.cos(N),
+  const wordEnd = {
+    x: (wordCentre.x +
+        (letterBase.x - wordCentre.x) * Math.cos(angleSubtended / 2) -
+        (letterBase.y - wordCentre.y) * Math.sin(angleSubtended / 2)
+       ),
+    y: (wordCentre.y +
+        (letterBase.x - wordCentre.x) * Math.sin(angleSubtended / 2) +
+        (letterBase.y - wordCentre.y) * Math.cos(angleSubtended / 2)
+       ),
   }
 
   const path: string[] = []
 
   // Always start from the first part of this letter's segment of the word
   // circle line.
-  path.push(`M ${k3.x} ${k3.y}`)
+  path.push(`M ${wordStart.x} ${wordStart.y}`)
 
   if (["s", "p", "d", "f"].includes(subletters[0].block)) {
     // Start with non-vowel, non-buffer blocks
@@ -123,51 +115,51 @@ export function renderLetter(
     // not it intersects with the word.
     if (subletters[0].full) {
       // Draw uninterrupted word segment
-      path.push(`A ${wordRadius} ${wordRadius} 0 0 1 ${k4.x} ${k4.y}`)
-      // Jump to letter circle and draw it in two arcs (XXX why two?)
-      path.push(`M ${r0.x} ${r0.y}`)
-      path.push(`m -${r} 0`)
-      path.push(`a ${r} ${r} 0 1 1 ${2 * r} 0`)
-      path.push(`a ${r} ${r} 0 1 1 ${-2 * r} 0`)
+      path.push(`A ${wordRadius} ${wordRadius} 0 0 1 ${wordEnd.x} ${wordEnd.y}`)
+      // Jump to letter circle and draw it
+      path.push(`M ${letterCentre.x} ${letterCentre.y}`)
+      path.push(`m -${letterRadius} 0`)
+      path.push(`a ${letterRadius} ${letterRadius} 0 1 1 ${2 * letterRadius} 0`)
+      path.push(`a ${letterRadius} ${letterRadius} 0 1 1 ${-2 * letterRadius} 0`)
       // Jump back to end of word segment and declare finished
-      path.push(`M ${k4.x} ${k4.y}`)
+      path.push(`M ${wordEnd.x} ${wordEnd.y}`)
     } else {
       // Draw word segment until intersection
-      path.push(`A ${wordRadius} ${wordRadius} 0 0 1 ${k1.x} ${k1.y}`)
+      path.push(`A ${wordRadius} ${wordRadius} 0 0 1 ${letterStart.x} ${letterStart.y}`)
       // Draw along letter curve until next intersection
       if (subletters[0].block == "s") {
         // Select the correct arc to draw
         // TODO determine this programmatically, not by block
-        path.push(`A ${r} ${r} 0 1 0 ${k2.x} ${k2.y}`)
+        path.push(`A ${letterRadius} ${letterRadius} 0 1 0 ${letterEnd.x} ${letterEnd.y}`)
       } else {
-        path.push(`A ${r} ${r} 0 0 0 ${k2.x} ${k2.y}`)
+        path.push(`A ${letterRadius} ${letterRadius} 0 0 0 ${letterEnd.x} ${letterEnd.y}`)
       }
       // Draw remainder of word segment and declare finished
-      path.push(`A ${wordRadius} ${wordRadius} 0 0 1 ${k4.x} ${k4.y}`)
+      path.push(`A ${wordRadius} ${wordRadius} 0 0 1 ${wordEnd.x} ${wordEnd.y}`)
     }
     // Draw any vowels
     if(subletters.length == 2){
       // Jump to the vowel and draw its circle
-      path.push(`M ${v.x} ${v.y}`)
-      path.push(`m -${w} 0`)
-      path.push(`a ${w} ${w} 0 1 1 2${w} 0`)
-      path.push(`a ${w} ${w} 0 1 1 -2${w} 0`)
+      path.push(`M ${vowelCentre.x} ${vowelCentre.y}`)
+      path.push(`m -${vowelRadius} 0`)
+      path.push(`a ${vowelRadius} ${vowelRadius} 0 1 1 2${vowelRadius} 0`)
+      path.push(`a ${vowelRadius} ${vowelRadius} 0 1 1 -2${vowelRadius} 0`)
       // Jump back to end of word segment and declare finished
-      path.push(`M ${k4.x} ${k4.y}`)
+      path.push(`M ${wordEnd.x} ${wordEnd.y}`)
     }
   } else if (subletters[0].block === `buffer`) {
     // Draw the buffer, which is just an empty word segment
-    path.push(`A ${wordRadius} ${wordRadius} 0 0 1 ${k4.x} ${k4.y}`)
+    path.push(`A ${wordRadius} ${wordRadius} 0 0 1 ${wordEnd.x} ${wordEnd.y}`)
   } else if (subletters[0].block === "v") {
     // Draw the uninterrupted word segment
-    path.push(`A ${wordRadius} ${wordRadius} 0 0 1 ${k4.x} ${k4.y}`)
+    path.push(`A ${wordRadius} ${wordRadius} 0 0 1 ${wordEnd.x} ${wordEnd.y}`)
     // Jump to the vowel and draw its circle
-    path.push(`M ${v.x} ${v.y}`)
-    path.push(`m -${w} 0`)
-    path.push(`a ${w} ${w} 0 1 1 ${2 * w} 0`)
-    path.push(`a ${w} ${w} 0 1 1 ${-2 * w} 0`)
+    path.push(`M ${vowelCentre.x} ${vowelCentre.y}`)
+    path.push(`m -${vowelRadius} 0`)
+    path.push(`a ${vowelRadius} ${vowelRadius} 0 1 1 ${2 * vowelRadius} 0`)
+    path.push(`a ${vowelRadius} ${vowelRadius} 0 1 1 ${-2 * vowelRadius} 0`)
     // Jump back to end of word segment and declare finished
-    path.push(`M ${k4.x} ${k4.y}`)
+    path.push(`M ${wordEnd.x} ${wordEnd.y}`)
   }
 
   // bundle path into tempArray
