@@ -43,15 +43,9 @@ export function setRelativeLetterAngle(
    * Angles are relative, e.g. a phrase that contains subphrases which all have
    * an angle of 1 will have entirely equal angles.
    *
-   * XXX PROBLEM: This function does not just return the relative letter angle,
-   * it also calculates a bunch of (necessary) properties and attaches them to
-   * the letter. The functionality should either be split into another
-   * function, or this function should be renamed.
-   *
    * @param letter: A letter whose relative angle will be calculated.
    * @param settings: The entire settings object.
+   * @returns void; Letter is modified to include relativeAngularSize.
    */
   letterDataFromBlock(letter, settings)
-  // Letter object has been modified such that subletters retain
-  // relativeAngularSize
 }

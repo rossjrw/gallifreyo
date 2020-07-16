@@ -42,7 +42,7 @@ export interface Config {
 export interface BlockConfig {
   // What are b and a????????
   b: number
-  a: number
+  a: number  // The base relativeAngularSize for a letter in this block
 }
 
 export interface VowelBlockConfig extends BlockConfig {
