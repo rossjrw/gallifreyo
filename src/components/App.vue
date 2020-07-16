@@ -12,9 +12,6 @@
             <TextInput></TextInput>
             <!-- END INPUT CARD -->
 
-            <display-svg class="hide-on-landscape"></display-svg>
-            <downloads class="hide-on-landscape"></downloads>
-
             <!-- START OPTIONS CARD -->
             <Options></Options>
             <!-- END OPTIONS CARD -->
@@ -25,8 +22,8 @@
 
           </div>
 
-          <div class="col P12 L6 hide-on-portrait valign-wrapper" style="height: 100vh;">
-            <div class="targset" style="width: 35%; position: fixed;">
+          <!-- <div class="col P12 L6 hide-on-portrait valign-wrapper" style="height: 100vh;"> -->
+            <!-- <div class="targset" style="width: 35%; position: fixed;"> -->
               <!-- START IMAGE CARD -->
               <RenderedImage></RenderedImage>
               <!-- END IMAGE CARD -->
@@ -34,8 +31,8 @@
               <!-- START DOWNLOAD CARD -->
               <Downloads></Downloads>
               <!-- END DOWNLOAD CARD -->
-            </div>
-          </div>
+            <!-- </div> -->
+          <!-- </div> -->
         </div>
       </div>
     </body>

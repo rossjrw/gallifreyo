@@ -35,6 +35,7 @@ export default new Vuex.Store({
   } as State,
   mutations: {
     transliterate(state: State) {
+      state.phrases = []
       state.phrases = drawTokenisedInput(
         tokeniseSentence(
           state.text,
