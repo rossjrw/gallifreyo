@@ -49,7 +49,7 @@ export function renderPhrase(
       // TODO if subphrase is not word... recurse?
       if (phrase.depth === "sentence") {
         renderPhrase(
-          sentence,
+          phrase,
           settings
         )
       } else if (phrase.depth === "word") {

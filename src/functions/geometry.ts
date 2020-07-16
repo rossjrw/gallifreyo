@@ -117,7 +117,7 @@ export function calculateSubphraseGeometry(
     } else {
       structure = "Simple"
     }
-    return calculateSubphraseGeometry(
+    calculateSubphraseGeometry(
       sentence,
       w,
       structure,
