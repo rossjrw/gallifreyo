@@ -6,6 +6,7 @@
 
 [base]
 priority = 0
+action = "create"
 letters = [
   { value = "BUFFER", block = "buffer" },
   { value = "_",      block = "buffer" },
@@ -13,6 +14,7 @@ letters = [
 
 [Sherman]
 priority = 1
+action = "create"
 letters = [
   { value = "B", block = "s", dots = 0,  lines = 0 },
   { value = "D", block = "s", dots = 3,  lines = 0 },
@@ -33,17 +35,24 @@ letters = [
   { value = "Y", block = "f", dots = 2,  lines = 0 },
   { value = "Z", block = "f", dots = 3,  lines = 0 },
   { value = "X", block = "f", dots = 0,  lines = 2 },
+  { value = "C", block = "p", dots = 4,  lines = 0 },
+  { value = "Q", block = "f", dots = 4,  lines = 0 },
+]
+
+[ShermanVowels]
+priority = 1
+action = "attach"
+letters = [
   { value = "A", block = "v", vert = -1, line = 0  },
   { value = "E", block = "v", vert = 0,  line = 0  },
   { value = "I", block = "v", vert = 0,  line = 1  },
   { value = "O", block = "v", vert = 1,  line = 0  },
   { value = "U", block = "v", vert = 0,  line = -1 },
-  { value = "C", block = "p", dots = 4,  lines = 0 },
-  { value = "Q", block = "f", dots = 4,  lines = 0 },
 ]
 
 [ShermanDoubles]
 priority = 2
+action = "create"
 letters = [
   { value = "CH", block = "s", dots = 2, lines = 0 },
   { value = "WH", block = "p", dots = 1, lines = 0 },
