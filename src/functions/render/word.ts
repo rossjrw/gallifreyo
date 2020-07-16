@@ -3,8 +3,6 @@ import { setRelativeLetterAngle } from '@/functions/relativeAngles'
 
 export function renderWord(
   word: Word,
-  s_: number,
-  w_: number,
   radius: number,
   settings: Settings,
 ): void {
@@ -22,12 +20,6 @@ export function renderWord(
   // XXX this is messy - may be an idea to disallow null letters from the
   // start?
 
-  // calculate the sum of the relative angles
-  // this doesn't seem to include buffers
-  // var relativeAngleSum = angles.reduce((a, b) => a + b, 0);
-  // for(let a = 0; a < angles.length; a++){
-  //   angles[a] = angles[a] * 2 * Math.PI / relativeAngleSum;
-  // }
   // Calculate the sum of the relative angles
   // Note that this calculation does not include buffers
   // Also note that a letter's relative angle is held by its first subletter

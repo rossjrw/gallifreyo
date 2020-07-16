@@ -1,15 +1,22 @@
-import { Settings, Letter } from '@/types'
+import { Letter } from '@/types'
 
 export function renderLetter(
   letter: Letter,
-  s_: number,
-  w_: number,
-  l_: number,
   angleSubtended: number,
   angleSubtendedByVowel: number,
   wordRadius: number,
-  settings: Settings,
-): any {
+): void {
+  /**
+   * Generates the SVG path for a given letter and attaches it as letter.d.
+   *
+   * @param letter: The letter to be rendered.
+   * @param angleSubtended: The absolute angle subtended by this letter in its
+   * word.
+   * @param angleSubtendedByVowel: The absolute angle to be subtended by a
+   * vowel for this word.
+   * @param wordRadius: The radius of the word.
+   * @returns void; letter retains path information.
+   */
 
   const subletters = letter.subletters
 
@@ -103,11 +110,9 @@ export function renderLetter(
        ),
   }
 
-  const path: string[] = []
-
   // Always start from the first part of this letter's segment of the word
   // circle line.
-  path.push(`M ${wordStart.x} ${wordStart.y}`)
+  let path = `M ${wordStart.x} ${wordStart.y}`
 
   if (["s", "p", "d", "f"].includes(subletters[0].block)) {
     // Start with non-vowel, non-buffer blocks
@@ -115,56 +120,54 @@ export function renderLetter(
     // not it intersects with the word.
     if (subletters[0].full) {
       // Draw uninterrupted word segment
-      path.push(`A ${wordRadius} ${wordRadius} 0 0 1 ${wordEnd.x} ${wordEnd.y}`)
+      path += `A ${wordRadius} ${wordRadius} 0 0 1 ${wordEnd.x} ${wordEnd.y}`
       // Jump to letter circle and draw it
-      path.push(`M ${letterCentre.x} ${letterCentre.y}`)
-      path.push(`m -${letterRadius} 0`)
-      path.push(`a ${letterRadius} ${letterRadius} 0 1 1 ${2 * letterRadius} 0`)
-      path.push(`a ${letterRadius} ${letterRadius} 0 1 1 ${-2 * letterRadius} 0`)
+      path += `M ${letterCentre.x} ${letterCentre.y}`
+      path += `m -${letterRadius} 0`
+      path += `a ${letterRadius} ${letterRadius} 0 1 1 ${2 * letterRadius} 0`
+      path += `a ${letterRadius} ${letterRadius} 0 1 1 ${-2 * letterRadius} 0`
       // Jump back to end of word segment and declare finished
-      path.push(`M ${wordEnd.x} ${wordEnd.y}`)
+      path += `M ${wordEnd.x} ${wordEnd.y}`
     } else {
       // Draw word segment until intersection
-      path.push(`A ${wordRadius} ${wordRadius} 0 0 1 ${letterStart.x} ${letterStart.y}`)
+      path += `A ${wordRadius} ${wordRadius} 0 0 1 ${letterStart.x} ${letterStart.y}`
       // Draw along letter curve until next intersection
       if (subletters[0].block == "s") {
         // Select the correct arc to draw
         // TODO determine this programmatically, not by block
-        path.push(`A ${letterRadius} ${letterRadius} 0 1 0 ${letterEnd.x} ${letterEnd.y}`)
+        path += `A ${letterRadius} ${letterRadius} 0 1 0 ${letterEnd.x} ${letterEnd.y}`
       } else {
-        path.push(`A ${letterRadius} ${letterRadius} 0 0 0 ${letterEnd.x} ${letterEnd.y}`)
+        path += `A ${letterRadius} ${letterRadius} 0 0 0 ${letterEnd.x} ${letterEnd.y}`
       }
       // Draw remainder of word segment and declare finished
-      path.push(`A ${wordRadius} ${wordRadius} 0 0 1 ${wordEnd.x} ${wordEnd.y}`)
+      path += `A ${wordRadius} ${wordRadius} 0 0 1 ${wordEnd.x} ${wordEnd.y}`
     }
     // Draw any vowels
     if(subletters.length == 2){
       // Jump to the vowel and draw its circle
-      path.push(`M ${vowelCentre.x} ${vowelCentre.y}`)
-      path.push(`m -${vowelRadius} 0`)
-      path.push(`a ${vowelRadius} ${vowelRadius} 0 1 1 2${vowelRadius} 0`)
-      path.push(`a ${vowelRadius} ${vowelRadius} 0 1 1 -2${vowelRadius} 0`)
+      path += `M ${vowelCentre.x} ${vowelCentre.y}`
+      path += `m -${vowelRadius} 0`
+      path += `a ${vowelRadius} ${vowelRadius} 0 1 1 2${vowelRadius} 0`
+      path += `a ${vowelRadius} ${vowelRadius} 0 1 1 -2${vowelRadius} 0`
       // Jump back to end of word segment and declare finished
-      path.push(`M ${wordEnd.x} ${wordEnd.y}`)
+      path += `M ${wordEnd.x} ${wordEnd.y}`
     }
   } else if (subletters[0].block === `buffer`) {
     // Draw the buffer, which is just an empty word segment
-    path.push(`A ${wordRadius} ${wordRadius} 0 0 1 ${wordEnd.x} ${wordEnd.y}`)
+    path += `A ${wordRadius} ${wordRadius} 0 0 1 ${wordEnd.x} ${wordEnd.y}`
   } else if (subletters[0].block === "v") {
     // Draw the uninterrupted word segment
-    path.push(`A ${wordRadius} ${wordRadius} 0 0 1 ${wordEnd.x} ${wordEnd.y}`)
+    path += `A ${wordRadius} ${wordRadius} 0 0 1 ${wordEnd.x} ${wordEnd.y}`
     // Jump to the vowel and draw its circle
-    path.push(`M ${vowelCentre.x} ${vowelCentre.y}`)
-    path.push(`m -${vowelRadius} 0`)
-    path.push(`a ${vowelRadius} ${vowelRadius} 0 1 1 ${2 * vowelRadius} 0`)
-    path.push(`a ${vowelRadius} ${vowelRadius} 0 1 1 ${-2 * vowelRadius} 0`)
+    path += `M ${vowelCentre.x} ${vowelCentre.y}`
+    path += `m -${vowelRadius} 0`
+    path += `a ${vowelRadius} ${vowelRadius} 0 1 1 ${2 * vowelRadius} 0`
+    path += `a ${vowelRadius} ${vowelRadius} 0 1 1 ${-2 * vowelRadius} 0`
     // Jump back to end of word segment and declare finished
-    path.push(`M ${wordEnd.x} ${wordEnd.y}`)
+    path += `M ${wordEnd.x} ${wordEnd.y}`
   }
 
-  // bundle path into tempArray
-  subletters[0].path = path.join(" ")
-  // woah tempArray I bet you were NOT expecting that
+  letter.d = path
 }
 
 function circleIntersectionPoints(
@@ -199,5 +202,6 @@ function circleIntersectionPoints(
   const xi_prime = x2 - rx
   const yi = y2 + ry
   const yi_prime = y2 - ry
-  return [xi, xi_prime, yi, yi_prime] // xi is positive, xi_prime is negative for the word-letter situation
+  return [xi, xi_prime, yi, yi_prime]
+  // xi is positive, xi_prime is negative for the word-letter situation
 }
