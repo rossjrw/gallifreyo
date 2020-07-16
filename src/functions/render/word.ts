@@ -1,4 +1,4 @@
-import { sum } from "lodash"
+import { remove, sum } from "lodash"
 import { Settings, Word, Letter } from '@/types'
 import { setRelativeLetterAngle } from '@/functions/setAngles'
 import { renderLetter } from '@/functions/render/letter'
@@ -14,7 +14,7 @@ export function renderWord(
   // word.radius = radius
 
   // Filter away null letters
-  word.phrases.filter((letter: Letter | null) => letter !== null)
+  remove(word.phrases, (letter: Letter | null) => letter === null)
   // Assign relative angles to each subphrase
   word.phrases.forEach((letter: Letter | null) => {
     setRelativeLetterAngle(letter!, settings)
