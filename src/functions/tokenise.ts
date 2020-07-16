@@ -1,3 +1,4 @@
+import stringHash from "string-hash"
 import {
   LetterData, Phrase, Sentence, Word, Letter
 } from '@/types'
@@ -30,33 +31,36 @@ export function tokeniseSentence(
   //    2. If all the delimiters have been used up, then the string is a word.
   //    It needs to be broken up into letters and tokenised, and then returned.
   // As a result, a nested structure of tokenised words should be produced.
-  const phrases: Phrase[] = []
-  for (const phrase of sentence.split(splitBy[0])) {
-    // Split the sentence by the first splitBy into a series of phrases.
-    // Right now, we don't care what those phrases actually are. I'm using
-    // "phrases" to ambiguously mean either a sentence or a word.
-    if (splitBy.length > 1) {
-      // This phrase should be split further
-      const tokenisedSentence: Sentence = {
-        depth: "sentence",
-        id: phrase,
-        phrases: tokeniseSentence(
-          phrase,
-          splitBy.slice(1),
-          alphabets,
-        )
+  const phrases: Phrase[] = sentence.split(splitBy[0]).map(
+    (phrase: string, index: number, sentenceParts: string[]) => {
+      // Split the sentence by the first splitBy into a series of phrases.
+      // Right now, we don't care what those phrases actually are. I'm using
+      // "phrases" to ambiguously mean either a sentence or a word.
+      const sentenceId = stringHash(sentenceParts.slice(0, index+1).join(""))
+      if (splitBy.length > 1) {
+        // This phrase should be split further
+        const tokenisedSentence: Sentence = {
+          depth: "sentence",
+          id: sentenceId,
+          phrases: tokeniseSentence(
+            phrase,
+            splitBy.slice(1),
+            alphabets,
+          )
+        }
+        return tokenisedSentence
+      } else {
+        // The delimiters have been used up, so sentence is a word.
+        return tokeniseWord(phrase, sentenceId, alphabets)
       }
-      phrases.push(tokenisedSentence)
-    } else {
-      // The delimiters have been used up, so sentence is a word.
-      phrases.push(tokeniseWord(phrase, alphabets))
     }
-  }
+  )
   return phrases as Sentence[]
 }
 
 export function tokeniseWord(
   word: string,
+  sentenceId: number,
   alphabets: string[],
 ): Word {
   /**
@@ -64,6 +68,7 @@ export function tokeniseWord(
    * the letter's data from the alphabet file.
    *
    * @param word: A string to be tokenised into letters
+   * @param sentenceParts: The sentence so far to be used for hashing.
    * @param alphabets: List of alphabet names to use
    * @returns The tokenised word as a list of letters
    */
@@ -82,7 +87,7 @@ export function tokeniseWord(
       if (wordString.startsWith(sourceLetter.value)) {
         tokenisedLetter = {
           depth: "letter",
-          id: sourceLetter.value,
+          id: stringHash(wordString + sourceLetter.value) + sentenceId,
           subletters: [
             {
               depth: "subletter",
@@ -111,7 +116,7 @@ export function tokeniseWord(
   }
   const tokenisedWord: Word = {
     depth: "word",
-    id: word,
+    id: sentenceId,
     phrases: tokenisedLetters
   }
   return tokenisedWord
