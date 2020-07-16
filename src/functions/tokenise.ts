@@ -7,7 +7,7 @@ export function tokeniseSentence(
   sentence: string,
   splitBy: string[],
   alphabets: string[],
-): Phrase[] {
+): Sentence[] {
   /**
    * Takes a string and converts it to tokens. Tokens are dicts that instruct
    * the renderer on what to draw e.g. what letters and shapes are present.
@@ -52,7 +52,7 @@ export function tokeniseSentence(
       phrases.push(tokeniseWord(phrase, alphabets))
     }
   }
-  return phrases
+  return phrases as Sentence[]
 }
 
 export function tokeniseWord(

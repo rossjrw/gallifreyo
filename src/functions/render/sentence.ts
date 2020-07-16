@@ -1,6 +1,7 @@
 import { Settings, Phrase, Sentence } from '@/types'
-import { setRelativePhraseAngle } from '@/functions/relativeAngles'
+import { setRelativePhraseAngle } from '@/functions/setAngles'
 import { calculateSubphraseGeometry } from '@/functions/geometry'
+import { renderWord } from '@/functions/render/word'
 
 export function renderPhrase(
   sentence: Sentence,
@@ -37,20 +38,26 @@ export function renderPhrase(
   // Assign positions and calculate the size of each subphrase, and then render
   // them
   sentence.phrases.forEach(
-    (_: Phrase, subphrase: number) => {
+    (phrase: Phrase, subphrase: number) => {
       calculateSubphraseGeometry(
         sentence,
         subphrase,
-        sentence.radius!,
         settings.structure,
         relativeAngularSizeSum,
         settings,
       )
       // TODO if subphrase is not word... recurse?
-      renderWord(
-        sentence.phrases[subphrase],
-        subphrase,
-      )
+      if (phrase.depth === "sentence") {
+        renderPhrase(
+          sentence,
+          settings
+        )
+      } else if (phrase.depth === "word") {
+        renderWord(
+          phrase,
+          settings,
+        )
+      }
     }
   )
 }

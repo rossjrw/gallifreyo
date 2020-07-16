@@ -4,7 +4,6 @@ import { Settings, Sentence, Phrase } from '@/types'
 export function calculateSubphraseGeometry(
   sentence: Sentence,
   w: number, // XXX only used as index
-  sentenceRadius: number, // the radius of the sentence
   structure: string, // the selected structure type
   relativeAngularSizeSum: number, // the sum of relative angles
   settings: Settings,
@@ -15,7 +14,6 @@ export function calculateSubphraseGeometry(
    *
    * @param sentence: The parent phrase.
    * @param w: The index of the subphrase in the parent phrase.
-   * @param sentenceRadius: The radius of the parent phrase.
    * @param structure: The algorithm to use for positioning and sizing.
    * @param relativeAngularSizeSum: The sum of relative angles for all phrases
    * and buffers in the parent phrase.
@@ -30,12 +28,12 @@ export function calculateSubphraseGeometry(
     const radialSubtension = sentence.phrases[w].relativeAngularSize! / 2
     if (sentence.phrases.length > 1) {
       subphraseRadius = (
-        sentenceRadius * Math.cos(Math.PI / 2-radialSubtension)
+        sentence.radius! * Math.cos(Math.PI / 2-radialSubtension)
       ) / (
         settings.config.word.b * Math.cos(Math.PI / 2-radialSubtension) + 1
       )
     } else {
-      subphraseRadius = sentenceRadius
+      subphraseRadius = sentence.radius!
     }
 
     // Calculate the angle that this subphrase is at relative to its parent
@@ -53,13 +51,13 @@ export function calculateSubphraseGeometry(
     // Calculate coordinates for transformation
     const translate = {
       x: Math.cos(angularLocation + Math.PI / 2) *
-        (-sentenceRadius + (settings.config.word.b * subphraseRadius)),
+        (-sentence.radius! + (settings.config.word.b * subphraseRadius)),
       y: Math.sin(angularLocation + Math.PI / 2) *
-        (-sentenceRadius + (settings.config.word.b * subphraseRadius)),
+        (-sentence.radius! + (settings.config.word.b * subphraseRadius)),
     }
     sentence.phrases[w].transform = `translate(${translate.x},${translate.y})`
 
-    sentence.phrases[w].radius = subphraseRadius
+    sentence.phrases[w].radius! = subphraseRadius
 
   } else if (structure === "Spiral") {
     // For long sentences is is likely appropriate to place each word on the
@@ -84,7 +82,7 @@ export function calculateSubphraseGeometry(
     // radius into a multiplier value
     // TODO more refined process including centre shifting
     // XXX I don't think /2 is correct
-    const targetSpiralRadius = sentenceRadius / 2
+    const targetSpiralRadius = sentence.radius! / 2
     const multiplier = targetSpiralRadius / estimatedSpiralRadius
 
     const subphraseRadius = multiplier/2
@@ -122,7 +120,6 @@ export function calculateSubphraseGeometry(
     return calculateSubphraseGeometry(
       sentence,
       w,
-      sentenceRadius,
       structure,
       relativeAngularSizeSum,
       settings

@@ -3,7 +3,7 @@ import Vuex from "vuex"
 
 import { State } from '@/types'
 import { tokeniseSentence } from '@/functions/tokenise'
-import { renderTokenisedInput } from '@/functions/render'
+import { drawTokenisedInput } from '@/functions/draw'
 
 Vue.use(Vuex)
 
@@ -35,7 +35,7 @@ export default new Vuex.Store({
   } as State,
   mutations: {
     transliterate(state: State) {
-      state.phrases = renderTokenisedInput(
+      state.phrases = drawTokenisedInput(
         tokeniseSentence(
           state.text,
           ["\n\n", "\n", " "],
