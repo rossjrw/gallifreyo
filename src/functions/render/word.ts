@@ -1,15 +1,17 @@
+import { sum } from "lodash"
 import { Settings, Word, Letter } from '@/types'
-import { setRelativeLetterAngle } from '@/functions/relativeAngles'
+import { setRelativeLetterAngle } from '@/functions/setAngles'
+import { renderLetter } from '@/functions/render/letter'
 
 export function renderWord(
   word: Word,
-  radius: number,
   settings: Settings,
 ): void {
   // for each letter, render it
   word.x = 0
   word.y = 0
-  word.radius = radius
+  // Word should have radius already from geometry.ts
+  // word.radius = radius
 
   // Filter away null letters
   word.phrases.filter((letter: Letter | null) => letter !== null)
@@ -56,20 +58,25 @@ export function renderWord(
   // Assign positions and calculate the size of each subphrase, and then render
   // them
   word.phrases.forEach(
-    (_: Phrase, subphrase: number) => {
-      calculateSubphraseGeometry(
-        sentence,
-        subphrase,
-        sentence.radius!,
-        settings.structure,
-        relativeAngularSizeSum,
-        settings,
+    // XXX this is the same bit of code used in geometry; should consolidate
+    (letter: Letter | null, index: number) => {
+      let angularLocation = sum([
+        word.phrases[0]!.subletters[0].relativeAngularSize! / 2,
+        word.phrases.slice(1, index).reduce(
+          (total: number, letter: Letter | null) => {
+            return total + letter!.subletters[0].relativeAngularSize!
+          }, 0
+        ),
+        word.phrases[index]!.subletters[0].relativeAngularSize! / 2
+      ])
+      renderLetter(
+        letter!,
+        angularLocation,
+        vAngle,
+        word.radius!,
       )
-      // TODO if subphrase is not word... recurse?
-      renderWord(
-        sentence.phrases[subphrase],
-        subphrase,
-      )
+      angularLocation = angularLocation * 180 / Math.PI
+      letter!.transform = `rotate(${angularLocation}, 0, ${word.radius})`
     }
   )
 }
