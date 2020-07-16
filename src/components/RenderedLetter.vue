@@ -11,3 +11,4 @@ export default Vue.extend({
   name: "RenderedLetter",
   props: ['letter'],
 })
+</script>
