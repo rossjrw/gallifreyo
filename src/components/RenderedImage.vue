@@ -9,7 +9,7 @@
          fill="none"
          stroke="black"
          transform="scale(1,-1)">
-        <RenderedPhrase v-for="phrase in renderedInput"
+        <RenderedPhrase v-for="phrase in phrases"
                         :key="phrase.id"
                         :phrase="phrase"/>
       </g>
@@ -19,8 +19,8 @@
 
 <script lang="ts">
 import Vue from "vue"
-import { mapState } from "vuex"
 
+import { Phrase } from '@/types'
 import RenderedPhrase from '@/components/RenderedPhrase.vue'
 
 export default Vue.extend({
@@ -28,8 +28,12 @@ export default Vue.extend({
   components: {
     RenderedPhrase
   },
-  computed: mapState({
-    renderedInput: 'renderedInput'
-  })
+  computed: {
+    phrases: {
+      get(): Phrase[] {
+        return this.$store.state.phrases
+      }
+    }
+  }
 })
 </script>

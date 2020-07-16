@@ -1,14 +1,14 @@
 <template>
   <g :transform="phrase.transform">
-    <g v-for="childPhrase in phrase.phrases"
-       :key="childPhrase.id">
+    <g v-for="subPhrase in phrase.phrases"
+       :key="subPhrase.id">
       <circle cx="0"
               cy="40"
               r="100"/>
-      <RenderedPhrase v-if="'phrases' in childPhrase"
-                      :phrase="childPhrase"/>
-      <RenderedLetter v-else
-                      :letter="childPhrase"/>
+      <RenderedLetter v-if="subPhrase.depth === 'letter'"
+                      :letter="subPhrase"/>
+      <RenderedPhrase v-else
+                      :phrase="subPhrase"/>
     </g>
   </g>
 </template>
@@ -25,3 +25,4 @@ export default Vue.extend({
     RenderedLetter,
   },
 })
+</script>
