@@ -124,7 +124,7 @@ export interface Word {
   depth: "word"
   // Token properties
   id: number
-  phrases: (Letter | null)[]
+  phrases: Letter[]
   // Render properties
   relativeAngularSize?: number
   absoluteAngularSize?: number
