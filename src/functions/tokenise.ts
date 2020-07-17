@@ -62,143 +62,6 @@ export function tokeniseSentence(
   return phrases as Sentence[]
 }
 
-// export function tokeniseWord(
-//   word: string,
-//   sentenceId: number,
-//   alphabets: string[],
-// ): Word {
-//   /**
-//    * Takes a word and converts it to tokens. I guess for now a token is just
-//    * the letter's data from the alphabet file.
-//    *
-//    * @param word: A string to be tokenised into letters
-//    * @param sentenceParts: The sentence so far to be used for hashing.
-//    * @param alphabets: List of alphabet names to use
-//    * @returns The tokenised word as a list of letters
-//    */
-//   // Grab the letter data for the selected alphabets
-//   const sourceLetters: LetterData[] = getLetters(alphabets)
-//   // For each letter, compare it against that letter's length's worth of
-//   // characters from the start of the word
-//   // If there is a match, save that token and remove those letters
-//   // If there is not a match, add a null token and remove one letter
-//   const tokenisedLetters: (Letter | null)[] = []
-//   // Loop over word, checking first part against alphabets
-//   let wordString: string = word.toUpperCase()
-//   while (wordString.length > 0) {
-//     let tokenisedLetter: (Letter | null) = null
-//     for (const sourceLetter of sourceLetters) {
-//       if (wordString.startsWith(sourceLetter.value)) {
-//         tokenisedLetter = makeTokenisedLetter(
-//           subletters,
-//           wordString,
-//           sentenceId,
-//           sourceLetters
-//         )
-//         break
-//       }
-//     }
-//     if (tokenisedLetter) {
-//       // If there was a match, mill the length of the matched letters
-//       wordString = wordString.slice(
-//         tokenisedLetter.subletters.reduce(
-//           (totalLength, subletter) => {
-//             return totalLength + subletter.value.length
-//           }, 0
-//         )
-//       )
-//     } else {
-//       // If there was no match, mill a letter anyway
-//       wordString = wordString.slice(1)
-//     }
-//     tokenisedLetters.push(tokenisedLetter)
-//     tokenisedLetters.push(makeTokenisedLetter(
-//       wordString,
-//       ["BUFFER"],
-//       sentenceId,
-//       sourceLetters
-//     ))
-//     // Renderer should be able to handle null tokens
-//   }
-//   const tokenisedWord: Word = {
-//     depth: "word",
-//     id: sentenceId,
-//     phrases: tokenisedLetters
-//   }
-//   return tokenisedWord
-// }
-
-// function makeTokenisedLetter(
-//   wordString: string,
-//   subletters: string[],
-//   sentenceId: number,
-//   subletters: Subletter[],
-//   alphabets: string[],
-// ): Letter {
-//   if (wordString.length === 0) {
-//     // If there are no letters left, return the subletters as a letter
-//     return {
-//       depth: "letter",
-//       id: 0, // XXX TODO better id hash
-//       subletters: [
-//         {
-//           depth: "subletter",
-//           ...sourceLetter
-//         }
-//       ] // TODO multiple subletters
-//     }
-//   } else {
-//     // If there is at least one letter left, there are subletters to add
-//     const sourceLetters: LetterData[] = getLetters(alphabets)
-//     const subletterToAdd
-//     for (const sourceLetter of sourceLetters) {
-//       if (wordString.startsWith(sourceLetter.value)) {
-//         // If the action is create, create a new letter
-//         // If the action is attach, add this subletter to the current letter
-//         // ...unless there is no letter, in which case, create
-//         // ...or unless the limit is reached, in which case, create
-//         if (sourceLetter.action === "create" ||
-//             subletters.length === 0 || subletters.length >= 2) {
-//           // create
-//           subletters.push()
-//         } else if (sourceLetter.action == "attach") {
-//           // attach
-//         }
-//       // A match was found, so break this loop
-//       break
-//       }
-//     }
-//   }
-//   if (tokenisedLetter) {
-//     // If there was a match, mill the length of the matched letters
-//     wordString = wordString.slice(
-//       tokenisedLetter.subletters.reduce(
-//         (totalLength: number, subletter: Subletter) => {
-//           return totalLength + subletter.value.length
-//         }, 0
-//       )
-//     )
-//   } else {
-//     // If there was no match, mill a letter anyway
-//     wordString = wordString.slice(1)
-//   }
-//   tokenisedLetters.push(tokenisedLetter)
-//   tokenisedLetters.push(makeTokenisedLetter(
-//     wordString,
-//     ["BUFFER"],
-//     sentenceId,
-//     sourceLetters
-//   ))
-//   return makeTokenisedLetter(
-//     wordString,
-//     subletters,
-//     sentenceId,
-//     subletters,
-//     alphabets,
-//   )
-// }
-// }
-
 function tokeniseAWordIntoLetters(
   word: string,
   alphabets: string[],
@@ -248,8 +111,6 @@ function tokeniseAWordIntoLetters(
     (characters: string[]) => [characters, ["BUFFER"]]
   ).flat()
 
-  // subletterCharacters[0] = ["G", "A"]
-
   // Convert subletter characters to subletters
   const letters: Letter[] = subletterCharacters.map(
     (characters: string[]): Letter => {
@@ -286,7 +147,7 @@ function skimACharacterFromAWord(
   const sourceLetters: LetterData[] = getLetters(alphabets)
   // Find the source letter that matches the start of the word
   for (const sourceLetter of sourceLetters) {
-    if (word.startsWith(sourceLetter.value)) {
+    if (word.toUpperCase().startsWith(sourceLetter.value)) {
       return sourceLetter.value
     }
   }

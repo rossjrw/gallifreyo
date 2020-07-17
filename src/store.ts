@@ -40,7 +40,7 @@ export default new Vuex.Store({
         tokeniseSentence(
           state.text,
           ["\n\n", "\n", " "],
-          ["base", "Sherman"], // TODO get selected alphabets
+          ["base", "Sherman", "ShermanVowels"], // TODO get selected alphabets
         ),
         state.settings
       )
