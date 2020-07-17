@@ -1,5 +1,9 @@
 # Gallifreyo
 
+![build](https://github.com/rossjrw/gallifreyo/workflows/build/badge.svg)
+![lint](https://github.com/rossjrw/gallifreyo/workflows/lint/badge.svg)
+[![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/facebook/jest)
+
 An English-to-Gallifreyan transliterator, based on
 [Sherman's Gallifreyan](https://shermansplanet.com/gallifreyan/).
 
