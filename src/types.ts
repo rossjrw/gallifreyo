@@ -107,7 +107,7 @@ export type Phrase = Sentence | Word
 export interface Sentence {
   depth: "sentence"
   // Token properties
-  id: number
+  id: string | number
   phrases: Phrase[]
   // Render properties
   relativeAngularSize?: number
@@ -123,7 +123,7 @@ export interface Sentence {
 export interface Word {
   depth: "word"
   // Token properties
-  id: number
+  id: string | number
   phrases: Letter[]
   // Render properties
   relativeAngularSize?: number
@@ -139,7 +139,7 @@ export interface Word {
 export interface Letter {
   depth: "letter"
   // Token properties
-  id: number
+  id: string | number
   subletters: Subletter[]
   // Render properties
   b?: number              // Still not sure what this is
