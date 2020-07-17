@@ -9,6 +9,9 @@
          fill="none"
          stroke="black"
          transform="scale(1,-1)">
+        <circle cx="0"
+                cy="40"
+                r="100"/>
         <RenderedPhrase v-for="phrase in phrases"
                         :key="phrase.id"
                         :phrase="phrase"/>
