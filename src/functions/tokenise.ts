@@ -1,8 +1,9 @@
-import stringHash from "string-hash"
 import {
   LetterData, Phrase, Sentence, Word, Letter, Subletter
 } from '@/types'
 import { getLetters } from '@/functions/alphabets'
+
+let ID_COUNTER = 0
 
 export function tokeniseSentence(
   sentence: string,
@@ -32,16 +33,15 @@ export function tokeniseSentence(
   //    It needs to be broken up into letters and tokenised, and then returned.
   // As a result, a nested structure of tokenised words should be produced.
   const phrases: Phrase[] = sentence.split(splitBy[0]).map(
-    (phrase: string, index: number, sentenceParts: string[]) => {
+    (phrase: string, index: number) => {
       // Split the sentence by the first splitBy into a series of phrases.
       // Right now, we don't care what those phrases actually are. I'm using
       // "phrases" to ambiguously mean either a sentence or a word.
-      const sentenceId = stringHash(sentenceParts.slice(0, index+1).join(""))
       if (splitBy.length > 1) {
         // This phrase should be split further
         const tokenisedSentence: Sentence = {
           depth: "sentence",
-          id: sentenceId,
+          id: ID_COUNTER++,
           phrases: tokeniseSentence(
             phrase,
             splitBy.slice(1),
@@ -53,7 +53,7 @@ export function tokeniseSentence(
         // The delimiters have been used up, so sentence is a word.
         return {
           depth: "word",
-          id: 0,
+          id: ID_COUNTER++,
           phrases: tokeniseAWordIntoLetters(phrase, alphabets),
         } as Word
       }
@@ -116,7 +116,7 @@ function tokeniseAWordIntoLetters(
     (characters: string[]): Letter => {
       return {
         depth: "letter",
-        id: 0,
+        id: ID_COUNTER++,
         subletters: characters.map(
           (character: string): Subletter => {
             return {
