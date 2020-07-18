@@ -2,7 +2,6 @@ import { Letter } from '@/types'
 
 export function renderLetter(
   letter: Letter,
-  angleSubtended: number,
   angleSubtendedByVowel: number,
   wordRadius: number,
 ): void {
@@ -10,13 +9,13 @@ export function renderLetter(
    * Generates the SVG path for a given letter and attaches it as letter.d.
    *
    * @param letter: The letter to be rendered.
-   * @param angleSubtended: The absolute angle subtended by this letter in its
-   * word.
    * @param angleSubtendedByVowel: The absolute angle to be subtended by a
    * vowel for this word.
    * @param wordRadius: The radius of the word.
    * @returns void; letter retains path information.
    */
+
+  const angleSubtended = letter.subletters[0].absoluteAngularSize!
 
   const subletters = letter.subletters
 
@@ -26,11 +25,11 @@ export function renderLetter(
   }
 
   const letterRadius = (
-    (wordRadius * Math.cos(Math.PI / 2 - angleSubtended / 2))
-    / (subletters[0].b! * Math.cos(Math.PI / 2 - angleSubtended / 2) + 1)
+    (wordRadius * Math.cos((Math.PI / 2) - (angleSubtended / 2)))
+    / (subletters[0].b! * Math.cos((Math.PI / 2) - (angleSubtended / 2)) + 1)
   )
   const vowelRadius = (
-    (wordRadius * Math.cos(Math.PI / 2 - angleSubtendedByVowel / 2))
+    (wordRadius * Math.cos((Math.PI / 2) - (angleSubtendedByVowel / 2)))
     / 4
   )
   // vowelRadius is one quarter of letterRadius for a standard letter,

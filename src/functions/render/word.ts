@@ -58,7 +58,6 @@ export function renderWord(
 
   // Assign positions and calculate the size of each subphrase, and then render
   // them
-  console.log("NEW", JSON.parse(JSON.stringify(word.phrases)))
   word.phrases.forEach(
     // XXX this is the same bit of code used in geometry; should consolidate
     // Sum the angles of the letters so far
@@ -75,10 +74,8 @@ export function renderWord(
         - (word.phrases[index].subletters[0].absoluteAngularSize! / 2)
         // XXX convert to absolute?
       )
-      console.log(index, angularLocation)
       renderLetter(
         letter!,
-        angularLocation,
         vAngle,
         word.radius!,
       )
