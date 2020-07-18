@@ -172,7 +172,7 @@ export function renderLetter(
   letter.d = path
 }
 
-function circleIntersectionPoints(
+export function circleIntersectionPoints(
   x0: number,
   y0: number,
   r0: number,
