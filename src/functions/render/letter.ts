@@ -198,7 +198,6 @@ export function circleIntersectionPoints(
   const x2 = x0 + (dx * a / d)
   const y2 = y0 + (dy * a / d)
   const h = Math.sqrt((r0 * r0) - (a * a))
-  // The above line was inverted during the translation - unsure why
   const rx = -dy * (h / d)
   const ry = dx * (h / d)
   const xi = x2 + rx
