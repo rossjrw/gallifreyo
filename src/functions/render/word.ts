@@ -7,6 +7,7 @@ export function renderWord(
   word: Word,
   settings: Settings,
 ): void {
+  // XXX a lot of this function is very similar to geometry.ts
   // for each letter, render it
   word.x = 0
   word.y = 0
@@ -57,18 +58,24 @@ export function renderWord(
 
   // Assign positions and calculate the size of each subphrase, and then render
   // them
+  console.log("NEW", JSON.parse(JSON.stringify(word.phrases)))
   word.phrases.forEach(
     // XXX this is the same bit of code used in geometry; should consolidate
-    (letter: Letter | null, index: number) => {
-      let angularLocation = sum([
-        word.phrases[0]!.subletters[0].relativeAngularSize! / 2,
-        word.phrases.slice(1, index).reduce(
-          (total: number, letter: Letter | null) => {
-            return total + letter!.subletters[0].relativeAngularSize!
+    // Sum the angles of the letters so far
+    // Do not need to include buffer distance spefically, because the buffers
+    // already exist as phantom letters
+    (letter: Letter, index: number) => {
+      let angularLocation = (
+        word.phrases.slice(0, index + 1).reduce(
+          (total: number, letter: Letter) => {
+            return total + letter.subletters[0].absoluteAngularSize!
           }, 0
-        ),
-        word.phrases[index]!.subletters[0].relativeAngularSize! / 2
-      ])
+        )
+        - (word.phrases[0].subletters[0].absoluteAngularSize! / 2)
+        - (word.phrases[index].subletters[0].absoluteAngularSize! / 2)
+        // XXX convert to absolute?
+      )
+      console.log(index, angularLocation)
       renderLetter(
         letter!,
         angularLocation,
