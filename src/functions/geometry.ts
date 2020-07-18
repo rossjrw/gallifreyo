@@ -38,15 +38,26 @@ export function calculateSubphraseGeometry(
 
     // Calculate the angle that this subphrase is at relative to its parent
     // phrase
-    const angularLocation = sum([
-      sentence.phrases[0].relativeAngularSize! / 2,
-      sentence.phrases.slice(1, w).reduce(
+    // XXX should this be absolute angle?
+    // XXX add buffer?
+    // const angularLocation = sum([
+    //   sentence.phrases[0].absoluteAngularSize! / 2,
+    //   sentence.phrases.slice(1, w).reduce(
+    //     (total: number, phrase: Phrase) => {
+    //       return total + phrase.absoluteAngularSize!
+    //     }, 0
+    //   ),
+    //   sentence.phrases[w].absoluteAngularSize! / 2,
+    // ])
+    const angularLocation = (
+      sentence.phrases.slice(0, w + 1).reduce(
         (total: number, phrase: Phrase) => {
-          return total + phrase.relativeAngularSize!
+          return total + phrase.absoluteAngularSize!
         }, 0
-      ),
-      sentence.phrases[w].relativeAngularSize! / 2
-    ])
+      )
+      - (sentence.phrases[0].absoluteAngularSize! / 2)
+      - (sentence.phrases[w].absoluteAngularSize! / 2)
+    )
 
     // Calculate coordinates for transformation
     const translate = {
@@ -57,7 +68,7 @@ export function calculateSubphraseGeometry(
     }
     sentence.phrases[w].transform = `translate(${translate.x},${translate.y})`
 
-    sentence.phrases[w].radius! = subphraseRadius
+    sentence.phrases[w].radius = subphraseRadius
 
   } else if (structure === "Spiral") {
     // For long sentences is is likely appropriate to place each word on the
