@@ -14,7 +14,7 @@ interface BlockSetting {
   attached?: TypeOrFunc<boolean>
 }
 
-const BLOCK_SETTINGS = {
+const BLOCK_SETTINGS: BlockSettings = {
   s: {
     b: (_: Letter, settings: Settings) => settings.config.s.b,
     full: false,
@@ -49,7 +49,7 @@ const BLOCK_SETTINGS = {
   // There used to be a default case where an unknown letter would be given a
   // default block. In the new system unknown letters are represented by null
   // and they should be ignored.
-} as BlockSettings
+}
 
 export function letterDataFromBlock(
   letter: Letter,
