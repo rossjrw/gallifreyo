@@ -1,4 +1,4 @@
-const { circleIntersectionPoints } = require('../src/functions/render/letter')
+import { circleIntersectionPoints } from '../src/functions/render/letter'
 
 describe("circle intersection calculator", () => {
   it("calculates intersection points", () => {

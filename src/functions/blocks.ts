@@ -70,7 +70,8 @@ export function letterDataFromBlock(
   // A letter can be null, but null letters should not be passed to this
   // function.
   for (const subletter of letter.subletters) {
-    for (const [property, value] of Object.entries(BLOCK_SETTINGS.v)) {
+    for (const [property, value] of
+         Object.entries(BLOCK_SETTINGS[subletter.block])) {
       // This is the part that requires [_: string]: unknown on Subletter
       if (isFunction(value)) {
         subletter[property] = value(letter, settings)
