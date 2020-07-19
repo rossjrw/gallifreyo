@@ -15,6 +15,7 @@ export default new Vuex.Store({
     phrases: [],
     settings: {
       splits: [ "\n\n", "\n", " " ],
+      selectedAlphabets: ["base", "Sherman", "ShermanVowels"],
       structure: "Automatic",
       scaling: true, // sentence size scaling
       watermark: true,
@@ -39,8 +40,8 @@ export default new Vuex.Store({
       state.phrases = drawTokenisedInput(
         tokeniseSentence(
           state.text,
-          ["\n\n", "\n", " "],
-          ["base", "Sherman", "ShermanVowels"], // TODO get selected alphabets
+          state.settings.splits,
+          state.settings.selectedAlphabets,
         ),
         state.settings
       )
