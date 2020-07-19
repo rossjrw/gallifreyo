@@ -24,14 +24,10 @@ export function renderLetter(
     y: 0,
   }
 
-  // const letterRadius = (
-  //   (wordRadius * Math.cos((Math.PI / 2) - (angleSubtended / 2)))
-  //   / (subletters[0].b * Math.cos((Math.PI / 2) - (angleSubtended / 2)) + 1)
-  // )
   const letterRadius = (
-    ((subletters[0].b! * wordRadius) * Math.atan(angleSubtended / 2))
-    / Math.acos(angleSubtended / 2)
-  )
+    (subletters[0].b! * wordRadius)
+    * Math.tan(angleSubtended / 2) * Math.cos(angleSubtended / 2)
+  ) / 2
   const vowelRadius = (
     (wordRadius * Math.cos((Math.PI / 2) - (angleSubtendedByVowel / 2)))
     / 4
