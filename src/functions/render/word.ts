@@ -14,47 +14,30 @@ export function renderWord(
   // Word should have radius already from geometry.ts
   // word.radius = radius
 
-  // Filter away null letters
-  remove(word.phrases, (letter: Letter | null) => letter === null)
   // Assign relative angles to each subphrase
-  word.phrases.forEach((letter: Letter | null) => {
-    setRelativeLetterAngle(letter!, settings)
+  word.phrases.forEach((letter: Letter) => {
+    setRelativeLetterAngle(letter, settings)
   })
-  // XXX this is messy - may be an idea to disallow null letters from the
-  // start?
 
   // Calculate the sum of the relative angles
-  // Note that this calculation does not include buffers
+  // Note that buffers are their own letters, so do not need to be excepted
   // Also note that a letter's relative angle is held by its first subletter
   const relativeAngularSizeSum = word.phrases.reduce(
-    (total: number, letter: Letter | null) => {
-      return total + letter!.subletters[0].relativeAngularSize!
+    (total: number, letter: Letter) => {
+      return total + letter.subletters[0].relativeAngularSize!
     }, 0
   )
 
   // Convert relative angles to absolute angles (radians)
-  word.phrases.forEach((letter: Letter | null) => {
-    letter!.subletters[0].absoluteAngularSize = (
-      letter!.subletters[0].relativeAngularSize! * 2 * Math.PI / relativeAngularSizeSum
+  word.phrases.forEach((letter: Letter) => {
+    letter.subletters[0].absoluteAngularSize = (
+      letter.subletters[0].relativeAngularSize! * 2 * Math.PI / relativeAngularSizeSum
     )
   })
 
-  // Calculate the absolute angle subtended by a single vowel (why?)
+  // Calculate the absolute angle subtended by a single vowel, so that it is
+  // consistent across the entire word
   const vAngle = settings.config.v.a * 2 * Math.PI / relativeAngularSizeSum
-
-  // for(let l = 0; l < word.letters.length; l++){
-  //   // B is the sum of all previous letter angles and their buffers
-  //   var B;
-  //   if(l === 0){
-  //     B = 0;
-  //   } else if(l >= 1){
-  //     B = angles[l-1]/2 + /*angles[l-1] +*/ angles[l]/2 + B;
-  //   }
-  //   renderLetter(word.letters[l],s_,w_,l,angles[l],vAngle,radius);
-
-  //   word.letters[l].d = word.letters[l][0].path;
-  //   word.letters[l].transform = ["rotate(",B.toDeg(),",",0,",",radius,")"].join("");
-  // }
 
   // Assign positions and calculate the size of each subphrase, and then render
   // them
@@ -72,7 +55,6 @@ export function renderWord(
         )
         - (word.phrases[0].subletters[0].absoluteAngularSize! / 2)
         - (word.phrases[index].subletters[0].absoluteAngularSize! / 2)
-        // XXX convert to absolute?
       )
       renderLetter(
         letter!,

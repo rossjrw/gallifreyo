@@ -24,16 +24,20 @@ export function renderLetter(
     y: 0,
   }
 
+  // const letterRadius = (
+  //   (wordRadius * Math.cos((Math.PI / 2) - (angleSubtended / 2)))
+  //   / (subletters[0].b * Math.cos((Math.PI / 2) - (angleSubtended / 2)) + 1)
+  // )
   const letterRadius = (
-    (wordRadius * Math.cos((Math.PI / 2) - (angleSubtended / 2)))
-    / (subletters[0].b! * Math.cos((Math.PI / 2) - (angleSubtended / 2)) + 1)
+    ((subletters[0].b! * wordRadius) * Math.atan(angleSubtended / 2))
+    / Math.acos(angleSubtended / 2)
   )
   const vowelRadius = (
     (wordRadius * Math.cos((Math.PI / 2) - (angleSubtendedByVowel / 2)))
     / 4
   )
   // vowelRadius is one quarter of letterRadius for a standard letter,
-  // where b = 0.  The 'standard letter' here is the v block.
+  // where b = 0. The 'standard letter' here is the v block.
 
   const letterCentre = {
     x: letterBase.x + 0,
