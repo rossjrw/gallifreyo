@@ -44,6 +44,12 @@ module.exports = {
           'raw-loader',
         ],
       },
+      {
+        test: /\.svg$/,
+        use: [
+          'svg-url-loader',
+        ],
+      },
     ],
   },
   resolve: {
