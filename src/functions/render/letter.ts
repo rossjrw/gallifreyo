@@ -27,8 +27,8 @@ export function renderLetter(
   }
 
   const letterRadius = (
-    (wordRadius - subletters[0].height! * wordRadius)
-    * Math.tan(angleSubtended / 2) * Math.cos(angleSubtended / 2)
+    (wordRadius * Math.sin(angleSubtended / 2))
+    / (subletters[0].height! * Math.sin(angleSubtended / 2) + 1)
   )
   const vowelRadius = (
     (wordRadius * Math.sin(angleSubtendedByVowel / 2))
