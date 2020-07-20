@@ -13,7 +13,7 @@
             <!-- END INPUT CARD -->
 
             <!-- START OPTIONS CARD -->
-            <Options></Options>
+            <SettingsOptions></SettingsOptions>
             <!-- END OPTIONS CARD -->
 
             <!-- START donate nagger -->
@@ -43,7 +43,7 @@
 import Vue from "vue"
 import Downloads from '@/components/Downloads.vue'
 import GithubCorner from '@/components/GithubCorner.vue'
-import Options from '@/components/Options.vue'
+import SettingsOptions from '@/components/SettingsOptions.vue'
 import RenderedImage from '@/components/RenderedImage.vue'
 import TextInput from '@/components/TextInput.vue'
 import Title from '@/components/Title.vue'
@@ -52,7 +52,7 @@ import Title from '@/components/Title.vue'
 export default Vue.extend({
   name: "App",
   components: {
-    Downloads, GithubCorner, Options, RenderedImage, TextInput, Title
+    Downloads, GithubCorner, SettingsOptions, RenderedImage, TextInput, Title
   },
 })
 </script>

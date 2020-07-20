@@ -1,7 +1,7 @@
 import Vue from "vue"
 import Vuex from "vuex"
 
-import { State } from '@/types'
+import { State, Settings } from '@/types'
 import { tokeniseSentence } from '@/functions/tokenise'
 import { drawTokenisedInput } from '@/functions/draw'
 
@@ -54,7 +54,11 @@ export default new Vuex.Store({
   actions: {
     updateInputText({ commit }, inputText: string) {
       commit("modifyInput", inputText)
-      commit("transliterate", inputText)
+      commit("transliterate")
+    },
+    updateSettings({ commit }, settings: Settings) {
+      commit("updateSettings", settings)
+      commit("transliterate")
     },
   },
 })
