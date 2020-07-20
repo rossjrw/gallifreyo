@@ -14,6 +14,7 @@ export function renderLetter(
    * @param wordRadius: The radius of the word.
    * @returns void; letter retains path information.
    */
+  letter.paths = []
 
   const angleSubtended = letter.subletters[0].absoluteAngularSize!
 
@@ -170,7 +171,11 @@ export function renderLetter(
     path += `M ${wordEnd.x} ${wordEnd.y}`
   }
 
-  letter.d = path
+  letter.paths.push({d: path, type: 'default'})
+
+  const debugPath = `M ${wordCentre.x} ${wordCentre.y} L ${wordStart.x} ${wordStart.y}`
+
+  letter.paths.push({d: debugPath, type: 'debug'})
 }
 
 export function circleIntersectionPoints(

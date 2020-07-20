@@ -144,7 +144,7 @@ export interface Letter {
   // Render properties
   height?: number
   // Drawing properties
-  d?: string
+  paths?: Path[]
   transform?: string
 }
 
@@ -157,6 +157,9 @@ export interface Subletter extends LetterData {
   relativeAngularSize?: number
   absoluteAngularSize?: number
   attached?: boolean      // For vowels, attached to letter TODO deprecate
-  // Drawing properties
-  path?: string
+}
+
+export interface Path {
+  d: string
+  type: string
 }
