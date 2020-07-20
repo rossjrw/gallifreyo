@@ -41,9 +41,8 @@ export interface Config {
 }
 
 export interface BlockConfig {
-  // What are b and a????????
-  b: number
-  a: number  // The base relativeAngularSize for a letter in this block
+  height: number  // Height of this letter above (inside) the word circle
+  width: number  // The base relativeAngularSize for a letter in this block
 }
 
 export interface VowelBlockConfig extends BlockConfig {
@@ -143,7 +142,7 @@ export interface Letter {
   id: string | number
   subletters: Subletter[]
   // Render properties
-  b?: number              // Still not sure what this is
+  height?: number
   // Drawing properties
   d?: string
   transform?: string
@@ -153,7 +152,7 @@ export interface Subletter extends LetterData {
   depth: "subletter"
   [_: string]: unknown    // Allows string-based assignment
   // Render properties
-  b?: number
+  height?: number
   full?: boolean          // Circle is full or cut off by word line
   relativeAngularSize?: number
   absoluteAngularSize?: number

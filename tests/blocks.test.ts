@@ -25,9 +25,9 @@ describe("block data extractor", () => {
       },
     ],
   }
-  settings.config.f.a = 5
-  settings.config.f.b = 10
-  settings.config.v.b = 20
+  settings.config.f.width = 5
+  settings.config.f.height = 10
+  settings.config.v.height = 20
   letterDataFromBlock(Y, settings)
   letterDataFromBlock(A, settings)
   it("extracts data from a block", () => {
@@ -36,8 +36,8 @@ describe("block data extractor", () => {
     expect(A.subletters[0]).toHaveProperty("relativeAngularSize", 1)
   })
   it("executes extracted functions", () => {
-    expect(Y.subletters[0]).toHaveProperty("b", 10)
-    expect(A.subletters[0]).toHaveProperty("b", 20)
+    expect(Y.subletters[0]).toHaveProperty("height", 10)
+    expect(A.subletters[0]).toHaveProperty("height", 20)
     expect(A.subletters[0]).toHaveProperty("attached", true)
   })
 })

@@ -1,4 +1,3 @@
-import { sum } from "lodash"
 import { Settings, Sentence, Phrase } from '@/types'
 
 export function calculateSubphraseGeometry(
@@ -28,9 +27,8 @@ export function calculateSubphraseGeometry(
     const radialSubtension = sentence.phrases[w].relativeAngularSize! / 2
     if (sentence.phrases.length > 1) {
       subphraseRadius = (
-        sentence.radius! * Math.cos(Math.PI / 2-radialSubtension)
-      ) / (
-        settings.config.word.b * Math.cos(Math.PI / 2-radialSubtension) + 1
+        sentence.radius! * Math.sin(radialSubtension)
+        / settings.config.word.height * Math.sin(radialSubtension) + 1
       )
     } else {
       subphraseRadius = sentence.radius!
@@ -62,9 +60,9 @@ export function calculateSubphraseGeometry(
     // Calculate coordinates for transformation
     const translate = {
       x: Math.cos(angularLocation + Math.PI / 2) *
-        (-sentence.radius! + (settings.config.word.b * subphraseRadius)),
+        (-sentence.radius! + (settings.config.word.height * subphraseRadius)),
       y: Math.sin(angularLocation + Math.PI / 2) *
-        (-sentence.radius! + (settings.config.word.b * subphraseRadius)),
+        (-sentence.radius! + (settings.config.word.height * subphraseRadius)),
     }
     sentence.phrases[w].transform = `translate(${translate.x},${translate.y})`
 

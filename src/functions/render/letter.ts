@@ -19,25 +19,27 @@ export function renderLetter(
 
   const subletters = letter.subletters
 
+  // Base of letter, a point on the word circle
   const letterBase = {
     x: 0,
     y: 0,
   }
 
   const letterRadius = (
-    (subletters[0].b! * wordRadius)
+    (wordRadius - subletters[0].height! * wordRadius)
     * Math.tan(angleSubtended / 2) * Math.cos(angleSubtended / 2)
-  ) / 2
+  )
   const vowelRadius = (
-    (wordRadius * Math.cos((Math.PI / 2) - (angleSubtendedByVowel / 2)))
+    (wordRadius * Math.sin(angleSubtendedByVowel / 2))
     / 4
   )
   // vowelRadius is one quarter of letterRadius for a standard letter,
   // where b = 0. The 'standard letter' here is the v block.
 
+  // Letter centre relative to letterBase
   const letterCentre = {
     x: letterBase.x + 0,
-    y: letterBase.y + subletters[0].b! * letterRadius,
+    y: letterBase.y + subletters[0].height! * letterRadius,
   }
 
   const vowelCentre = {

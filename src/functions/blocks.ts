@@ -8,7 +8,7 @@ interface BlockSettings {
 type TypeOrFunc<T> = T | ((letter: Letter, settings: Settings) => T)
 
 interface BlockSetting {
-  b?: TypeOrFunc<number>
+  height?: TypeOrFunc<number>
   full?: TypeOrFunc<boolean>
   relativeAngularSize?: TypeOrFunc<number>
   attached?: TypeOrFunc<boolean>
@@ -16,28 +16,48 @@ interface BlockSetting {
 
 const BLOCK_SETTINGS: BlockSettings = {
   s: {
-    b: (_: Letter, settings: Settings) => settings.config.s.b,
+    height: (_: Letter, settings: Settings) => {
+      return settings.config.s.height
+    },
+    relativeAngularSize: (_: Letter, settings: Settings) => {
+      return settings.config.s.width
+    },
     full: false,
-    relativeAngularSize: (_: Letter, settings: Settings) => settings.config.s.a,
   },
   p: {
-    b: (_: Letter, settings: Settings) => settings.config.p.b,
+    height: (_: Letter, settings: Settings) => {
+      return settings.config.p.height
+    },
+    relativeAngularSize: (_: Letter, settings: Settings) => {
+      return settings.config.p.width
+    },
     full: true,
-    relativeAngularSize: (_: Letter, settings: Settings) => settings.config.p.a,
   },
   d: {
-    b: (_: Letter, settings: Settings) => settings.config.d.b,
+    height: (_: Letter, settings: Settings) => {
+      return settings.config.d.height
+    },
+    relativeAngularSize: (_: Letter, settings: Settings) => {
+      return settings.config.d.width
+    },
     full: false,
-    relativeAngularSize: (_: Letter, settings: Settings) => settings.config.d.a,
   },
   f: {
-    b: (_: Letter, settings: Settings) => settings.config.f.b,
+    height: (_: Letter, settings: Settings) => {
+      return settings.config.f.height
+    },
+    relativeAngularSize: (_: Letter, settings: Settings) => {
+      return settings.config.f.width
+    },
     full: true,
-    relativeAngularSize: (_: Letter, settings: Settings) => settings.config.f.a,
   },
   v: {
-    b: (_: Letter, settings: Settings) => settings.config.v.b,
-    attached: (letter: Letter, _: Settings) => letter.subletters.length === 1,
+    height: (_: Letter, settings: Settings) => {
+      return settings.config.v.height
+    },
+    attached: (letter: Letter, _: Settings) => {
+      return letter.subletters.length === 1
+    },
     relativeAngularSize: 1,
     // there was buffer property but I'm not sure what it did
   },

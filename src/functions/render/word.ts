@@ -37,7 +37,7 @@ export function renderWord(
 
   // Calculate the absolute angle subtended by a single vowel, so that it is
   // consistent across the entire word
-  const vAngle = settings.config.v.a * 2 * Math.PI / relativeAngularSizeSum
+  const vAngle = settings.config.v.width * 2 * Math.PI / relativeAngularSizeSum
 
   // Assign positions and calculate the size of each subphrase, and then render
   // them
