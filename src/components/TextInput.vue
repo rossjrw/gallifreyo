@@ -1,22 +1,20 @@
 <template>
-  <div class="card white">
-    <div class="card-content black-text">
-      <span class="card-title">
-        Text to translate
-      </span>
-      <p>
-        Use the spacebar to separate words. Use a full-stop to separate
-        sentences.
+  <div class="card">
+    <div class="card-content">
+      <p class="title">
+      Text to translate
       </p>
-      <div class="row input-field">
-        <textarea class="row col l8 push-l2 s10 push-s1"
-                  v-model="text">
-        </textarea>
-        <a class="waves-effect waves-light btn row col l6 push-l3 s10 push-s1 center-align"
-           ng-click="host.generate()">
-          Retransliterate
-        </a>
-      </div>
+      <p class="subtitle">
+      Use a space to separate words. Use a full-stop to separate
+      sentences.
+      </p>
+      <textarea class="textarea"
+                placeholder="Text to translate"
+                v-model="text">
+      </textarea>
+      <a class="button">
+        Translate
+      </a>
     </div>
   </div>
 </template>
