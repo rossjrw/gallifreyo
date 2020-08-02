@@ -2,18 +2,25 @@
   <div id="app">
     <GithubCorner id="github-corner"></GithubCorner>
     <div id="ui"
-         class="container">
-      <Title id="title"></Title>
-      <TextInput id="text-input"></TextInput>
-      <div id="fixed-section">
-        <div id="force-square">
-          <img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEAAAAALAAAAAABAAEAAAI=">
-          <RenderedImage id="rendered-image"></RenderedImage>
+         class="section">
+      <div class="container">
+        <Title id="title"
+               class="column-part"/>
+        <TextInput id="text-input"
+                   class="column-part"/>
+        <div id="fixed-section"
+             class="column-part">
+          <div id="force-square">
+            <img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEAAAAALAAAAAABAAEAAAI=">
+            <RenderedImage id="rendered-image"></RenderedImage>
+          </div>
+          <Downloads id="downloads"></Downloads>
         </div>
-        <Downloads id="downloads"></Downloads>
+        <SettingsOptions id="settings-options"
+                         class="column-part"/>
+        <Footer id="footer"
+                class="column-part"/>
       </div>
-      <SettingsOptions id="settings-options"></SettingsOptions>
-      <Footer id="footer"></Footer>
     </div>
   </div>
 </template>
@@ -39,8 +46,27 @@ export default Vue.extend({
 <style lang="scss">
 @import '~bulma/sass/utilities/_all.sass';
 
+body {
+  background-image:
+    linear-gradient(45deg,
+      #eeeeee 25%,
+      #f5f5f5 25%,
+      #f5f5f5 50%,
+      #eeeeee 50%,
+      #eeeeee 75%,
+      #f5f5f5 75%,
+      #f5f5f5 100%
+    );
+  background-size: 56.57px 56.57px;
+  background-attachment: fixed;
+}
+
 #github-corner svg {
   position: fixed;
+}
+
+#force-square {
+  position: relative;
 }
 
 #force-square img {
@@ -50,24 +76,28 @@ export default Vue.extend({
 
 #rendered-image {
   position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
 }
 
 #ui {
   display: flex;
   flex-direction: column;
-  margin: 1rem;
   @include tablet {
-    max-width: 50vw;
-    margin-right: 50vw;
-    margin-left: auto;
+    max-width: 50%;
+    left: 0;
   }
 }
 
 #fixed-section {
   @include tablet {
     position: fixed;
-    height: 100vh;
-    width: 50vw;
+    width: 50%;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
   }
 }
 </style>
