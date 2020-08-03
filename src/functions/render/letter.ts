@@ -151,10 +151,13 @@ export function renderLetter(
       // Jump to the vowel and draw its circle
       path += `M ${vowelCentre.x} ${vowelCentre.y}`
       path += `m -${vowelRadius} 0`
-      path += `a ${vowelRadius} ${vowelRadius} 0 1 1 2${vowelRadius} 0`
-      path += `a ${vowelRadius} ${vowelRadius} 0 1 1 -2${vowelRadius} 0`
+      path += `a ${vowelRadius} ${vowelRadius} 0 1 1 ${2 * vowelRadius} 0`
+      path += `a ${vowelRadius} ${vowelRadius} 0 1 1 ${-2 * vowelRadius} 0`
       // Jump back to end of word segment and declare finished
       path += `M ${wordEnd.x} ${wordEnd.y}`
+
+      const vowelDebugPath = `M ${wordCentre.x} ${wordCentre.y} L ${vowelCentre.x} ${vowelCentre.y} l -${vowelRadius} 0 l ${2 * vowelRadius} 0`
+      letter.paths.push({d: vowelDebugPath, type: 'debug1'})
     }
   } else if (subletters[0].block === `buffer`) {
     // Draw the buffer, which is just an empty word segment
@@ -169,13 +172,15 @@ export function renderLetter(
     path += `a ${vowelRadius} ${vowelRadius} 0 1 1 ${-2 * vowelRadius} 0`
     // Jump back to end of word segment and declare finished
     path += `M ${wordEnd.x} ${wordEnd.y}`
+
+    const vowelDebugPath = `M ${wordCentre.x} ${wordCentre.y} L ${vowelCentre.x} ${vowelCentre.y} l -${vowelRadius} 0 l ${2 * vowelRadius} 0`
+    letter.paths.push({d: vowelDebugPath, type: 'debug1'})
   }
 
   letter.paths.push({d: path, type: 'default'})
 
-  const debugPath = `M ${wordCentre.x} ${wordCentre.y} L ${wordStart.x} ${wordStart.y}`
-
-  letter.paths.push({d: debugPath, type: 'debug'})
+  const consonantDebugPath = `M ${wordCentre.x} ${wordCentre.y} L ${wordStart.x} ${wordStart.y}`
+  letter.paths.push({d: consonantDebugPath, type: 'debug0'})
 }
 
 export function circleIntersectionPoints(
