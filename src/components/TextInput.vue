@@ -8,13 +8,18 @@
       Use a space to separate words. Use a full-stop to separate
       sentences.
       </p>
-      <textarea class="textarea"
-                placeholder="Text to translate"
-                v-model="text">
-      </textarea>
-      <a class="button">
-        Translate
-      </a>
+      <div class="field is-horizontal">
+        <textarea class="textarea"
+                  placeholder="Text to translate"
+                  v-model="text">
+        </textarea>
+      </div>
+      <div class="field is-horizontal"
+           style="justify-content: flex-end;">
+        <a class="button">
+          Translate
+        </a>
+      </div>
     </div>
   </div>
 </template>
