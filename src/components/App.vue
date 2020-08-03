@@ -47,6 +47,7 @@ export default Vue.extend({
 @import '~bulma/sass/utilities/_all.sass';
 
 body {
+  // Background stripes to highlight transparency
   background-image:
     linear-gradient(45deg,
       #eeeeee 25%,
@@ -62,19 +63,25 @@ body {
 }
 
 #github-corner svg {
+  // Keep the corner logo on the screen no matter what
+  // TODO maybe only do this on desktop
   position: fixed;
 }
 
 #force-square {
+  // Create a positioning context for the SVG
   position: relative;
 }
 
+// The image is a transparent 1px, so guaranteed to be square
 #force-square img {
+  // Make the image fill the space horizontally to create equal vertical space
   width: 100%;
   height: auto;
 }
 
 #rendered-image {
+  // Make the SVG fill its square container
   position: absolute;
   height: 100%;
   width: 100%;
