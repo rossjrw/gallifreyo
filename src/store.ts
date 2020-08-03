@@ -4,6 +4,7 @@ import Vuex from "vuex"
 import { State, Settings } from '@/types'
 import { tokeniseSentence } from '@/functions/tokenise'
 import { drawTokenisedInput } from '@/functions/draw'
+import { fixBoundingBox } from '@/functions/box'
 
 Vue.use(Vuex)
 
@@ -45,6 +46,7 @@ export default new Vuex.Store({
         ),
         state.settings
       )
+      fixBoundingBox()
     },
     modifyInput(state: State, newInput: string) {
       state.text = newInput
