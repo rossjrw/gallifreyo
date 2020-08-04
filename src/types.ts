@@ -117,6 +117,7 @@ export interface Sentence {
   y?: number
   radius?: number
   // Drawing properties
+  paths?: Path[]
   transform?: string
 }
 
@@ -133,6 +134,7 @@ export interface Word {
   y?: number
   radius?: number
   // Drawing properties
+  paths?: Path[]
   transform?: string
 }
 

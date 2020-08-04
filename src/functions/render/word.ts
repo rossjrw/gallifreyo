@@ -1,4 +1,3 @@
-import { remove, sum } from "lodash"
 import { Settings, Word, Letter } from '@/types'
 import { setRelativeLetterAngle } from '@/functions/setAngles'
 import { renderLetter } from '@/functions/render/letter'
@@ -13,6 +12,7 @@ export function renderWord(
   word.y = 0
   // Word should have radius already from geometry.ts
   // word.radius = radius
+  word.paths = []
 
   // Assign relative angles to each subphrase
   word.phrases.forEach((letter: Letter) => {

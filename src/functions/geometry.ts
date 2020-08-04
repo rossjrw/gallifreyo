@@ -36,17 +36,6 @@ export function calculateSubphraseGeometry(
 
     // Calculate the angle that this subphrase is at relative to its parent
     // phrase
-    // XXX should this be absolute angle?
-    // XXX add buffer?
-    // const angularLocation = sum([
-    //   sentence.phrases[0].absoluteAngularSize! / 2,
-    //   sentence.phrases.slice(1, w).reduce(
-    //     (total: number, phrase: Phrase) => {
-    //       return total + phrase.absoluteAngularSize!
-    //     }, 0
-    //   ),
-    //   sentence.phrases[w].absoluteAngularSize! / 2,
-    // ])
     const angularLocation = (
       sentence.phrases.slice(0, w + 1).reduce(
         (total: number, phrase: Phrase) => {

@@ -13,6 +13,18 @@ export function renderPhrase(
   sentence.x = 0
   sentence.y = 0
   sentence.radius = 100 // TODO determine by angular subtension
+  sentence.paths = []
+
+  // If this sentence contains more than one subphrase, then draw a circle
+  // around it
+  if (sentence.phrases.length > 1) {
+    let sentencePath = ""
+    sentencePath += `M ${sentence.x} ${sentence.y}`
+    sentencePath += `m -${sentence.radius} 0`
+    sentencePath += `a ${sentence.radius} ${sentence.radius} 0 1 1 ${2 * sentence.radius} 0`
+    sentencePath += `a ${sentence.radius} ${sentence.radius} 0 1 1 ${-2 * sentence.radius} 0`
+    sentence.paths.push({d: sentencePath, type: 'default'})
+  }
 
   // Assign relative angles to each subphrase
   sentence.phrases.forEach((phrase: Phrase) => {
