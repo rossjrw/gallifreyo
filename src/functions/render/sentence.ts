@@ -49,27 +49,66 @@ export function renderPhrase(
 
   // Assign positions and calculate the size of each subphrase, and then render
   // them
-  sentence.phrases.forEach(
-    (phrase: Phrase, subphrase: number) => {
-      calculateSubphraseGeometry(
-        sentence,
-        subphrase,
-        settings.structure,
-        relativeAngularSizeSum,
+  sentence.phrases.forEach((phrase: Phrase, subphrase: number) => {
+    calculateSubphraseGeometry(
+      sentence,
+      subphrase,
+      settings.structure,
+      relativeAngularSizeSum,
+      settings,
+    )
+    // TODO if subphrase is not word... recurse?
+    if (phrase.depth === "sentence") {
+      renderPhrase(
+        phrase,
+        settings
+      )
+    } else if (phrase.depth === "word") {
+      renderWord(
+        phrase,
         settings,
       )
-      // TODO if subphrase is not word... recurse?
-      if (phrase.depth === "sentence") {
-        renderPhrase(
-          phrase,
-          settings
-        )
-      } else if (phrase.depth === "word") {
-        renderWord(
-          phrase,
-          settings,
-        )
+    }
+  })
+
+  // Make the debug paths for the subphrases
+  sentence.phrases.forEach((phrase: Phrase, index: number) => {
+
+    let subphrasePositionDebugPath = ""
+    subphrasePositionDebugPath += `M ${sentence.x} ${sentence.y} L ${phrase.x} ${phrase.y}`
+    sentence.paths!.push({d: subphrasePositionDebugPath, type: 'debug1'})
+
+    let subphraseAngularDebugPath = ""
+    const angularLocation = (
+      sentence.phrases.slice(0, index + 1).reduce(
+        (total: number, subphrase: Phrase) => {
+          return total + subphrase.absoluteAngularSize!
+        }, 0
+      )
+      - (sentence.phrases[0].absoluteAngularSize! / 2)
+      - (sentence.phrases[index].absoluteAngularSize! / 2)
+    )
+    const subphraseAngularLocations = {
+      start: {
+        x: Math.sin(
+          angularLocation - phrase.absoluteAngularSize!
+        ) * sentence.radius!,
+        y: Math.cos(
+          angularLocation - phrase.absoluteAngularSize!
+        ) * sentence.radius!,
+      },
+      end: {
+        x: Math.sin(
+          angularLocation + phrase.absoluteAngularSize!
+        ) * sentence.radius!,
+        y: Math.cos(
+          angularLocation + phrase.absoluteAngularSize!
+        ) * sentence.radius!,
       }
     }
-  )
+    subphraseAngularDebugPath += `M ${sentence.x} ${sentence.y} L ${subphraseAngularLocations.start.x} ${subphraseAngularLocations.start.y}`
+    subphraseAngularDebugPath += `M ${sentence.x} ${sentence.y} L ${subphraseAngularLocations.end.x} ${subphraseAngularLocations.end.y}`
+    sentence.paths!.push({d: subphraseAngularDebugPath, type: 'debug0'})
+
+  })
 }

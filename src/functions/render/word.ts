@@ -8,10 +8,7 @@ export function renderWord(
 ): void {
   // XXX a lot of this function is very similar to geometry.ts
   // for each letter, render it
-  word.x = 0
-  word.y = 0
-  // Word should have radius already from geometry.ts
-  // word.radius = radius
+  // Word already has x, y and radius from geometry.ts
   word.paths = []
 
   // Assign relative angles to each subphrase
