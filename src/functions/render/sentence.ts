@@ -78,6 +78,8 @@ export function renderPhrase(
       )
       - (sentence.phrases[0].absoluteAngularSize! / 2)
       - (sentence.phrases[index].absoluteAngularSize! / 2)
+      + (index * settings.config.buffer.word * 2 * Math.PI
+         / relativeAngularSizeSum)
     )
     const subphraseAngularLocations = {
       start: {
