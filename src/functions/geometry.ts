@@ -22,16 +22,16 @@ export function calculateSubphraseGeometry(
    */
   // half of that angle, for some reason
   if (structure === "Simple" || structure === "Size-Scaled") {
-    let subphraseRadius: number
     // Calculate the angle subtended by the subphrase's radius
     const radialSubtension = sentence.phrases[w].relativeAngularSize! / 2
     if (sentence.phrases.length > 1) {
-      subphraseRadius = (
+      const subphraseRadius = (
         sentence.radius! * Math.sin(radialSubtension)
         / settings.config.word.height * Math.sin(radialSubtension) + 1
       )
+      sentence.phrases[w].radius = subphraseRadius
     } else {
-      subphraseRadius = sentence.radius!
+      sentence.phrases[w].radius = sentence.radius!
     }
 
     // Calculate the angle that this subphrase is at relative to its parent
@@ -49,15 +49,13 @@ export function calculateSubphraseGeometry(
     // Calculate coordinates for transformation
     const translate = {
       x: Math.cos(angularLocation + Math.PI / 2) *
-        (-sentence.radius! + (settings.config.word.height * subphraseRadius)),
+        (-sentence.radius! + (settings.config.word.height * sentence.phrases[w].radius!)),
       y: Math.sin(angularLocation + Math.PI / 2) *
-        (-sentence.radius! + (settings.config.word.height * subphraseRadius)),
+        (-sentence.radius! + (settings.config.word.height * sentence.phrases[w].radius!)),
     }
     sentence.phrases[w].transform = `translate(${translate.x},${translate.y})`
     sentence.phrases[w].x = translate.x
     sentence.phrases[w].y = translate.y
-
-    sentence.phrases[w].radius = subphraseRadius
 
   } else if (structure === "Spiral") {
     // For long sentences is is likely appropriate to place each word on the
@@ -85,7 +83,7 @@ export function calculateSubphraseGeometry(
     const targetSpiralRadius = sentence.radius! / 2
     const multiplier = targetSpiralRadius / estimatedSpiralRadius
 
-    const subphraseRadius = multiplier/2
+    sentence.phrases[w].radius = multiplier/2
     // why does it need to be /2 ???
     // because the multiplier is the length of the unit diameter
 
@@ -102,8 +100,6 @@ export function calculateSubphraseGeometry(
       )
     }
     sentence.phrases[w].transform = `translate(${translate.coords.join(",")})`
-
-    sentence.phrases[w].radius = subphraseRadius
 
   } else if (structure === "Automatic") {
     if (
