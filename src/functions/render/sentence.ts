@@ -7,12 +7,6 @@ export function renderPhrase(
   sentence: Sentence,
   settings: Settings,
 ): void {
-  // Coordinates of the middle of this sentence
-  // TODO determine by argument
-  // XXX these properties may already be set on the phrase - could ?? them
-  sentence.x = 0
-  sentence.y = 0
-  sentence.radius = 100 // TODO determine by angular subtension
   sentence.paths = []
 
   // If this sentence contains more than one subphrase, then draw a circle
@@ -21,8 +15,8 @@ export function renderPhrase(
     let sentencePath = ""
     sentencePath += `M ${sentence.x} ${sentence.y}`
     sentencePath += `m -${sentence.radius} 0`
-    sentencePath += `a ${sentence.radius} ${sentence.radius} 0 1 1 ${2 * sentence.radius} 0`
-    sentencePath += `a ${sentence.radius} ${sentence.radius} 0 1 1 ${-2 * sentence.radius} 0`
+    sentencePath += `a ${sentence.radius} ${sentence.radius} 0 1 1 ${2 * sentence.radius!} 0`
+    sentencePath += `a ${sentence.radius} ${sentence.radius} 0 1 1 ${-2 * sentence.radius!} 0`
     sentence.paths.push({d: sentencePath, type: 'default'})
   }
 
@@ -73,11 +67,8 @@ export function renderPhrase(
 
   // Make the debug paths for the subphrases
   sentence.phrases.forEach((phrase: Phrase, index: number) => {
-
-    let subphrasePositionDebugPath = ""
-    subphrasePositionDebugPath += `M ${sentence.x} ${sentence.y} L ${phrase.x} ${phrase.y}`
-    sentence.paths!.push({d: subphrasePositionDebugPath, type: 'debug1'})
-
+    // Angular debug path: blue lines to show the angle subtended by this
+    // phrase
     let subphraseAngularDebugPath = ""
     const angularLocation = (
       sentence.phrases.slice(0, index + 1).reduce(
@@ -109,6 +100,13 @@ export function renderPhrase(
     subphraseAngularDebugPath += `M ${sentence.x} ${sentence.y} L ${subphraseAngularLocations.start.x} ${subphraseAngularLocations.start.y}`
     subphraseAngularDebugPath += `M ${sentence.x} ${sentence.y} L ${subphraseAngularLocations.end.x} ${subphraseAngularLocations.end.y}`
     sentence.paths!.push({d: subphraseAngularDebugPath, type: 'debug0'})
+
+    // Positional debug path: red lines to show the position of the phrase
+    // relative to its parent and its radius
+    let subphrasePositionDebugPath = ""
+    subphrasePositionDebugPath += `M ${sentence.x} ${sentence.y} L ${phrase.x} ${phrase.y}`
+    subphrasePositionDebugPath += `m ${-phrase.radius!} 0 l ${2 * phrase.radius!} 0`
+    sentence.paths!.push({d: subphrasePositionDebugPath, type: 'debug1'})
 
   })
 }
