@@ -1,6 +1,7 @@
-import { Letter } from '@/types'
+import { Word, Letter } from '@/types'
 
 export function renderLetter(
+  word: Word,
   letter: Letter,
   angleSubtendedByVowel: number,
   wordRadius: number,
@@ -8,6 +9,7 @@ export function renderLetter(
   /**
    * Generates the SVG path for a given letter and attaches it as letter.d.
    *
+   * @param word: The word that contains this letter.
    * @param letter: The letter to be rendered.
    * @param angleSubtendedByVowel: The absolute angle to be subtended by a
    * vowel for this word.
@@ -20,12 +22,21 @@ export function renderLetter(
 
   const subletters = letter.subletters
 
-  // Base of letter, a point on the word circle
-  const letterBase = {
-    x: 0,
-    y: 0,
+  // The centre of the word, i.e. the top of the letter
+  const wordCentre = {
+    x: word.x!,
+    y: word.y!,
   }
 
+  // Base of letter, a point on the word circle
+  // Should be directly below the centre of the word, and this letter will be
+  // rotated to the correct angle afterwards
+  const letterBase = {
+    x: wordCentre.x,
+    y: wordCentre.y - wordRadius,
+  }
+
+  // The radius of the consonant circle
   const letterRadius = (
     (wordRadius * Math.sin(angleSubtended / 2))
     / (subletters[0].height! * Math.sin(angleSubtended / 2) + 1)
@@ -37,14 +48,15 @@ export function renderLetter(
   // vowelRadius is one quarter of letterRadius for a standard letter,
   // where b = 0. The 'standard letter' here is the v block.
 
-  // Letter centre relative to letterBase
+  // The centre of the consonant circle
   const letterCentre = {
-    x: letterBase.x + 0,
+    x: letterBase.x,
     y: letterBase.y + subletters[0].height! * letterRadius,
   }
 
+  // The centre of a vowel on this letter
   const vowelCentre = {
-    x: letterCentre.x + 0,
+    x: letterCentre.x,
     y: letterBase.y, // Placeholder for vert-dependent calculation
   }
   if (subletters.length > 1) {
@@ -65,11 +77,8 @@ export function renderLetter(
     }
   }
 
-  const wordCentre = {
-    x: 0,
-    y: wordRadius,
-  }
-
+  // The first point at which the word line intersects with the consonant
+  // circle, or NaN if it does not.
   const letterStart = {
     x: circleIntersectionPoints(
       wordCentre.x, wordCentre.y, wordRadius,
@@ -81,6 +90,8 @@ export function renderLetter(
     )[3],
   }
 
+  // The second point at which the word line intersects with the consonant
+  // circle, or NaN if it does not.
   const letterEnd = {
     x: circleIntersectionPoints(
       wordCentre.x, wordCentre.y, wordRadius,
@@ -92,6 +103,8 @@ export function renderLetter(
     )[2],
   }
 
+  // The start of this segment of the word line, where this letter connects to
+  // the previous one.
   const wordStart = {
     x: (wordCentre.x +
         (letterBase.x - wordCentre.x) * Math.cos(-angleSubtended / 2) -
@@ -103,6 +116,8 @@ export function renderLetter(
        ),
   }
 
+  // The end of this segment of the word line, where this letter connects to
+  // the next one.
   const wordEnd = {
     x: (wordCentre.x +
         (letterBase.x - wordCentre.x) * Math.cos(angleSubtended / 2) -

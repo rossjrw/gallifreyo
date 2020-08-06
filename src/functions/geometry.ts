@@ -56,7 +56,6 @@ export function calculateSubphraseGeometry(
       y: Math.sin(angularLocation + Math.PI / 2) *
         (-sentence.radius! + (settings.config.word.height * sentence.phrases[w].radius!)),
     }
-    sentence.phrases[w].transform = `translate(${translate.x},${translate.y})`
     sentence.phrases[w].x = translate.x
     sentence.phrases[w].y = translate.y
 

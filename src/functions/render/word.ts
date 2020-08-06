@@ -54,12 +54,13 @@ export function renderWord(
         - (word.phrases[index].subletters[0].absoluteAngularSize! / 2)
       )
       renderLetter(
+        word,
         letter!,
         vAngle,
         word.radius!,
       )
       angularLocation = angularLocation * 180 / Math.PI
-      letter!.transform = `rotate(${angularLocation}, 0, ${word.radius})`
+      letter!.transform = `rotate(${angularLocation}, ${word.x}, ${word.y})`
     }
   )
 }
