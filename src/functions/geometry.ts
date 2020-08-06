@@ -89,19 +89,18 @@ export function calculateSubphraseGeometry(
     // why does it need to be /2 ???
     // because the multiplier is the length of the unit diameter
 
-    // Calculate coordinates for transformation
-    const translate = {
-      coords: getSpiralCoord(
-        spiralBuffer,
-        spiralBuffer,
-        sentence.phrases.length,
-        // length is sent instead of length-1 to ignore the final point of the
-        // spiral - do not want to render a word exactly in the centre
-        w,
-        multiplier,
-      )
-    }
-    sentence.phrases[w].transform = `translate(${translate.coords.join(",")})`
+    // Calculate coordinates of the word
+    const coords = getSpiralCoord(
+      spiralBuffer,
+      spiralBuffer,
+      sentence.phrases.length,
+      // length is sent instead of length-1 to ignore the final point of the
+      // spiral - do not want to render a word exactly in the centre
+      w,
+      multiplier,
+    )
+    sentence.phrases[w].x = coords[0]
+    sentence.phrases[w].y = coords[1]
 
   } else if (structure === "Automatic") {
     if (
