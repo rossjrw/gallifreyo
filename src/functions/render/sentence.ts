@@ -83,25 +83,41 @@ export function renderPhrase(
     )
     const subphraseAngularLocations = {
       start: {
-        x: Math.sin(
-          angularLocation - phrase.absoluteAngularSize!
+        x: sentence.x! + Math.sin(
+          angularLocation - phrase.absoluteAngularSize! / 2
         ) * sentence.radius!,
-        y: Math.cos(
-          angularLocation - phrase.absoluteAngularSize!
+        y: sentence.y! + Math.cos(
+          angularLocation - phrase.absoluteAngularSize! / 2
         ) * sentence.radius!,
       },
       end: {
-        x: Math.sin(
-          angularLocation + phrase.absoluteAngularSize!
+        x: sentence.x! + Math.sin(
+          angularLocation + phrase.absoluteAngularSize! / 2
         ) * sentence.radius!,
-        y: Math.cos(
-          angularLocation + phrase.absoluteAngularSize!
+        y: sentence.y! + Math.cos(
+          angularLocation + phrase.absoluteAngularSize! / 2
         ) * sentence.radius!,
       }
     }
     subphraseAngularDebugPath += `M ${sentence.x} ${sentence.y} L ${subphraseAngularLocations.start.x} ${subphraseAngularLocations.start.y}`
     subphraseAngularDebugPath += `M ${sentence.x} ${sentence.y} L ${subphraseAngularLocations.end.x} ${subphraseAngularLocations.end.y}`
-    sentence.paths!.push({d: subphraseAngularDebugPath, type: 'debug0'})
+    const sizeMod = (index + 1) / 10
+    const angularDebugPathCurvePoints = {
+      start: {
+        x: sentence.x! +
+          -(sentence.x! - subphraseAngularLocations.start.x) * sizeMod,
+        y: sentence.y! +
+          -(sentence.y! - subphraseAngularLocations.start.y) * sizeMod,
+      },
+      end: {
+        x: sentence.x! +
+          -(sentence.x! - subphraseAngularLocations.end.x) * sizeMod,
+        y: sentence.y! +
+          -(sentence.y! - subphraseAngularLocations.end.y) * sizeMod,
+      }
+    }
+    subphraseAngularDebugPath += `M ${angularDebugPathCurvePoints.start.x} ${angularDebugPathCurvePoints.start.y} A ${sentence.radius! * sizeMod} ${sentence.radius! * sizeMod} 0 ${phrase.absoluteAngularSize! > Math.PI ? "1" : "0"} 0 ${angularDebugPathCurvePoints.end.x} ${angularDebugPathCurvePoints.end.y}`
+    phrase.paths!.push({d: subphraseAngularDebugPath, type: 'debug0'})
 
     // Positional debug path: red lines to show the position of the phrase
     // relative to its parent and its radius

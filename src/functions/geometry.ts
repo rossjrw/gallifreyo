@@ -56,8 +56,8 @@ export function calculateSubphraseGeometry(
       y: Math.sin(angularLocation + Math.PI / 2) *
         (-sentence.radius! + (settings.config.word.height * sentence.phrases[w].radius!)),
     }
-    sentence.phrases[w].x = translate.x
-    sentence.phrases[w].y = translate.y
+    sentence.phrases[w].x = sentence.x! + translate.x
+    sentence.phrases[w].y = sentence.y! + translate.y
 
   } else if (structure === "Spiral") {
     // For long sentences is is likely appropriate to place each word on the
@@ -99,8 +99,8 @@ export function calculateSubphraseGeometry(
       w,
       multiplier,
     )
-    sentence.phrases[w].x = coords[0]
-    sentence.phrases[w].y = coords[1]
+    sentence.phrases[w].x = sentence.x! + coords[0]
+    sentence.phrases[w].y = sentence.y! + coords[1]
 
   } else if (structure === "Automatic") {
     if (
