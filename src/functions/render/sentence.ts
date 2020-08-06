@@ -80,6 +80,7 @@ export function renderPhrase(
       - (sentence.phrases[index].absoluteAngularSize! / 2)
       + (index * settings.config.buffer.word * 2 * Math.PI
          / relativeAngularSizeSum)
+      + Math.PI // Rotate 180deg so it works, for some reason
     )
     const subphraseAngularLocations = {
       start: {
