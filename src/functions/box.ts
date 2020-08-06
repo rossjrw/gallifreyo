@@ -8,7 +8,8 @@ export function fixBoundingBox(): void {
     svgs.forEach(svg => {
       const bbox = svg.getBBox();
       // Construct and set a viewBox for the SVG
-      const viewBox = [bbox.x, bbox.y, bbox.width, bbox.height].join(" ");
+      const bboxSize = Math.max(bbox.width, bbox.height)
+      const viewBox = [bbox.x, bbox.y, bboxSize, bboxSize].join(" ");
       svg.setAttribute("viewBox", viewBox);
     })
   }, 1);
