@@ -27,7 +27,7 @@ export function calculateSubphraseGeometry(
     if (sentence.phrases.length > 1) {
       const subphraseRadius = (
         sentence.radius! * Math.sin(radialSubtension)
-        / settings.config.word.height * Math.sin(radialSubtension) + 1
+        / (settings.config.word.height * Math.sin(radialSubtension) + 1)
       )
       sentence.phrases[w].radius = subphraseRadius
     } else {

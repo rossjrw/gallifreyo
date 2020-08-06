@@ -108,7 +108,7 @@ export function renderPhrase(
     let subphrasePositionDebugPath = ""
     subphrasePositionDebugPath += `M ${sentence.x} ${sentence.y} L ${phrase.x} ${phrase.y}`
     subphrasePositionDebugPath += `m ${-phrase.radius!} 0 l ${2 * phrase.radius!} 0`
-    sentence.paths!.push({d: subphrasePositionDebugPath, type: 'debug1'})
+    phrase.paths!.push({d: subphrasePositionDebugPath, type: 'debug1'})
 
   })
 }
