@@ -23,7 +23,7 @@ export function calculateSubphraseGeometry(
   // half of that angle, for some reason
   if (structure === "Simple" || structure === "Size-Scaled") {
     // Calculate the angle subtended by the subphrase's radius
-    const radialSubtension = sentence.phrases[w].relativeAngularSize! / 2
+    const radialSubtension = sentence.phrases[w].relativeAngularSize!
     if (sentence.phrases.length > 1) {
       const subphraseRadius = (
         sentence.radius! * Math.sin(radialSubtension)
