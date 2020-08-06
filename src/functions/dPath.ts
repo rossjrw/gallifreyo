@@ -13,6 +13,7 @@ export interface SVGPath {
 const debugColours: DebugColours = {
   debug0: "blue",
   debug1: "red",
+  debug2: "green",
 }
 
 export function makePaths (
