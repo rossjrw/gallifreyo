@@ -38,12 +38,13 @@ import SettingsOptions from '@/components/SettingsOptions.vue'
 import RenderedImage from '@/components/RenderedImage.vue'
 import TextInput from '@/components/TextInput.vue'
 import Title from '@/components/Title.vue'
-
+import Footer from '@/components/Footer.vue'
 
 export default Vue.extend({
   name: "App",
   components: {
-    Downloads, GithubCorner, SettingsOptions, RenderedImage, TextInput, Title
+    Downloads, GithubCorner, SettingsOptions, RenderedImage, TextInput, Title,
+    Footer
   },
 })
 </script>

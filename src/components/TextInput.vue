@@ -5,8 +5,9 @@
       Text to translate
       </p>
       <p class="subtitle">
-      Use a space to separate words. Use a full-stop to separate
-      sentences.
+      Use a space to separate words.
+      Use a newline to separate sentences.
+      Use two to separate paragraphs.
       </p>
       <div class="field is-horizontal">
         <textarea class="textarea"
