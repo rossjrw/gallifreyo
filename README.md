@@ -3,7 +3,8 @@
 ![build](https://github.com/rossjrw/gallifreyo/workflows/build/badge.svg)
 ![test](https://github.com/rossjrw/gallifreyo/workflows/test/badge.svg)
 ![lint](https://github.com/rossjrw/gallifreyo/workflows/lint/badge.svg)
-[![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/facebook/jest)
+[![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f?logo=jest)](https://github.com/facebook/jest)
+[![made with bulma](https://img.shields.io/badge/made_with-bulma-00d1b2?logo=bulma)](https://bulma.io)
 
 An English-to-Gallifreyan transliterator, based on
 [Sherman's Gallifreyan](https://shermansplanet.com/gallifreyan/).
