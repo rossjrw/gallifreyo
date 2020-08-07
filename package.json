@@ -1,6 +1,6 @@
 {
   "name": "gallifreyo",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "description": "A Gallifreyan translator",
   "scripts": {
     "test": "jest",
