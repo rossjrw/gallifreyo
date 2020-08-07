@@ -1,7 +1,8 @@
 import Vue from "vue"
 import Vuex from "vuex"
+import { setWith } from "lodash"
 
-import { State, Settings } from '@/types'
+import { State } from '@/types'
 import { tokeniseSentence } from '@/functions/tokenise'
 import { drawTokenisedInput } from '@/functions/draw'
 import { fixBoundingBox } from '@/functions/box'
@@ -20,6 +21,8 @@ export default new Vuex.Store({
       structure: "Automatic",
       scaling: true, // sentence size scaling
       watermark: true,
+      debug: true,
+      automatic: true,
       width: 1024,
       foregroundColour: "#000000",
       backgroundColour: "#FFFFFF",
@@ -51,15 +54,20 @@ export default new Vuex.Store({
     modifyInput(state: State, newInput: string) {
       state.text = newInput
     },
-    // TODO mutation to change 'debug' settings
+    modifySingleSetting(state: State, { prop, value }) {
+      setWith(state, prop, value, (nsValue, key, nsObject) => {
+        return Vue.set(nsObject, key, nsValue)
+      })
+    },
   },
   actions: {
     updateInputText({ commit }, inputText: string) {
       commit("modifyInput", inputText)
       commit("transliterate")
     },
-    updateSettings({ commit }, settings: Settings) {
-      commit("updateSettings", settings)
+    updateSingleSetting({ commit }, { prop, value }) {
+      prop = `settings.${prop}`
+      commit("modifySingleSetting", { prop, value })
       commit("transliterate")
     },
   },

@@ -22,6 +22,7 @@ export interface Settings {
   structure: string
   scaling: boolean
   watermark: boolean
+  debug: boolean
   width: number
   foregroundColour: string
   backgroundColour: string
