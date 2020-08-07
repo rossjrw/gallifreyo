@@ -45,7 +45,7 @@ export function calculateSubphraseGeometry(
       )
       - (sentence.phrases[0].absoluteAngularSize! / 2)
       - (sentence.phrases[w].absoluteAngularSize! / 2)
-      + (w * settings.config.buffer.word * 2 * Math.PI
+      + (w * settings.config.buffer.phrase * 2 * Math.PI
          / relativeAngularSizeSum)
     )
 
@@ -66,7 +66,7 @@ export function calculateSubphraseGeometry(
 
     // Spiral buffer is both the distance between spiral rungs and the distance
     // between words, to ensure visually consistent spacing.
-    const spiralBuffer = 1 + settings.config.buffer.word
+    const spiralBuffer = 1 + settings.config.buffer.phrase
 
     // Use the y coordinate of a theoretical final letter to estimate the
     // radius of the spiral

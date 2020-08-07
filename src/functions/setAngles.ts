@@ -23,13 +23,13 @@ export function setRelativePhraseAngle(
   if(Array.isArray(phrase.phrases)){
     // this is a valid word
     if (settings.structure == "Size-Scaled"){
-      phrase.relativeAngularSize = phrase.phrases.length;
+      phrase.relativeAngularSize = phrase.phrases.length
     } else {
-      phrase.relativeAngularSize = 1;
+      phrase.relativeAngularSize = 1
     }
   } else {
     // this is a buffer
-    phrase.relativeAngularSize = settings.config.buffer.word;
+    phrase.relativeAngularSize = settings.config.buffer.phrase
   }
   // Phrase object has been modified to retain relativeAngularSize
 }

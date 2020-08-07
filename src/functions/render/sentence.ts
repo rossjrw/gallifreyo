@@ -32,7 +32,7 @@ export function renderPhrase(
     (total: number, phrase: Phrase) => {
       return total + phrase.relativeAngularSize!
     }, 0
-  ) + (settings.config.buffer.word * sentence.phrases.length)
+  ) + (settings.config.buffer.phrase * sentence.phrases.length)
 
   // Convert relative angles to absolute angles (radians)
   sentence.phrases.forEach((phrase: Phrase) => {
@@ -78,7 +78,7 @@ export function renderPhrase(
       )
       - (sentence.phrases[0].absoluteAngularSize! / 2)
       - (sentence.phrases[index].absoluteAngularSize! / 2)
-      + (index * settings.config.buffer.word * 2 * Math.PI
+      + (index * settings.config.buffer.phrase * 2 * Math.PI
          / relativeAngularSizeSum)
       + Math.PI // Rotate 180deg so it works, for some reason
     )

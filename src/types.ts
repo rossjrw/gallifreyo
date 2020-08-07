@@ -52,8 +52,7 @@ export interface VowelBlockConfig extends BlockConfig {
 
 export interface BufferConfig {
   letter: number
-  word: number
-  sentence: number
+  phrase: number
 }
 
 export interface AutomaticConfig {

@@ -30,7 +30,7 @@ export default new Vuex.Store({
         f: { height: 0, width: 0.75 },
         v: { height: 2, width: 1, r: 0.1 },
         word: { height: 1.2, width: 1 },
-        buffer: { letter: 0.5, word: 0.5, sentence: 0.5 },
+        buffer: { letter: 0.5, phrase: 0.5 },
         automatic: { scaledLessThan: 6, spiralMoreThan: 9 },
       },
     },
