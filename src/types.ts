@@ -161,5 +161,6 @@ export interface Subletter extends LetterData {
 
 export interface Path {
   d: string
-  type: string
+  type: "default" | "debug"
+  purpose?: "angle" | "position" | "circle"
 }

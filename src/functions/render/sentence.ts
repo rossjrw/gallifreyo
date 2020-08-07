@@ -118,14 +118,22 @@ export function renderPhrase(
       }
     }
     subphraseAngularDebugPath += `M ${angularDebugPathCurvePoints.start.x} ${angularDebugPathCurvePoints.start.y} A ${sentence.radius! * sizeMod} ${sentence.radius! * sizeMod} 0 ${phrase.absoluteAngularSize! > Math.PI ? "1" : "0"} 0 ${angularDebugPathCurvePoints.end.x} ${angularDebugPathCurvePoints.end.y}`
-    phrase.paths!.push({d: subphraseAngularDebugPath, type: 'debug0'})
+    phrase.paths!.push({
+      d: subphraseAngularDebugPath,
+      type: 'debug',
+      purpose: 'angle',
+    })
 
     // Positional debug path: red lines to show the position of the phrase
     // relative to its parent and its radius
     let subphrasePositionDebugPath = ""
     subphrasePositionDebugPath += `M ${sentence.x} ${sentence.y} L ${phrase.x} ${phrase.y}`
     subphrasePositionDebugPath += `m ${-phrase.radius!} 0 l ${2 * phrase.radius!} 0`
-    phrase.paths!.push({d: subphrasePositionDebugPath, type: 'debug1'})
+    phrase.paths!.push({
+      d: subphrasePositionDebugPath,
+      type: 'debug',
+      purpose: 'position',
+    })
 
   })
 }

@@ -172,7 +172,11 @@ export function renderLetter(
       path += `M ${wordEnd.x} ${wordEnd.y}`
 
       const vowelDebugPath = `M ${wordCentre.x} ${wordCentre.y} L ${vowelCentre.x} ${vowelCentre.y} l -${vowelRadius} 0 l ${2 * vowelRadius} 0`
-      letter.paths.push({d: vowelDebugPath, type: 'debug1'})
+      letter.paths.push({
+        d: vowelDebugPath,
+        type: 'debug',
+        purpose: 'position',
+      })
     }
   } else if (subletters[0].block === `buffer`) {
     // Draw the buffer, which is just an empty word segment
@@ -189,13 +193,21 @@ export function renderLetter(
     path += `M ${wordEnd.x} ${wordEnd.y}`
 
     const vowelDebugPath = `M ${wordCentre.x} ${wordCentre.y} L ${vowelCentre.x} ${vowelCentre.y} l -${vowelRadius} 0 l ${2 * vowelRadius} 0`
-    letter.paths.push({d: vowelDebugPath, type: 'debug1'})
+    letter.paths.push({
+      d: vowelDebugPath,
+      type: 'debug',
+      purpose: 'position',
+    })
   }
 
   letter.paths.push({d: path, type: 'default'})
 
   const consonantDebugPath = `M ${wordCentre.x} ${wordCentre.y} L ${wordStart.x} ${wordStart.y}`
-  letter.paths.push({d: consonantDebugPath, type: 'debug0'})
+  letter.paths.push({
+    d: consonantDebugPath,
+    type: 'debug',
+    purpose: 'angle',
+  })
 }
 
 export function circleIntersectionPoints(
