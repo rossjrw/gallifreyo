@@ -21,7 +21,7 @@ export default new Vuex.Store({
       structure: "Automatic",
       scaling: true, // sentence size scaling
       watermark: true,
-      debug: true,
+      debug: false,
       automatic: true,
       width: 1024,
       foregroundColour: "#000000",
