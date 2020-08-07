@@ -68,10 +68,17 @@ body {
   background-attachment: fixed;
 }
 
+.card {
+  border-radius: 1rem;
+  margin-top: 1rem;
+}
+
 #github-corner svg {
   // Keep the corner logo on the screen no matter what
   // TODO maybe only do this on desktop
-  position: fixed;
+  @include tablet {
+    position: fixed;
+  }
 }
 
 #force-square {
