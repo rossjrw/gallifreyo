@@ -28,7 +28,7 @@ export default Vue.extend({
   },
   computed: {
     paths(): SVGPath[] {
-      return makePaths(this.phrase.paths)
+      return makePaths(this.phrase.paths, this.$store.state.settings.debug)
     },
   },
 })

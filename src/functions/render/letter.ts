@@ -208,6 +208,16 @@ export function renderLetter(
     type: 'debug',
     purpose: 'angle',
   })
+
+  // Make a debug path to show the percieved size of the word
+  let wordCircleDebugPath = ""
+  wordCircleDebugPath += `M ${wordStart.x} ${wordStart.y}`
+  wordCircleDebugPath += `A ${word.radius} ${word.radius} 0 0 1 ${wordEnd.x} ${wordEnd.y}`
+  letter.paths.push({
+    d: wordCircleDebugPath,
+    type: 'debug',
+    purpose: 'circle',
+  })
 }
 
 export function circleIntersectionPoints(

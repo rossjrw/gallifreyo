@@ -17,7 +17,7 @@ export default Vue.extend({
   props: ['letter'],
   computed: {
     paths() {
-      return makePaths(this.letter.paths)
+      return makePaths(this.letter.paths, this.$store.state.settings.debug)
     }
   },
 })
