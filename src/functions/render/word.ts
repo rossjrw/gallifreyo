@@ -57,7 +57,7 @@ export function renderWord(
         word,
         letter!,
         vAngle,
-        word.radius!,
+        angularLocation,
       )
       angularLocation = angularLocation * 180 / Math.PI
       letter!.transform = `rotate(${angularLocation}, ${word.x}, ${word.y})`
