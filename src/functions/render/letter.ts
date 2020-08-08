@@ -4,7 +4,6 @@ export function renderLetter(
   word: Word,
   letter: Letter,
   angleSubtendedByVowel: number,
-  wordRadius: number,
 ): void {
   /**
    * Generates the SVG path for a given letter and attaches it as letter.d.
@@ -13,7 +12,6 @@ export function renderLetter(
    * @param letter: The letter to be rendered.
    * @param angleSubtendedByVowel: The absolute angle to be subtended by a
    * vowel for this word.
-   * @param wordRadius: The radius of the word.
    * @returns void; letter retains path information.
    */
   letter.paths = []
@@ -33,16 +31,16 @@ export function renderLetter(
   // rotated to the correct angle afterwards
   const letterBase = {
     x: wordCentre.x,
-    y: wordCentre.y - wordRadius,
+    y: wordCentre.y - word.radius!,
   }
 
   // The radius of the consonant circle
   const letterRadius = (
-    (wordRadius * Math.sin(angleSubtended / 2))
+    (word.radius! * Math.sin(angleSubtended / 2))
     / (subletters[0].height! * Math.sin(angleSubtended / 2) + 1)
   )
   const vowelRadius = (
-    (wordRadius * Math.sin(angleSubtendedByVowel / 2))
+    (word.radius! * Math.sin(angleSubtendedByVowel / 2))
     / 4
   )
   // vowelRadius is one quarter of letterRadius for a standard letter,
@@ -81,11 +79,11 @@ export function renderLetter(
   // circle, or NaN if it does not.
   const letterStart = {
     x: circleIntersectionPoints(
-      wordCentre.x, wordCentre.y, wordRadius,
+      wordCentre.x, wordCentre.y, word.radius!,
       letterCentre.x, letterCentre.y, letterRadius
     )[1],
     y: circleIntersectionPoints(
-      wordCentre.x, wordCentre.y, wordRadius,
+      wordCentre.x, wordCentre.y, word.radius!,
       letterCentre.x, letterCentre.y, letterRadius
     )[3],
   }
@@ -94,11 +92,11 @@ export function renderLetter(
   // circle, or NaN if it does not.
   const letterEnd = {
     x: circleIntersectionPoints(
-      wordCentre.x, wordCentre.y, wordRadius,
+      wordCentre.x, wordCentre.y, word.radius!,
       letterCentre.x, letterCentre.y, letterRadius
     )[0],
     y: circleIntersectionPoints(
-      wordCentre.x, wordCentre.y, wordRadius,
+      wordCentre.x, wordCentre.y, word.radius!,
       letterCentre.x, letterCentre.y, letterRadius
     )[2],
   }
@@ -139,7 +137,7 @@ export function renderLetter(
     // not it intersects with the word.
     if (subletters[0].full) {
       // Draw uninterrupted word segment
-      path += `A ${wordRadius} ${wordRadius} 0 0 1 ${wordEnd.x} ${wordEnd.y}`
+      path += `A ${word.radius} ${word.radius} 0 0 1 ${wordEnd.x} ${wordEnd.y}`
       // Jump to letter circle and draw it
       path += `M ${letterCentre.x} ${letterCentre.y}`
       path += `m -${letterRadius} 0`
@@ -149,7 +147,7 @@ export function renderLetter(
       path += `M ${wordEnd.x} ${wordEnd.y}`
     } else {
       // Draw word segment until intersection
-      path += `A ${wordRadius} ${wordRadius} 0 0 1 ${letterStart.x} ${letterStart.y}`
+      path += `A ${word.radius} ${word.radius} 0 0 1 ${letterStart.x} ${letterStart.y}`
       // Draw along letter curve until next intersection
       if (subletters[0].block == "s") {
         // Select the correct arc to draw
@@ -159,7 +157,7 @@ export function renderLetter(
         path += `A ${letterRadius} ${letterRadius} 0 0 0 ${letterEnd.x} ${letterEnd.y}`
       }
       // Draw remainder of word segment and declare finished
-      path += `A ${wordRadius} ${wordRadius} 0 0 1 ${wordEnd.x} ${wordEnd.y}`
+      path += `A ${word.radius} ${word.radius} 0 0 1 ${wordEnd.x} ${wordEnd.y}`
     }
     // Draw any vowels
     if(subletters.length == 2){
@@ -180,10 +178,10 @@ export function renderLetter(
     }
   } else if (subletters[0].block === `buffer`) {
     // Draw the buffer, which is just an empty word segment
-    path += `A ${wordRadius} ${wordRadius} 0 0 1 ${wordEnd.x} ${wordEnd.y}`
+    path += `A ${word.radius} ${word.radius} 0 0 1 ${wordEnd.x} ${wordEnd.y}`
   } else if (subletters[0].block === "v") {
     // Draw the uninterrupted word segment
-    path += `A ${wordRadius} ${wordRadius} 0 0 1 ${wordEnd.x} ${wordEnd.y}`
+    path += `A ${word.radius} ${word.radius} 0 0 1 ${wordEnd.x} ${wordEnd.y}`
     // Jump to the vowel and draw its circle
     path += `M ${vowelCentre.x} ${vowelCentre.y}`
     path += `m -${vowelRadius} 0`
