@@ -1,5 +1,5 @@
 import { Settings, Sentence, Word } from '@/types'
-import { renderPhrase } from '@/functions/render/sentence'
+import { renderSentence } from '@/functions/render/sentence'
 
 export function drawTokenisedInput(
   tokenisedInput: Sentence[],
@@ -24,7 +24,7 @@ export function drawTokenisedInput(
     phrase.y = 0
     phrase.radius = 100
     // Render it
-    renderPhrase(phrase, settings)
+    renderSentence(phrase, settings)
   })
   return tokenisedInput
 }

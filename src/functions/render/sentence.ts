@@ -3,7 +3,7 @@ import { setRelativePhraseAngle } from '@/functions/setAngles'
 import { calculateSubphraseGeometry } from '@/functions/geometry'
 import { renderWord } from '@/functions/render/word'
 
-export function renderPhrase(
+export function renderSentence(
   sentence: Sentence,
   settings: Settings,
 ): void {
@@ -53,7 +53,7 @@ export function renderPhrase(
     )
     // TODO if subphrase is not word... recurse?
     if (phrase.depth === "sentence") {
-      renderPhrase(
+      renderSentence(
         phrase,
         settings
       )
