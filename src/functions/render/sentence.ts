@@ -70,33 +70,34 @@ export function renderPhrase(
     // Angular debug path: blue lines to show the angle subtended by this
     // phrase
     let subphraseAngularDebugPath = ""
-    const angularLocation = (
-      sentence.phrases.slice(0, index + 1).reduce(
-        (total: number, subphrase: Phrase) => {
-          return total + subphrase.absoluteAngularSize!
-        }, 0
-      )
-      - (sentence.phrases[0].absoluteAngularSize! / 2)
-      - (sentence.phrases[index].absoluteAngularSize! / 2)
-      + (index * settings.config.buffer.phrase * 2 * Math.PI
-         / relativeAngularSizeSum)
-      + Math.PI // Rotate 180deg so it works, for some reason
-    )
+    // phrase.angularLocation = (
+    //   sentence.phrases.slice(0, index + 1).reduce(
+    //     (total: number, subphrase: Phrase) => {
+    //       return total + subphrase.absoluteAngularSize!
+    //     }, 0
+    //   )
+    //   - (sentence.phrases[0].absoluteAngularSize! / 2)
+    //   - (sentence.phrases[index].absoluteAngularSize! / 2)
+    //   + (index * settings.config.buffer.phrase * 2 * Math.PI
+    //      / relativeAngularSizeSum)
+    //   + Math.PI // Rotate 180deg so it works, for some reason
+    // )
+    // XXX phrase.angularLocation CAN be undef (spiral)
     const subphraseAngularLocations = {
       start: {
         x: sentence.x! + Math.sin(
-          angularLocation - phrase.absoluteAngularSize! / 2
+          phrase.angularLocation! - phrase.absoluteAngularSize! / 2
         ) * sentence.radius!,
         y: sentence.y! + Math.cos(
-          angularLocation - phrase.absoluteAngularSize! / 2
+          phrase.angularLocation! - phrase.absoluteAngularSize! / 2
         ) * sentence.radius!,
       },
       end: {
         x: sentence.x! + Math.sin(
-          angularLocation + phrase.absoluteAngularSize! / 2
+          phrase.angularLocation! + phrase.absoluteAngularSize! / 2
         ) * sentence.radius!,
         y: sentence.y! + Math.cos(
-          angularLocation + phrase.absoluteAngularSize! / 2
+          phrase.angularLocation! + phrase.absoluteAngularSize! / 2
         ) * sentence.radius!,
       }
     }
