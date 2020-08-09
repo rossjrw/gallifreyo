@@ -1,4 +1,5 @@
-import { LetterData, Sentence, Word, Letter, Subletter } from '@/types'
+import { LetterData } from '@/types/alphabets'
+import { Sentence, Word, Letter, Subletter } from '@/types/phrases'
 import { getLetters } from '@/functions/alphabets'
 
 let ID_COUNTER = 0

@@ -1,4 +1,5 @@
-import { Settings, Word, Letter } from '@/types'
+import { Settings } from '@/types/state'
+import { Word, Letter } from '@/types/phrases'
 import { setRelativeLetterAngle } from '@/functions/setAngles'
 import { renderLetter } from '@/functions/render/letter'
 

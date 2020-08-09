@@ -1,5 +1,7 @@
 import { isFunction } from "lodash"
-import { Settings, Letter } from '@/types'
+
+import { Settings } from '@/types/state'
+import { Letter } from '@/types/phrases'
 
 interface BlockSettings {
   [block: string]: BlockSetting

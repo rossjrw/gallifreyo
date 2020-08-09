@@ -1,5 +1,6 @@
-import { Settings, Sentence, Word, Letter } from '@/types'
-import { letterDataFromBlock } from './blocks';
+import { Settings } from '@/types/state'
+import { Sentence, Word, Letter } from '@/types/phrases'
+import { letterDataFromBlock } from '@/functions/blocks';
 
 export function setRelativePhraseAngle(
   phrase: Sentence | Word,

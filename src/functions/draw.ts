@@ -1,10 +1,11 @@
-import { Settings, Sentence, Word } from '@/types'
+import { Settings } from '@/types/state'
+import { Sentence, Word } from '@/types/phrases'
 import { renderSentence } from '@/functions/render/sentence'
 
 export function drawTokenisedInput(
   tokenisedInput: Sentence[],
   settings: Settings,
-): (Sentence | Word)[] {
+): Sentence[] {
   /**
    * Renders the tokenised input into an SVG image.
    *

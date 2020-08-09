@@ -1,7 +1,7 @@
 import toml from "toml"
 import { memoize, orderBy, pickBy, values } from "lodash"
 
-import { AlphabetsData, LetterData, AlphabetData } from '@/types'
+import { AlphabetsData, LetterData, AlphabetData } from '@/types/alphabets'
 import alphabets from '!!raw-loader!@/alphabets.toml'
 
 
