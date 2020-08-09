@@ -142,6 +142,7 @@ export interface Letter {
   id: string | number
   subletters: Subletter[]
   // Render properties
+  angularLocation?: number
   height?: number
   // Drawing properties
   paths?: Path[]

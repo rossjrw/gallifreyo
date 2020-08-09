@@ -70,33 +70,22 @@ export function renderPhrase(
     // Angular debug path: blue lines to show the angle subtended by this
     // phrase
     let subphraseAngularDebugPath = ""
-    const angularLocation = (
-      sentence.phrases.slice(0, index + 1).reduce(
-        (total: number, subphrase: Phrase) => {
-          return total + subphrase.absoluteAngularSize!
-        }, 0
-      )
-      - (sentence.phrases[0].absoluteAngularSize! / 2)
-      - (sentence.phrases[index].absoluteAngularSize! / 2)
-      + (index * settings.config.buffer.phrase * 2 * Math.PI
-         / relativeAngularSizeSum)
-      + Math.PI // Rotate 180deg so it works, for some reason
-    )
+    // XXX phrase.angularLocation CAN be undef (spiral)
     const subphraseAngularLocations = {
       start: {
         x: sentence.x! + Math.sin(
-          angularLocation - phrase.absoluteAngularSize! / 2
+          phrase.angularLocation! - phrase.absoluteAngularSize! / 2
         ) * sentence.radius!,
-        y: sentence.y! + Math.cos(
-          angularLocation - phrase.absoluteAngularSize! / 2
+        y: sentence.y! - Math.cos(
+          phrase.angularLocation! - phrase.absoluteAngularSize! / 2
         ) * sentence.radius!,
       },
       end: {
         x: sentence.x! + Math.sin(
-          angularLocation + phrase.absoluteAngularSize! / 2
+          phrase.angularLocation! + phrase.absoluteAngularSize! / 2
         ) * sentence.radius!,
-        y: sentence.y! + Math.cos(
-          angularLocation + phrase.absoluteAngularSize! / 2
+        y: sentence.y! - Math.cos(
+          phrase.angularLocation! + phrase.absoluteAngularSize! / 2
         ) * sentence.radius!,
       }
     }
@@ -117,7 +106,7 @@ export function renderPhrase(
           -(sentence.y! - subphraseAngularLocations.end.y) * sizeMod,
       }
     }
-    subphraseAngularDebugPath += `M ${angularDebugPathCurvePoints.start.x} ${angularDebugPathCurvePoints.start.y} A ${sentence.radius! * sizeMod} ${sentence.radius! * sizeMod} 0 ${phrase.absoluteAngularSize! > Math.PI ? "1" : "0"} 0 ${angularDebugPathCurvePoints.end.x} ${angularDebugPathCurvePoints.end.y}`
+    subphraseAngularDebugPath += `M ${angularDebugPathCurvePoints.start.x} ${angularDebugPathCurvePoints.start.y} A ${sentence.radius! * sizeMod} ${sentence.radius! * sizeMod} 0 ${phrase.absoluteAngularSize! > Math.PI ? "1" : "0"} 1 ${angularDebugPathCurvePoints.end.x} ${angularDebugPathCurvePoints.end.y}`
     phrase.paths!.push({
       d: subphraseAngularDebugPath,
       type: 'debug',
