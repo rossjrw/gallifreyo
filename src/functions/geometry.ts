@@ -1,4 +1,4 @@
-import { Settings, Sentence, Phrase } from '@/types'
+import { Settings, Sentence, Word } from '@/types'
 
 export function calculateSubphraseGeometry(
   sentence: Sentence,
@@ -39,7 +39,7 @@ export function calculateSubphraseGeometry(
     // For sentences, this does include buffers
     const angularLocation = (
       sentence.phrases.slice(0, w + 1).reduce(
-        (total: number, phrase: Phrase) => {
+        (total: number, phrase: Sentence | Word) => {
           return total + phrase.absoluteAngularSize!
         }, 0
       )

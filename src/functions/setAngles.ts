@@ -1,8 +1,8 @@
-import { Settings, Phrase, Letter } from '@/types'
+import { Settings, Sentence, Word, Letter } from '@/types'
 import { letterDataFromBlock } from './blocks';
 
 export function setRelativePhraseAngle(
-  phrase: Phrase,
+  phrase: Sentence | Word,
   settings: Settings,
 ): void {
   /**

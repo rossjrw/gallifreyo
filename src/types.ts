@@ -102,13 +102,15 @@ export interface ShermanLetterData extends LetterData {
  * During tokenisation, these properties will not exist.
  */
 
-export type Phrase = Sentence | Word
+export interface Path {
+  d: string
+  type: "default" | "debug"
+  purpose?: "angle" | "position" | "circle"
+}
 
-export interface Sentence {
-  depth: "sentence"
+interface Phrase {
   // Token properties
   id: string | number
-  phrases: Phrase[]
   // Render properties
   relativeAngularSize?: number
   absoluteAngularSize?: number
@@ -120,20 +122,16 @@ export interface Sentence {
   paths?: Path[]
 }
 
-export interface Word {
+export interface Sentence extends Phrase {
+  depth: "sentence"
+  phrases: (Sentence | Word)[]
+}
+
+export interface Word extends Phrase {
   depth: "word"
   // Token properties
   id: string | number
   phrases: Letter[]
-  // Render properties
-  relativeAngularSize?: number
-  absoluteAngularSize?: number
-  angularLocation?: number
-  x?: number
-  y?: number
-  radius?: number
-  // Drawing properties
-  paths?: Path[]
 }
 
 export interface Letter {
@@ -157,10 +155,4 @@ export interface Subletter extends LetterData {
   relativeAngularSize?: number
   absoluteAngularSize?: number
   attached?: boolean      // For vowels, attached to letter TODO deprecate
-}
-
-export interface Path {
-  d: string
-  type: "default" | "debug"
-  purpose?: "angle" | "position" | "circle"
 }
