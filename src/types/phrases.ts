@@ -107,8 +107,13 @@ export type TokenisedLetter = Letter & TokenisedPhrase & {
   subletters: TokenisedSubletter[]
 }
 
+export type CalculatedLetter = Letter & TokenisedPhrase & {
+  subletters: TokenisedSubletter[]
+  angularLocation: number
+}
 export type RenderedLetter = Letter & TokenisedPhrase & {
   subletters: CalculatedSubletter[]
+  angularLocation: number
   paths: Path[]
   transform: string
 }
