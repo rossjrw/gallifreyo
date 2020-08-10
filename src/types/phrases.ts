@@ -1,70 +1,136 @@
 import { LetterData } from '@/types/alphabets'
 
-/*
- * Tokenised and Rendered Input
- *
- * The list of rendered tokens derived from user input.
- *
- * Each phrase is represented by a single circle on the image, which contains
- * other phrases. A phrase is eventually a list of words, which is a list of
- * letters, and the letters contain drawing info.  Each circle needs an ID
- * that is a hash of its contents, for caching.
- *
- * Optional properties denote those that will be calculated during render.
- * During tokenisation, these properties will not exist.
- */
-
-export interface Path {
+export type Path = {
   d: string
   type: "default" | "debug"
   purpose?: "angle" | "position" | "circle"
 }
 
-interface Phrase {
-  // Token properties
+/*
+ * Phrases
+ *
+ * A generic interface that could represent either a sentence or a word, but
+ * not a letter.
+ */
+
+type TokenisedPhrase = {
   id: string | number
-  // Render properties
-  relativeAngularSize?: number
-  absoluteAngularSize?: number
-  angularLocation?: number
-  x?: number
-  y?: number
-  radius?: number
-  // Drawing properties
-  paths?: Path[]
 }
 
-export interface Sentence extends Phrase {
+type StructuredPhrase = TokenisedPhrase & {
+  relativeAngularSize: number
+  absoluteAngularSize: number
+}
+
+type CalculatedPhrase = StructuredPhrase & {
+  x: number
+  y: number
+  radius: number
+  angularLocation: number
+}
+
+type RenderedPhrase = CalculatedPhrase & {
+  paths: Path[]
+}
+
+/*
+ * Sentences
+ *
+ * A container for an array of either sentences or words.
+ * Could theoretically nest indefinitely.
+ */
+
+// XXX the type of phrases needs to upgrade along with the main type... right?
+// this is not strictly true, because we don't go down the whole chain
+// rendering all the way for each stage
+
+// TODO map out path of a sentence through the whole thing and track what
+// happens to it and when
+
+type Sentence = {
   depth: "sentence"
-  phrases: (Sentence | Word)[]
 }
 
-export interface Word extends Phrase {
+export type TokenisedSentence = TokenisedPhrase & Sentence & {
+  phrases: (TokenisedSentence | TokenisedWord)[]
+}
+
+export type StructuredSentence = StructuredPhrase & Sentence & {
+  phrases: (TokenisedSentence | TokenisedWord)[]
+}
+
+export type CalculatedSentence = CalculatedPhrase & Sentence & {
+  phrases: (TokenisedSentence | TokenisedWord)[]
+}
+
+export type RenderedSentence = RenderedPhrase & Sentence & {
+  phrases: (RenderedSentence | RenderedWord)[]
+}
+
+/*
+ * Words
+ *
+ * A container for an array of letters.
+ */
+
+type Word = {
   depth: "word"
-  // Token properties
-  id: string | number
-  phrases: Letter[]
 }
 
-export interface Letter {
+export type TokenisedWord = Word & TokenisedPhrase & {
+  phrases: TokenisedLetter[]
+}
+
+export type StructuredWord = Word & StructuredPhrase & {
+  phrases: TokenisedLetter[]
+}
+
+export type CalculatedWord = Word & CalculatedPhrase & {
+  phrases: TokenisedLetter[]
+}
+
+export type RenderedWord = Word & RenderedPhrase & {
+  phrases: RenderedLetter[]
+}
+
+/*
+ * Letters
+ *
+ * A container for subletters.
+ */
+
+type Letter = {
   depth: "letter"
-  // Token properties
-  id: string | number
-  subletters: Subletter[]
-  // Render properties
-  height?: number
-  // Drawing properties
-  paths?: Path[]
-  transform?: string
 }
 
-export interface Subletter extends LetterData {
+export type TokenisedLetter = Letter & TokenisedPhrase & {
+  subletters: TokenisedSubletter[]
+}
+
+export type RenderedLetter = Letter & TokenisedPhrase & {
+  subletters: CalculatedSubletter[]
+  paths: Path[]
+  transform: string
+}
+
+/*
+ * Subletters
+ *
+ * A wrapper for LetterData with rendering information.
+ */
+
+type Subletter = {
   depth: "subletter"
-  [_: string]: unknown    // Allows string-based assignment
-  // Render properties
+}
+
+export type TokenisedSubletter = Subletter & TokenisedPhrase & LetterData
+
+export type StructuredSubletter = TokenisedSubletter & {
   height?: number
-  full?: boolean          // Circle is full or cut off by word line
-  relativeAngularSize?: number
-  absoluteAngularSize?: number
-  attached?: boolean      // For vowels, attached to letter TODO deprecate
+  full?: boolean
+  relativeAngularSize: number
+}
+
+export type CalculatedSubletter = StructuredSubletter & {
+  absoluteAngularSize: number
 }
