@@ -7,70 +7,43 @@ interface BlockSettings {
   [block: string]: BlockSetting
 }
 
-type TypeOrFunc<T> = T | ((letter: Letter, settings: Settings) => T)
+type BlockFunc<T> = (letter: Letter, settings: Settings) => T
 
 interface BlockSetting {
-  height?: TypeOrFunc<number>
-  full?: TypeOrFunc<boolean>
-  relativeAngularSize?: TypeOrFunc<number>
-  attached?: TypeOrFunc<boolean>
+  height?: BlockFunc<number>
+  full?: BlockFunc<boolean>
+  relativeAngularSize: BlockFunc<number>
+  attached?: BlockFunc<boolean>
 }
 
 const BLOCK_SETTINGS: BlockSettings = {
   s: {
-    height: (_: Letter, settings: Settings) => {
-      return settings.config.s.height
-    },
-    relativeAngularSize: (_: Letter, settings: Settings) => {
-      return settings.config.s.width
-    },
-    full: false,
+    height: (_letter, settings) => settings.config.s.height,
+    relativeAngularSize: (_letter, settings) => settings.config.s.width,
+    full: (_letter, _settings) => false,
   },
   p: {
-    height: (_: Letter, settings: Settings) => {
-      return settings.config.p.height
-    },
-    relativeAngularSize: (_: Letter, settings: Settings) => {
-      return settings.config.p.width
-    },
-    full: true,
+    height: (_letter, settings) => settings.config.p.height,
+    relativeAngularSize: (_letter, settings) => settings.config.p.width,
+    full: (_letter, _settings) => true,
   },
   d: {
-    height: (_: Letter, settings: Settings) => {
-      return settings.config.d.height
-    },
-    relativeAngularSize: (_: Letter, settings: Settings) => {
-      return settings.config.d.width
-    },
-    full: false,
+    height: (_letter, settings) => settings.config.d.height,
+    relativeAngularSize: (_letter, settings) => settings.config.d.width,
+    full: (_letter, _settings) => false,
   },
   f: {
-    height: (_: Letter, settings: Settings) => {
-      return settings.config.f.height
-    },
-    relativeAngularSize: (_: Letter, settings: Settings) => {
-      return settings.config.f.width
-    },
-    full: true,
+    height: (_letter, settings) => settings.config.f.height,
+    relativeAngularSize: (_letter, settings) => settings.config.f.width,
+    full: (_letter, _settings) => true,
   },
   v: {
-    height: (_: Letter, settings: Settings) => {
-      return settings.config.v.height
-    },
-    attached: (letter: Letter, _: Settings) => {
-      return letter.subletters.length === 1
-    },
-    relativeAngularSize: 1,
-    // there was buffer property but I'm not sure what it did
+    height: (_letter, settings) => settings.config.v.height,
+    relativeAngularSize: (_letter, _settings) => 1,
   },
   buffer: {
-    relativeAngularSize: (_: Letter, settings: Settings) => {
-      return settings.config.buffer.letter
-    }
+    relativeAngularSize: (_letter, settings) => settings.config.buffer.letter
   },
-  // There used to be a default case where an unknown letter would be given a
-  // default block. In the new system unknown letters are represented by null
-  // and they should be ignored.
 }
 
 export function letterDataFromBlock(
