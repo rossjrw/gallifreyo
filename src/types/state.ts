@@ -6,7 +6,7 @@ import { Sentence } from '@/types/phrases'
  * The Vuex store state
  */
 
-export interface State {
+export type State = {
   text: string
   alphabets: AlphabetsData
   phrases: Sentence[]
@@ -19,7 +19,7 @@ export interface State {
  * user-configurable if they're exposed to the UI
  */
 
-export interface Settings {
+export type Settings = {
   splits: string[]
   selectedAlphabets: string[]
   structure: string
@@ -32,7 +32,7 @@ export interface Settings {
   config: Config
 }
 
-export interface Config {
+export type Config = {
   // TODO work out what the FUCK these mean
   s: BlockConfig
   p: BlockConfig
@@ -44,22 +44,22 @@ export interface Config {
   automatic: AutomaticConfig
 }
 
-export interface BlockConfig {
+export type BlockConfig = {
   height: number  // Height of this letter above (inside) the word circle
   width: number  // The base relativeAngularSize for a letter in this block
 }
 
-export interface VowelBlockConfig extends BlockConfig {
+export type VowelBlockConfig = BlockConfig & {
   // What is r???????
   r: number
 }
 
-export interface BufferConfig {
+export type BufferConfig = {
   letter: number
   phrase: number
 }
 
-export interface AutomaticConfig {
+export type AutomaticConfig = {
   // The naming scheme here is terrible
   scaledLessThan: number
   spiralMoreThan: number

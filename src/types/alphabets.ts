@@ -2,23 +2,23 @@
  * Alphabet storage
  */
 
-export interface AlphabetsData {
+export type AlphabetsData = {
   [name: string]: AlphabetData
 }
 
-export interface AlphabetData {
+export type AlphabetData = {
   priority: number
   action: string
   letters: LetterData[]
 }
 
-export interface LetterData {
+export type LetterData = {
   value: string
   block: string
   action?: string
 }
 
-export interface ShermanLetterData extends LetterData {
+export type ShermanLetterData = LetterData & {
   dots?: number
   vert?: number
   lines: number
