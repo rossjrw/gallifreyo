@@ -2,6 +2,8 @@
  * Alphabet storage
  */
 
+export type Block = "s" | "p" | "d" | "f" | "v"
+
 export type AlphabetsData = {
   [name: string]: AlphabetData
 }
