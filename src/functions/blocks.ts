@@ -1,19 +1,18 @@
 import { isFunction } from "lodash"
 
+import { BlockName } from '@/types/alphabets'
 import { Settings } from '@/types/state'
 import { Letter } from '@/types/phrases'
 
-interface BlockSettings {
-  [block: string]: BlockSetting
-}
-
 type BlockFunc<T> = (letter: Letter, settings: Settings) => T
 
-interface BlockSetting {
-  height?: BlockFunc<number>
-  full?: BlockFunc<boolean>
-  relativeAngularSize: BlockFunc<number>
-  attached?: BlockFunc<boolean>
+type BlockSettings = {
+  [block in BlockName]: {
+    height?: BlockFunc<number>
+    full?: BlockFunc<boolean>
+    relativeAngularSize: BlockFunc<number>
+    attached?: BlockFunc<boolean>
+  }
 }
 
 const BLOCK_SETTINGS: BlockSettings = {

@@ -2,7 +2,7 @@
  * Alphabet storage
  */
 
-export type Block = "s" | "p" | "d" | "f" | "v"
+export type BlockName = "s" | "p" | "d" | "f" | "v" | "buffer"
 
 export type AlphabetsData = {
   [name: string]: AlphabetData
