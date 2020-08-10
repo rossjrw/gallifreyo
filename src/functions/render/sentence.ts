@@ -23,7 +23,17 @@ export function renderSentence(
 
   // Assign relative angles to each subphrase
   sentence.phrases.forEach((phrase: Sentence | Word) => {
-    setRelativePhraseAngle(phrase, settings)
+    if(Array.isArray(phrase.phrases)){
+      // This is a word
+      if (settings.structure == "Size-Scaled"){
+        phrase.relativeAngularSize = phrase.phrases.length
+      } else {
+        phrase.relativeAngularSize = 1
+      }
+    } else {
+      // This is a buffer
+      phrase.relativeAngularSize = settings.config.buffer.phrase
+    }
   })
 
   // Calculate the sum of the relative angles
