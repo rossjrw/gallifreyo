@@ -4,24 +4,23 @@
 
 export type BlockName = "s" | "p" | "d" | "f" | "v" | "buffer"
 
+type TokenAction = "create" | "attach"
+
 export type AlphabetsData = {
   [name: string]: AlphabetData
 }
 
 export type AlphabetData = {
   priority: number
-  action: string
+  action: TokenAction
   letters: LetterData[]
 }
 
 export type LetterData = {
   value: string
-  block: string
-  action?: string
-}
-
-export type ShermanLetterData = LetterData & {
-  dots?: number
-  vert?: number
+  block: BlockName
+  action: TokenAction
+  dots: number
+  vert: number
   lines: number
 }
