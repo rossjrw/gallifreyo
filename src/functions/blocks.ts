@@ -11,7 +11,6 @@ type BlockSettings = {
     height?: BlockFunc<number>
     full?: BlockFunc<boolean>
     relativeAngularSize: BlockFunc<number>
-    attached?: BlockFunc<boolean>
   }
 }
 
