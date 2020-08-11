@@ -1,11 +1,14 @@
-import { Settings } from '@/types/state'
-import { Sentence, Word } from '@/types/phrases'
 import { renderSentence } from '@/functions/render/sentence'
 
+import { Settings } from '@/types/state'
+import {
+  TokenisedSentence, CalculatedSentence, RenderedSentence
+} from '@/types/phrases'
+
 export function drawTokenisedInput(
-  tokenisedInput: Sentence[],
+  tokenisedInput: TokenisedSentence[],
   settings: Settings,
-): Sentence[] {
+): RenderedSentence[] {
   /**
    * Renders the tokenised input into an SVG image.
    *
@@ -19,13 +22,19 @@ export function drawTokenisedInput(
   // be rendered on top of each other (as opposed to words and sentences, which
   // will have their own locations). In future I should pass just one phrase to
   // this function; a top-level phrase that contains only paragraphs.
-  tokenisedInput.forEach((phrase: Sentence) => {
+  const output = tokenisedInput.map(phrase => {
     // Set initial coordinates and radii of the phrase
-    phrase.x = 0
-    phrase.y = 0
-    phrase.radius = 100
+    const initialPhrase: CalculatedSentence = {
+      ...phrase,
+      x: 0,
+      y: 0,
+      radius: 100,
+      relativeAngularSize: 0,
+      absoluteAngularSize: 0,
+      angularLocation: 0,
+    }
     // Render it
-    renderSentence(phrase, settings)
+    return renderSentence(initialPhrase, settings)
   })
-  return tokenisedInput
+  return output
 }

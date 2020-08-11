@@ -1,3 +1,5 @@
+import { DeepPartial } from "tsdef"
+
 import { LetterData } from '@/types/alphabets'
 
 export type Path = {
@@ -5,6 +7,20 @@ export type Path = {
   type: "default" | "debug"
   purpose?: "angle" | "position" | "circle"
 }
+
+/*
+ * A helper type for transitioning between phrase types.
+ */
+
+// export type Between<T1, T2> = Omit<T1, keyof T2> & Partial<T2>
+// export type Between<T1, T2> = T1 & T2
+// export type Between<T1, T2> = T1 & Partial<T2>
+export type Between<T1, T2> = T1 & DeepPartial<T2>
+export type DeepRequired<T> = {
+  [P in keyof T]: T[P] extends Array<infer I>
+    ? Array<DeepRequired<I>>
+    : DeepRequired<T[P]>;
+};
 
 /*
  * Phrases
@@ -39,13 +55,6 @@ type RenderedPhrase = CalculatedPhrase & {
  * A container for an array of either sentences or words.
  * Could theoretically nest indefinitely.
  */
-
-// XXX the type of phrases needs to upgrade along with the main type... right?
-// this is not strictly true, because we don't go down the whole chain
-// rendering all the way for each stage
-
-// TODO map out path of a sentence through the whole thing and track what
-// happens to it and when
 
 type Sentence = {
   depth: "sentence"

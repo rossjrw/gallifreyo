@@ -1,13 +1,14 @@
-import { Settings } from '@/types/state'
-import { Sentence, Word } from '@/types/phrases'
-import { setRelativePhraseAngle } from '@/functions/setAngles'
 import { calculateSubphraseGeometry } from '@/functions/geometry'
 import { renderWord } from '@/functions/render/word'
 
-export function renderSentence(
-  sentence: Sentence,
+import { Settings } from '@/types/state'
+import { DeepRequired, Between, RenderedSentence, CalculatedSentence } from '@/types/phrases'
+
+export function renderSentence (
+  sentence_: CalculatedSentence,
   settings: Settings,
-): void {
+): RenderedSentence {
+  const sentence = sentence_ as Between<CalculatedSentence, RenderedSentence>
   sentence.paths = []
 
   // If this sentence contains more than one subphrase, then draw a circle
@@ -16,23 +17,29 @@ export function renderSentence(
     let sentencePath = ""
     sentencePath += `M ${sentence.x} ${sentence.y}`
     sentencePath += `m -${sentence.radius} 0`
-    sentencePath += `a ${sentence.radius} ${sentence.radius} 0 1 1 ${2 * sentence.radius!} 0`
-    sentencePath += `a ${sentence.radius} ${sentence.radius} 0 1 1 ${-2 * sentence.radius!} 0`
+    sentencePath += `a ${sentence.radius} ${sentence.radius} 0 1 1 ${2 * sentence.radius} 0`
+    sentencePath += `a ${sentence.radius} ${sentence.radius} 0 1 1 ${-2 * sentence.radius} 0`
     sentence.paths.push({d: sentencePath, type: 'default'})
   }
 
   // Assign relative angles to each subphrase
-  sentence.phrases.forEach((phrase: Sentence | Word) => {
+  sentence.phrases = sentence.phrases.map(phrase => {
+    phra
+    let relativeAngularSize: number
     if(Array.isArray(phrase.phrases)){
       // This is a word
       if (settings.structure == "Size-Scaled"){
-        phrase.relativeAngularSize = phrase.phrases.length
+        relativeAngularSize = phrase.phrases.length
       } else {
-        phrase.relativeAngularSize = 1
+        relativeAngularSize = 1
       }
     } else {
       // This is a buffer
-      phrase.relativeAngularSize = settings.config.buffer.phrase
+      relativeAngularSize = settings.config.buffer.phrase
+    }
+    return {
+      ...phrase,
+      relativeAngularSize: relativeAngularSize
     }
   })
 
@@ -40,24 +47,24 @@ export function renderSentence(
   // Note that this calculation includes buffers between letters, which at this
   // point do not yet exist
   const relativeAngularSizeSum = sentence.phrases.reduce(
-    (total: number, phrase: Sentence | Word) => {
-      return total + phrase.relativeAngularSize!
+    (total: number, phrase) => {
+      return total + phrase.relativeAngularSize
     }, 0
   ) + (settings.config.buffer.phrase * sentence.phrases.length)
 
   // Convert relative angles to absolute angles (radians)
-  sentence.phrases.forEach((phrase: Sentence | Word) => {
+  sentence.phrases.forEach(phrase => {
     phrase.absoluteAngularSize = (
-      phrase.relativeAngularSize! * 2 * Math.PI / relativeAngularSizeSum
+      phrase.relativeAngularSize * 2 * Math.PI / relativeAngularSizeSum
     )
   })
 
   // Assign positions and calculate the size of each subphrase, and then render
   // them
-  sentence.phrases.forEach((phrase: Sentence | Word, subphrase: number) => {
+  sentence.phrases.forEach((phrase, index: number) => {
     calculateSubphraseGeometry(
       sentence,
-      subphrase,
+      index,
       settings.structure,
       relativeAngularSizeSum,
       settings,
@@ -77,27 +84,27 @@ export function renderSentence(
   })
 
   // Make the debug paths for the subphrases
-  sentence.phrases.forEach((phrase: Sentence | Word, index: number) => {
+  sentence.phrases.forEach((phrase, index: number) => {
     // Angular debug path: blue lines to show the angle subtended by this
     // phrase
     let subphraseAngularDebugPath = ""
     // XXX phrase.angularLocation CAN be undef (spiral)
     const subphraseAngularLocations = {
       start: {
-        x: sentence.x! + Math.sin(
-          phrase.angularLocation! - phrase.absoluteAngularSize! / 2
-        ) * sentence.radius!,
-        y: sentence.y! - Math.cos(
-          phrase.angularLocation! - phrase.absoluteAngularSize! / 2
-        ) * sentence.radius!,
+        x: sentence.x + Math.sin(
+          phrase.angularLocation - phrase.absoluteAngularSize / 2
+        ) * sentence.radius,
+        y: sentence.y - Math.cos(
+          phrase.angularLocation - phrase.absoluteAngularSize / 2
+        ) * sentence.radius,
       },
       end: {
-        x: sentence.x! + Math.sin(
-          phrase.angularLocation! + phrase.absoluteAngularSize! / 2
-        ) * sentence.radius!,
-        y: sentence.y! - Math.cos(
-          phrase.angularLocation! + phrase.absoluteAngularSize! / 2
-        ) * sentence.radius!,
+        x: sentence.x + Math.sin(
+          phrase.angularLocation + phrase.absoluteAngularSize / 2
+        ) * sentence.radius,
+        y: sentence.y - Math.cos(
+          phrase.angularLocation + phrase.absoluteAngularSize / 2
+        ) * sentence.radius,
       }
     }
     subphraseAngularDebugPath += `M ${sentence.x} ${sentence.y} L ${subphraseAngularLocations.start.x} ${subphraseAngularLocations.start.y}`
@@ -105,20 +112,20 @@ export function renderSentence(
     const sizeMod = (index + 1) / 10
     const angularDebugPathCurvePoints = {
       start: {
-        x: sentence.x! +
-          -(sentence.x! - subphraseAngularLocations.start.x) * sizeMod,
-        y: sentence.y! +
-          -(sentence.y! - subphraseAngularLocations.start.y) * sizeMod,
+        x: sentence.x +
+          -(sentence.x - subphraseAngularLocations.start.x) * sizeMod,
+        y: sentence.y +
+          -(sentence.y - subphraseAngularLocations.start.y) * sizeMod,
       },
       end: {
-        x: sentence.x! +
-          -(sentence.x! - subphraseAngularLocations.end.x) * sizeMod,
-        y: sentence.y! +
-          -(sentence.y! - subphraseAngularLocations.end.y) * sizeMod,
+        x: sentence.x +
+          -(sentence.x - subphraseAngularLocations.end.x) * sizeMod,
+        y: sentence.y +
+          -(sentence.y - subphraseAngularLocations.end.y) * sizeMod,
       }
     }
-    subphraseAngularDebugPath += `M ${angularDebugPathCurvePoints.start.x} ${angularDebugPathCurvePoints.start.y} A ${sentence.radius! * sizeMod} ${sentence.radius! * sizeMod} 0 ${phrase.absoluteAngularSize! > Math.PI ? "1" : "0"} 1 ${angularDebugPathCurvePoints.end.x} ${angularDebugPathCurvePoints.end.y}`
-    phrase.paths!.push({
+    subphraseAngularDebugPath += `M ${angularDebugPathCurvePoints.start.x} ${angularDebugPathCurvePoints.start.y} A ${sentence.radius * sizeMod} ${sentence.radius * sizeMod} 0 ${phrase.absoluteAngularSize > Math.PI ? "1" : "0"} 1 ${angularDebugPathCurvePoints.end.x} ${angularDebugPathCurvePoints.end.y}`
+    phrase.paths.push({
       d: subphraseAngularDebugPath,
       type: 'debug',
       purpose: 'angle',
@@ -128,12 +135,14 @@ export function renderSentence(
     // relative to its parent and its radius
     let subphrasePositionDebugPath = ""
     subphrasePositionDebugPath += `M ${sentence.x} ${sentence.y} L ${phrase.x} ${phrase.y}`
-    subphrasePositionDebugPath += `m ${-phrase.radius!} 0 l ${2 * phrase.radius!} 0`
-    phrase.paths!.push({
+    subphrasePositionDebugPath += `m ${-phrase.radius} 0 l ${2 * phrase.radius} 0`
+    phrase.paths.push({
       d: subphrasePositionDebugPath,
       type: 'debug',
       purpose: 'position',
     })
 
   })
+
+  return sentence as DeepRequired<typeof sentence>
 }
