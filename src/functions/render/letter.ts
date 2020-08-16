@@ -1,10 +1,9 @@
-import { Word, Letter } from '@/types'
+import { Word, Letter } from '@/types/phrases'
 
 export function renderLetter(
   word: Word,
   letter: Letter,
   angleSubtendedByVowel: number,
-  angularLocation: number,
 ): void {
   /**
    * Generates the SVG path for a given letter and attaches it as letter.d.
@@ -13,8 +12,6 @@ export function renderLetter(
    * @param letter: The letter to be rendered.
    * @param angleSubtendedByVowel: The absolute angle to be subtended by a
    * vowel for this word.
-   * @param angularLocation: The absolute angle at which this letter is to be
-   * drawn relative to the word.
    * @returns void; letter retains path information.
    */
   letter.paths = []

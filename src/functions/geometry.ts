@@ -1,4 +1,5 @@
-import { Settings, Sentence, Phrase } from '@/types'
+import { Settings } from '@/types/state'
+import { Sentence, Word } from '@/types/phrases'
 
 export function calculateSubphraseGeometry(
   sentence: Sentence,
@@ -37,9 +38,9 @@ export function calculateSubphraseGeometry(
     // Calculate the angle that this subphrase is at relative to its parent
     // phrase
     // For sentences, this does include buffers
-    const angularLocation = (
+    sentence.phrases[w].angularLocation = (
       sentence.phrases.slice(0, w + 1).reduce(
-        (total: number, phrase: Phrase) => {
+        (total: number, phrase: Sentence | Word) => {
           return total + phrase.absoluteAngularSize!
         }, 0
       )
@@ -51,9 +52,9 @@ export function calculateSubphraseGeometry(
 
     // Calculate coordinates for transformation
     const translate = {
-      x: Math.cos(angularLocation + Math.PI / 2) *
+      x: Math.cos(sentence.phrases[w].angularLocation! + Math.PI / 2) *
         (-sentence.radius! + (settings.config.word.height * sentence.phrases[w].radius!)),
-      y: Math.sin(angularLocation + Math.PI / 2) *
+      y: Math.sin(sentence.phrases[w].angularLocation! + Math.PI / 2) *
         (-sentence.radius! + (settings.config.word.height * sentence.phrases[w].radius!)),
     }
     sentence.phrases[w].x = sentence.x! + translate.x

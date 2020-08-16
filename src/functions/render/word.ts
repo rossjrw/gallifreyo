@@ -1,5 +1,6 @@
-import { Settings, Word, Letter } from '@/types'
-import { setRelativeLetterAngle } from '@/functions/setAngles'
+import { Settings } from '@/types/state'
+import { Word, Letter } from '@/types/phrases'
+import { letterDataFromBlock } from '@/functions/blocks';
 import { renderLetter } from '@/functions/render/letter'
 
 export function renderWord(
@@ -11,9 +12,10 @@ export function renderWord(
   // Word already has x, y and radius from geometry.ts
   word.paths = []
 
-  // Assign relative angles to each subphrase
+  // Assign relative angles and other letter-based properties to each
+  // letter
   word.phrases.forEach((letter: Letter) => {
-    setRelativeLetterAngle(letter, settings)
+    letterDataFromBlock(letter, settings)
   })
 
   // Calculate the sum of the relative angles
@@ -44,7 +46,7 @@ export function renderWord(
     // Do not need to include buffer distance spefically, because the buffers
     // already exist as phantom letters
     (letter: Letter, index: number) => {
-      const angularLocation = (
+      letter.angularLocation = (
         word.phrases.slice(0, index + 1).reduce(
           (total: number, letter: Letter) => {
             return total + letter.subletters[0].absoluteAngularSize!
@@ -57,7 +59,6 @@ export function renderWord(
         word,
         letter!,
         vAngle,
-        angularLocation,
       )
     }
   )
