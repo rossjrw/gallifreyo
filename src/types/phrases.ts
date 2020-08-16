@@ -66,5 +66,4 @@ export interface Subletter extends LetterData {
   full?: boolean          // Circle is full or cut off by word line
   relativeAngularSize?: number
   absoluteAngularSize?: number
-  attached?: boolean      // For vowels, attached to letter TODO deprecate
 }

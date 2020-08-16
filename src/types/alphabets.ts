@@ -19,7 +19,7 @@ export type AlphabetData = {
 export type LetterData = {
   value: string
   block: BlockName
-  action: TokenAction
+  action?: TokenAction
   dots: number
   vert: number
   lines: number

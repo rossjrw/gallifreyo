@@ -1,6 +1,5 @@
 import { Settings } from '@/types/state'
 import { Sentence, Word } from '@/types/phrases'
-import { setRelativePhraseAngle } from '@/functions/setAngles'
 import { calculateSubphraseGeometry } from '@/functions/geometry'
 import { renderWord } from '@/functions/render/word'
 

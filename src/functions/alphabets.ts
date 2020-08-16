@@ -30,11 +30,11 @@ const getLetters = memoize(function getLetters(
     (alphabet: AlphabetData) => alphabet.priority,
     'desc'
   )
-  // Get the letters array
+  // Get the letters array, with the action attached to each letter
   const lettersByPriority: LetterData[][] = alphabetsByPriority.map(
     (alphabet: AlphabetData) => {
       alphabet.letters = alphabet.letters.map(
-        (letter: LetterData) => ({ action: alphabet.action, ...letter })
+        (letter: LetterData) => ({ ...letter, action: alphabet.action })
       )
       return alphabet.letters
     }
