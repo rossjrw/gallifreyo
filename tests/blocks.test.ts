@@ -33,11 +33,8 @@ describe("block data extractor", () => {
   it("extracts data from a block", () => {
     expect(Y.subletters[0]).toHaveProperty("full", true)
     expect(Y.subletters[0]).toHaveProperty("relativeAngularSize", 5)
-    expect(A.subletters[0]).toHaveProperty("relativeAngularSize", 1)
-  })
-  it("executes extracted functions", () => {
     expect(Y.subletters[0]).toHaveProperty("height", 10)
+    expect(A.subletters[0]).toHaveProperty("relativeAngularSize", 1)
     expect(A.subletters[0]).toHaveProperty("height", 20)
-    expect(A.subletters[0]).toHaveProperty("attached", true)
   })
 })

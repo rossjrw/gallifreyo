@@ -1,9 +1,9 @@
-import { Settings, Phrase, Sentence } from '@/types'
-import { setRelativePhraseAngle } from '@/functions/setAngles'
+import { Settings } from '@/types/state'
+import { Sentence, Word } from '@/types/phrases'
 import { calculateSubphraseGeometry } from '@/functions/geometry'
 import { renderWord } from '@/functions/render/word'
 
-export function renderPhrase(
+export function renderSentence(
   sentence: Sentence,
   settings: Settings,
 ): void {
@@ -21,21 +21,31 @@ export function renderPhrase(
   }
 
   // Assign relative angles to each subphrase
-  sentence.phrases.forEach((phrase: Phrase) => {
-    setRelativePhraseAngle(phrase, settings)
+  sentence.phrases.forEach((phrase: Sentence | Word) => {
+    if(Array.isArray(phrase.phrases)){
+      // This is a word
+      if (settings.structure == "Size-Scaled"){
+        phrase.relativeAngularSize = phrase.phrases.length
+      } else {
+        phrase.relativeAngularSize = 1
+      }
+    } else {
+      // This is a buffer
+      phrase.relativeAngularSize = settings.config.buffer.phrase
+    }
   })
 
   // Calculate the sum of the relative angles
   // Note that this calculation includes buffers between letters, which at this
   // point do not yet exist
   const relativeAngularSizeSum = sentence.phrases.reduce(
-    (total: number, phrase: Phrase) => {
+    (total: number, phrase: Sentence | Word) => {
       return total + phrase.relativeAngularSize!
     }, 0
   ) + (settings.config.buffer.phrase * sentence.phrases.length)
 
   // Convert relative angles to absolute angles (radians)
-  sentence.phrases.forEach((phrase: Phrase) => {
+  sentence.phrases.forEach((phrase: Sentence | Word) => {
     phrase.absoluteAngularSize = (
       phrase.relativeAngularSize! * 2 * Math.PI / relativeAngularSizeSum
     )
@@ -43,7 +53,7 @@ export function renderPhrase(
 
   // Assign positions and calculate the size of each subphrase, and then render
   // them
-  sentence.phrases.forEach((phrase: Phrase, subphrase: number) => {
+  sentence.phrases.forEach((phrase: Sentence | Word, subphrase: number) => {
     calculateSubphraseGeometry(
       sentence,
       subphrase,
@@ -53,7 +63,7 @@ export function renderPhrase(
     )
     // TODO if subphrase is not word... recurse?
     if (phrase.depth === "sentence") {
-      renderPhrase(
+      renderSentence(
         phrase,
         settings
       )
@@ -66,7 +76,7 @@ export function renderPhrase(
   })
 
   // Make the debug paths for the subphrases
-  sentence.phrases.forEach((phrase: Phrase, index: number) => {
+  sentence.phrases.forEach((phrase: Sentence | Word, index: number) => {
     // Angular debug path: blue lines to show the angle subtended by this
     // phrase
     let subphraseAngularDebugPath = ""
