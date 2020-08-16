@@ -61,7 +61,6 @@ export interface Letter {
 
 export interface Subletter extends LetterData {
   depth: "subletter"
-  [_: string]: unknown    // Allows string-based assignment
   // Render properties
   height?: number
   full?: boolean          // Circle is full or cut off by word line

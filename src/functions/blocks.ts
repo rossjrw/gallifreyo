@@ -1,47 +1,15 @@
-import { isFunction } from "lodash"
-
 import { BlockName } from '@/types/alphabets'
 import { Settings } from '@/types/state'
 import { Letter } from '@/types/phrases'
 
-type BlockFunc<T> = (letter: Letter, settings: Settings) => T
-
-type BlockSettings = {
-  [block in BlockName]: {
-    height?: BlockFunc<number>
-    full?: BlockFunc<boolean>
-    relativeAngularSize: BlockFunc<number>
-  }
+type BlockSetting = {
+  height?: number
+  full?: boolean
+  relativeAngularSize: number
 }
 
-const BLOCK_SETTINGS: BlockSettings = {
-  s: {
-    height: (_letter, settings) => settings.config.s.height,
-    relativeAngularSize: (_letter, settings) => settings.config.s.width,
-    full: (_letter, _settings) => false,
-  },
-  p: {
-    height: (_letter, settings) => settings.config.p.height,
-    relativeAngularSize: (_letter, settings) => settings.config.p.width,
-    full: (_letter, _settings) => true,
-  },
-  d: {
-    height: (_letter, settings) => settings.config.d.height,
-    relativeAngularSize: (_letter, settings) => settings.config.d.width,
-    full: (_letter, _settings) => false,
-  },
-  f: {
-    height: (_letter, settings) => settings.config.f.height,
-    relativeAngularSize: (_letter, settings) => settings.config.f.width,
-    full: (_letter, _settings) => true,
-  },
-  v: {
-    height: (_letter, settings) => settings.config.v.height,
-    relativeAngularSize: (_letter, _settings) => 1,
-  },
-  buffer: {
-    relativeAngularSize: (_letter, settings) => settings.config.buffer.letter
-  },
+type BlockSettings = {
+  [block in BlockName]: BlockSetting
 }
 
 export function letterDataFromBlock(
@@ -59,18 +27,45 @@ export function letterDataFromBlock(
    * @param letter: The letter to be given block data.
    * @returns void; modifies letters in place.
    */
+
+  const BLOCK_SETTINGS: BlockSettings = {
+    s: {
+      height: settings.config.s.height,
+      relativeAngularSize: settings.config.s.width,
+      full: false,
+    },
+    p: {
+      height: settings.config.p.height,
+      relativeAngularSize: settings.config.p.width,
+      full: true,
+    },
+    d: {
+      height: settings.config.d.height,
+      relativeAngularSize: settings.config.d.width,
+      full: false,
+    },
+    f: {
+      height: settings.config.f.height,
+      relativeAngularSize: settings.config.f.width,
+      full: true,
+    },
+    v: {
+      height: settings.config.v.height,
+      relativeAngularSize: 1,
+    },
+    buffer: {
+      relativeAngularSize: settings.config.buffer.letter
+    },
+  }
+
   // Note that Letters do not have a block - subletters do.
   // A letter can be null, but null letters should not be passed to this
   // function.
-  for (const subletter of letter.subletters) {
-    for (const [property, value] of
-         Object.entries(BLOCK_SETTINGS[subletter.block])) {
-      // This is the part that requires [_: string]: unknown on Subletter
-      if (isFunction(value)) {
-        subletter[property] = value(letter, settings)
-      } else {
-        subletter[property] = value
-      }
+  letter.subletters = letter.subletters.map(subletter => {
+    const blockSetting = BLOCK_SETTINGS[subletter.block]
+    return {
+      ...subletter,
+      ...blockSetting,
     }
-  }
+  })
 }
