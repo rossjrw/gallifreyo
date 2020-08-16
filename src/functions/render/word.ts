@@ -46,7 +46,7 @@ export function renderWord(
     // Do not need to include buffer distance spefically, because the buffers
     // already exist as phantom letters
     (letter: Letter, index: number) => {
-      let angularLocation = (
+      letter.angularLocation = (
         word.phrases.slice(0, index + 1).reduce(
           (total: number, letter: Letter) => {
             return total + letter.subletters[0].absoluteAngularSize!
@@ -61,8 +61,8 @@ export function renderWord(
         vAngle,
         word.radius!,
       )
-      angularLocation = angularLocation * 180 / Math.PI
-      letter!.transform = `rotate(${angularLocation}, ${word.x}, ${word.y})`
+      const angularLocationDeg = letter.angularLocation * 180 / Math.PI
+      letter!.transform = `rotate(${angularLocationDeg}, ${word.x}, ${word.y})`
     }
   )
 }

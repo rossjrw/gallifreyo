@@ -53,6 +53,7 @@ export interface Letter {
   subletters: Subletter[]
   // Render properties
   height?: number
+  angularLocation?: number
   // Drawing properties
   paths?: Path[]
   transform?: string
