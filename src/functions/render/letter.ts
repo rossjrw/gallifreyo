@@ -4,7 +4,6 @@ export function renderLetter(
   word: Word,
   letter: Letter,
   angleSubtendedByVowel: number,
-  wordRadius: number,
 ): void {
   /**
    * Generates the SVG path for a given letter and attaches it as letter.d.
@@ -13,14 +12,17 @@ export function renderLetter(
    * @param letter: The letter to be rendered.
    * @param angleSubtendedByVowel: The absolute angle to be subtended by a
    * vowel for this word.
-   * @param wordRadius: The radius of the word.
    * @returns void; letter retains path information.
    */
+  const subletters = letter.subletters
+
   letter.paths = []
 
-  const angleSubtended = letter.subletters[0].absoluteAngularSize!
+  // The width of this letter as an angle
+  const angleSubtended = subletters[0].absoluteAngularSize!
 
-  const subletters = letter.subletters
+  // The angle of this letter relative to the word
+  const angle = letter.angularLocation!
 
   // The centre of the word, i.e. the top of the letter
   const wordCentre = {
@@ -29,20 +31,18 @@ export function renderLetter(
   }
 
   // Base of letter, a point on the word circle
-  // Should be directly below the centre of the word, and this letter will be
-  // rotated to the correct angle afterwards
   const letterBase = {
-    x: wordCentre.x,
-    y: wordCentre.y - wordRadius,
+    x: wordCentre.x + word.radius! * Math.sin(angle),
+    y: wordCentre.y - word.radius! * Math.cos(angle),
   }
 
   // The radius of the consonant circle
   const letterRadius = (
-    (wordRadius * Math.sin(angleSubtended / 2))
+    (word.radius! * Math.sin(angleSubtended / 2))
     / (subletters[0].height! * Math.sin(angleSubtended / 2) + 1)
   )
   const vowelRadius = (
-    (wordRadius * Math.sin(angleSubtendedByVowel / 2))
+    (word.radius! * Math.sin(angleSubtendedByVowel / 2))
     / 4
   )
   // vowelRadius is one quarter of letterRadius for a standard letter,
@@ -50,42 +50,44 @@ export function renderLetter(
 
   // The centre of the consonant circle
   const letterCentre = {
-    x: letterBase.x,
-    y: letterBase.y + subletters[0].height! * letterRadius,
+    x: letterBase.x - subletters[0].height! * letterRadius * Math.sin(angle),
+    y: letterBase.y + subletters[0].height! * letterRadius * Math.cos(angle),
+  }
+
+  // Distance of the vowel from the centre of the letter, along the same angle
+  let vowelStart = letterBase
+  let vowelDistance = 0
+  if (subletters.length > 1) {
+    if (subletters[1].vert === -1) {
+      vowelDistance = -2 * vowelRadius
+    } else if (subletters[1].vert === 0) {
+      if (["s", "p"].includes(subletters[0].block)) {
+        vowelStart = letterCentre
+        vowelDistance = 0
+      } else if (["d", "f", "v"].includes(subletters[0].block)) {
+        vowelDistance = 0
+      }
+    } else if (subletters[1].vert === 1) {
+      vowelStart = letterCentre
+      vowelDistance = letterRadius
+    }
   }
 
   // The centre of a vowel on this letter
   const vowelCentre = {
-    x: letterCentre.x,
-    y: letterBase.y, // Placeholder for vert-dependent calculation
-  }
-  if (subletters.length > 1) {
-    if (subletters[1].vert === -1) {
-      vowelCentre.y = letterBase.y - 2 * vowelRadius
-    } else if (subletters[1].vert === 0) {
-      if (["s", "p"].includes(subletters[0].block)) {
-        vowelCentre.y = letterCentre.y
-      } else if (["d", "f", "v"].includes(subletters[0].block)) {
-        vowelCentre.y = letterBase.y
-      }
-    } else if (subletters[1].vert === 1) {
-      if (["s", "p", "d", "f"].includes(subletters[0].block)) {
-        vowelCentre.y = letterCentre.y + letterRadius
-      } else if (["v"].includes(subletters[0].block)) {
-        vowelCentre.y = letterBase.y + 2 * vowelRadius
-      }
-    }
+    x: vowelStart.x - vowelDistance * Math.sin(angle),
+    y: vowelStart.y + vowelDistance * Math.cos(angle),
   }
 
   // The first point at which the word line intersects with the consonant
   // circle, or NaN if it does not.
   const letterStart = {
     x: circleIntersectionPoints(
-      wordCentre.x, wordCentre.y, wordRadius,
+      wordCentre.x, wordCentre.y, word.radius!,
       letterCentre.x, letterCentre.y, letterRadius
     )[1],
     y: circleIntersectionPoints(
-      wordCentre.x, wordCentre.y, wordRadius,
+      wordCentre.x, wordCentre.y, word.radius!,
       letterCentre.x, letterCentre.y, letterRadius
     )[3],
   }
@@ -94,11 +96,11 @@ export function renderLetter(
   // circle, or NaN if it does not.
   const letterEnd = {
     x: circleIntersectionPoints(
-      wordCentre.x, wordCentre.y, wordRadius,
+      wordCentre.x, wordCentre.y, word.radius!,
       letterCentre.x, letterCentre.y, letterRadius
     )[0],
     y: circleIntersectionPoints(
-      wordCentre.x, wordCentre.y, wordRadius,
+      wordCentre.x, wordCentre.y, word.radius!,
       letterCentre.x, letterCentre.y, letterRadius
     )[2],
   }
@@ -139,7 +141,7 @@ export function renderLetter(
     // not it intersects with the word.
     if (subletters[0].full) {
       // Draw uninterrupted word segment
-      path += `A ${wordRadius} ${wordRadius} 0 0 1 ${wordEnd.x} ${wordEnd.y}`
+      path += `A ${word.radius} ${word.radius} 0 0 1 ${wordEnd.x} ${wordEnd.y}`
       // Jump to letter circle and draw it
       path += `M ${letterCentre.x} ${letterCentre.y}`
       path += `m -${letterRadius} 0`
@@ -149,7 +151,7 @@ export function renderLetter(
       path += `M ${wordEnd.x} ${wordEnd.y}`
     } else {
       // Draw word segment until intersection
-      path += `A ${wordRadius} ${wordRadius} 0 0 1 ${letterStart.x} ${letterStart.y}`
+      path += `A ${word.radius} ${word.radius} 0 0 1 ${letterStart.x} ${letterStart.y}`
       // Draw along letter curve until next intersection
       if (subletters[0].block == "s") {
         // Select the correct arc to draw
@@ -159,7 +161,7 @@ export function renderLetter(
         path += `A ${letterRadius} ${letterRadius} 0 0 0 ${letterEnd.x} ${letterEnd.y}`
       }
       // Draw remainder of word segment and declare finished
-      path += `A ${wordRadius} ${wordRadius} 0 0 1 ${wordEnd.x} ${wordEnd.y}`
+      path += `A ${word.radius} ${word.radius} 0 0 1 ${wordEnd.x} ${wordEnd.y}`
     }
     // Draw any vowels
     if(subletters.length == 2){
@@ -180,10 +182,10 @@ export function renderLetter(
     }
   } else if (subletters[0].block === `buffer`) {
     // Draw the buffer, which is just an empty word segment
-    path += `A ${wordRadius} ${wordRadius} 0 0 1 ${wordEnd.x} ${wordEnd.y}`
+    path += `A ${word.radius} ${word.radius} 0 0 1 ${wordEnd.x} ${wordEnd.y}`
   } else if (subletters[0].block === "v") {
     // Draw the uninterrupted word segment
-    path += `A ${wordRadius} ${wordRadius} 0 0 1 ${wordEnd.x} ${wordEnd.y}`
+    path += `A ${word.radius} ${word.radius} 0 0 1 ${wordEnd.x} ${wordEnd.y}`
     // Jump to the vowel and draw its circle
     path += `M ${vowelCentre.x} ${vowelCentre.y}`
     path += `m -${vowelRadius} 0`

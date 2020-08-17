@@ -59,10 +59,7 @@ export function renderWord(
         word,
         letter!,
         vAngle,
-        word.radius!,
       )
-      const angularLocationDeg = letter.angularLocation * 180 / Math.PI
-      letter!.transform = `rotate(${angularLocationDeg}, ${word.x}, ${word.y})`
     }
   )
 }
