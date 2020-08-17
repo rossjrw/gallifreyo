@@ -14,11 +14,15 @@ export function renderLetter(
    * vowel for this word.
    * @returns void; letter retains path information.
    */
+  const subletters = letter.subletters
+
   letter.paths = []
 
-  const angleSubtended = letter.subletters[0].absoluteAngularSize!
+  // The width of this letter as an angle
+  const angleSubtended = subletters[0].absoluteAngularSize!
 
-  const subletters = letter.subletters
+  // The angle of this letter relative to the word
+  const angle = letter.angularLocation!
 
   // The centre of the word, i.e. the top of the letter
   const wordCentre = {
@@ -27,11 +31,9 @@ export function renderLetter(
   }
 
   // Base of letter, a point on the word circle
-  // Should be directly below the centre of the word, and this letter will be
-  // rotated to the correct angle afterwards
   const letterBase = {
-    x: wordCentre.x,
-    y: wordCentre.y - word.radius!,
+    x: wordCentre.x + word.radius! * Math.sin(angle),
+    y: wordCentre.y - word.radius! * Math.cos(angle),
   }
 
   // The radius of the consonant circle
@@ -48,31 +50,35 @@ export function renderLetter(
 
   // The centre of the consonant circle
   const letterCentre = {
-    x: letterBase.x,
-    y: letterBase.y + subletters[0].height! * letterRadius,
+    x: letterBase.x - subletters[0].height! * letterRadius * Math.sin(angle),
+    y: letterBase.y + subletters[0].height! * letterRadius * Math.cos(angle),
+  }
+
+  // Distance of the vowel from the centre of the letter, along the same angle
+  let vowelDistance = 0
+  if (subletters.length > 1) {
+    if (subletters[1].vert === -1) {
+      vowelDistance = word.radius! + 2 * vowelRadius
+    } else if (subletters[1].vert === 0) {
+      if (["s", "p"].includes(subletters[0].block)) {
+        vowelDistance = 0
+      } else if (["d", "f", "v"].includes(subletters[0].block)) {
+        vowelDistance = letterRadius
+      }
+    } else if (subletters[1].vert === 1) {
+      if (["s", "p", "d", "f"].includes(subletters[0].block)) {
+        vowelDistance = letterRadius
+      } else if (["v"].includes(subletters[0].block)) {
+        // vowelCentre.y = letterBase.y + 2 * vowelRadius
+        throw new Error("tried to attach a vowel to a vowel")
+      }
+    }
   }
 
   // The centre of a vowel on this letter
   const vowelCentre = {
-    x: letterCentre.x,
-    y: letterBase.y, // Placeholder for vert-dependent calculation
-  }
-  if (subletters.length > 1) {
-    if (subletters[1].vert === -1) {
-      vowelCentre.y = letterBase.y - 2 * vowelRadius
-    } else if (subletters[1].vert === 0) {
-      if (["s", "p"].includes(subletters[0].block)) {
-        vowelCentre.y = letterCentre.y
-      } else if (["d", "f", "v"].includes(subletters[0].block)) {
-        vowelCentre.y = letterBase.y
-      }
-    } else if (subletters[1].vert === 1) {
-      if (["s", "p", "d", "f"].includes(subletters[0].block)) {
-        vowelCentre.y = letterCentre.y + letterRadius
-      } else if (["v"].includes(subletters[0].block)) {
-        vowelCentre.y = letterBase.y + 2 * vowelRadius
-      }
-    }
+    x: letterCentre.x + vowelDistance * Math.sin(angle),
+    y: letterCentre.y + vowelDistance * Math.sin(angle),
   }
 
   // The first point at which the word line intersects with the consonant
