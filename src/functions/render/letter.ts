@@ -55,30 +55,28 @@ export function renderLetter(
   }
 
   // Distance of the vowel from the centre of the letter, along the same angle
+  let vowelStart = letterBase
   let vowelDistance = 0
   if (subletters.length > 1) {
     if (subletters[1].vert === -1) {
-      vowelDistance = word.radius! + 2 * vowelRadius
+      vowelDistance = -2 * vowelRadius
     } else if (subletters[1].vert === 0) {
       if (["s", "p"].includes(subletters[0].block)) {
+        vowelStart = letterCentre
         vowelDistance = 0
       } else if (["d", "f", "v"].includes(subletters[0].block)) {
-        vowelDistance = letterRadius
+        vowelDistance = 0
       }
     } else if (subletters[1].vert === 1) {
-      if (["s", "p", "d", "f"].includes(subletters[0].block)) {
-        vowelDistance = letterRadius
-      } else if (["v"].includes(subletters[0].block)) {
-        // vowelCentre.y = letterBase.y + 2 * vowelRadius
-        throw new Error("tried to attach a vowel to a vowel")
-      }
+      vowelStart = letterCentre
+      vowelDistance = letterRadius
     }
   }
 
   // The centre of a vowel on this letter
   const vowelCentre = {
-    x: letterCentre.x + vowelDistance * Math.sin(angle),
-    y: letterCentre.y + vowelDistance * Math.sin(angle),
+    x: vowelStart.x - vowelDistance * Math.sin(angle),
+    y: vowelStart.y + vowelDistance * Math.cos(angle),
   }
 
   // The first point at which the word line intersects with the consonant
