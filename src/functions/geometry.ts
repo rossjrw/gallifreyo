@@ -76,14 +76,14 @@ export function calculateSubphraseGeometry(
       spiralBuffer,
       spiralBuffer,
       sentence.phrases.length,
-      0 // XXX n is reversed - should this be length also?
+      0,
     )[1]
 
     // Spirals are slightly smaller than circles, so calculate the wanted
     // radius into a multiplier value
     // TODO more refined process including centre shifting
     // XXX I don't think /2 is correct
-    const targetSpiralRadius = sentence.radius! / 2
+    const targetSpiralRadius = sentence.radius!
     const multiplier = targetSpiralRadius / estimatedSpiralRadius
 
     sentence.phrases[w].radius = multiplier/2
@@ -100,8 +100,8 @@ export function calculateSubphraseGeometry(
       w,
       multiplier,
     )
-    sentence.phrases[w].x = sentence.x! + coords[0]
-    sentence.phrases[w].y = sentence.y! + coords[1]
+    sentence.phrases[w].x = sentence.x! + coords[0] - multiplier/2
+    sentence.phrases[w].y = sentence.y! + coords[1] + multiplier/2
 
   } else if (structure === "Automatic") {
     if (
