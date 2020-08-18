@@ -22,7 +22,6 @@ export type State = {
 export type Settings = {
   splits: string[]
   selectedAlphabets: string[]
-  structure: string
   scaling: boolean
   watermark: boolean
   debug: boolean
@@ -42,6 +41,8 @@ export type Config = {
   word: BlockConfig
   buffer: BufferConfig
   automatic: AutomaticConfig
+  sizeDependenceOnLength: number
+  positionAlgorithm: 'Circular' | 'Spiral'
 }
 
 export type BlockConfig = {
