@@ -18,7 +18,6 @@ export default new Vuex.Store({
     settings: {
       splits: [ "\n\n", "\n", " " ],
       selectedAlphabets: ["base", "Sherman", "ShermanVowels"],
-      structure: "Automatic",
       scaling: true, // sentence size scaling
       watermark: true,
       debug: false,
