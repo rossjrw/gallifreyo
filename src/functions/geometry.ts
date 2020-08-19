@@ -4,7 +4,6 @@ import { Sentence, Word } from '@/types/phrases'
 export function calculateSubphraseGeometry(
   sentence: Sentence,
   w: number, // XXX only used as index
-  structure: string, // the selected structure type
   relativeAngularSizeSum: number, // the sum of relative angles
   settings: Settings,
 ): void {
@@ -21,8 +20,20 @@ export function calculateSubphraseGeometry(
    * @returns void; Modifies the subphrase in place to add x, y, radius, and
    * angularLocation
    */
-  // half of that angle, for some reason
-  if (structure === "Simple" || structure === "Size-Scaled") {
+
+  let structure = settings.config.positionAlgorithm
+
+  // If the positioning algorithm is marked as automatic, pick the best one
+  if (structure === 'Automatic') {
+    if (sentence.phrases.length > 8) {
+      structure = 'Spiral'
+    } else {
+      structure = 'Circular'
+    }
+  }
+
+  if (structure === 'Circular') {
+    // The basic algorithm with everything subtending angles of a circle
     // Calculate the angle subtended by the subphrase's radius
     const radialSubtension = sentence.phrases[w].absoluteAngularSize! / 2
     if (sentence.phrases.length > 1) {
@@ -60,7 +71,7 @@ export function calculateSubphraseGeometry(
     sentence.phrases[w].x = sentence.x! + translate.x
     sentence.phrases[w].y = sentence.y! + translate.y
 
-  } else if (structure === "Spiral") {
+  } else if (structure === 'Spiral') {
     // For long sentences is is likely appropriate to place each word on the
     // path of a spiral, to avoid excessive wasted space in the middle of the
     // circle.
@@ -103,25 +114,6 @@ export function calculateSubphraseGeometry(
     sentence.phrases[w].x = sentence.x! + coords[0] - multiplier/2
     sentence.phrases[w].y = sentence.y! + coords[1] + multiplier/2
 
-  } else if (structure === "Automatic") {
-    if (
-      sentence.phrases.length < settings.config.automatic.scaledLessThan
-    ) {
-      structure = "Size-Scaled"
-    } else if (
-      sentence.phrases.length > settings.config.automatic.spiralMoreThan
-    ) {
-      structure = "Spiral"
-    } else {
-      structure = "Simple"
-    }
-    calculateSubphraseGeometry(
-      sentence,
-      w,
-      structure,
-      relativeAngularSizeSum,
-      settings
-    )
   }
 }
 

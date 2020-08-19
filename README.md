@@ -7,12 +7,13 @@
 [![made with bulma](https://img.shields.io/badge/made_with-bulma-00d1b2?logo=bulma)](https://bulma.io)
 
 An English-to-Gallifreyan transliterator, based on
-[Sherman's Gallifreyan](https://shermansplanet.com/gallifreyan/).
+[Sherman's Gallifreyan](https://shermansplanet.com/gallifreyan/)
+created by Loren Sherman.
 
 Note that Sherman's Gallifreyan is a fan-made cipher and is not affiliated with
 the BBC show Doctor Who.
 
-[See it in action](https://rossjrw.github.io/gallifreyo)
+[See it in action](https://rossjrw.com/gallifreyo)
 
 ## Project status
 
@@ -21,15 +22,15 @@ Incomplete.
 ## Licensing
 
 Gallifreyo is licensed under
-[AGPLv3](https://www.gnu.org/licenses/agpl-3.0.html).
+[AGPL 3.0](https://www.gnu.org/licenses/agpl-3.0.html),
+meaning that it's open source, and that you or anyone else can copy the code
+and make changes to it, provided that the resulting code is also open source.
+See the licence for more details.
 
-Images produced by Gallifreyo are subject to the same license of the text that
+Images produced by Gallifreyo are subject to the same licence of the text that
 created them. For example:
 
 * If you wrote the text yourself, you own the copyright.
 * If you translate text someone else wrote, they own the copyright.
-* If you translate a Wikipedia page, the result is licensed CC-BY SA.
-* If you translate Gallifreyo's source code, the result is under AGPLv3.
-
-Please do add a link to Gallifreyo wherever your images end up, but that is not
-a legal requirement.
+* If you translate a Wikipedia page, the result is licensed CC BY-SA.
+* If you translate Gallifreyo's source code, the result is under AGPL 3.0.
