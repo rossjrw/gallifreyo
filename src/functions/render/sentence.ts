@@ -33,10 +33,26 @@ export function renderSentence(
     }
   })
 
-  // Calculate the sum of the relative angles
+  // Calculate the sum of the relative angles, excluding buffers
+  let relativeAngularSizeSum = sentence.phrases.reduce(
+    (total: number, phrase: Sentence | Word) => {
+      return total + phrase.relativeAngularSize!
+    }, 0
+  )
+
+  // Normalise relative angles such that they average to 1
+  // This is so that buffers are always consistent
+  sentence.phrases.forEach((phrase: Sentence | Word) => {
+    phrase.relativeAngularSize = (
+      phrase.relativeAngularSize! /
+        (relativeAngularSizeSum / sentence.phrases.length)
+    )
+  })
+
+  // Calculate the sum of the relative angles, including buffers
   // Note that this calculation includes buffers between letters, which at this
   // point do not yet exist
-  const relativeAngularSizeSum = sentence.phrases.reduce(
+  relativeAngularSizeSum = sentence.phrases.reduce(
     (total: number, phrase: Sentence | Word) => {
       return total + phrase.relativeAngularSize!
     }, 0
