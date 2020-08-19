@@ -78,6 +78,8 @@ export function calculateSubphraseGeometry(
 
     // Spiral buffer is both the distance between spiral rungs and the distance
     // between words, to ensure visually consistent spacing.
+    // The spiral buffer must remain constant through the whole spiral -
+    // luckily, the average of the relative angles is 1
     const spiralBuffer = 1 + settings.config.buffer.phrase
 
     // Use the y coordinate of a theoretical final letter to estimate the
@@ -97,9 +99,21 @@ export function calculateSubphraseGeometry(
     const targetSpiralRadius = sentence.radius!
     const multiplier = targetSpiralRadius / estimatedSpiralRadius
 
-    sentence.phrases[w].radius = multiplier/2
+    sentence.phrases[w].radius = sentence.phrases[w].relativeAngularSize! * multiplier/2
     // why does it need to be /2 ???
     // because the multiplier is the length of the unit diameter
+
+    // Calculate the cumulative sum of relative angles, to simulate their
+    // effect on the position of this node along the spiral
+    const relativeAngularSizeSum = (
+      sentence.phrases.slice(0, w + 1).reduce(
+        (total: number, phrase: Sentence | Word) => {
+          return total + phrase.relativeAngularSize!
+        }, 0
+      )
+      - (sentence.phrases[0].relativeAngularSize! / 2)
+      - (sentence.phrases[w].relativeAngularSize! / 2)
+    )
 
     // Calculate coordinates of the word
     const coords = getSpiralCoord(
@@ -108,12 +122,13 @@ export function calculateSubphraseGeometry(
       sentence.phrases.length,
       // length is sent instead of length-1 to ignore the final point of the
       // spiral - do not want to render a word exactly in the centre
-      w,
+      relativeAngularSizeSum,
+      // w,
       multiplier,
     )
+
     sentence.phrases[w].x = sentence.x! + coords[0] - multiplier/2
     sentence.phrases[w].y = sentence.y! + coords[1] + multiplier/2
-
   }
 }
 
