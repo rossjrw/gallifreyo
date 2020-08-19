@@ -24,11 +24,9 @@ export function renderSentence(
   sentence.phrases.forEach((phrase: Sentence | Word) => {
     if(Array.isArray(phrase.phrases)){
       // This is a word
-      if (settings.structure == "Size-Scaled"){
-        phrase.relativeAngularSize = phrase.phrases.length
-      } else {
-        phrase.relativeAngularSize = 1
-      }
+      phrase.relativeAngularSize = Math.pow(
+        phrase.phrases.length, settings.config.sizeScaling
+      )
     } else {
       // This is a buffer
       phrase.relativeAngularSize = settings.config.buffer.phrase
@@ -57,7 +55,6 @@ export function renderSentence(
     calculateSubphraseGeometry(
       sentence,
       subphrase,
-      settings.structure,
       relativeAngularSizeSum,
       settings,
     )

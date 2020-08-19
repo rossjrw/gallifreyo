@@ -22,18 +22,18 @@ export type State = {
 export type Settings = {
   splits: string[]
   selectedAlphabets: string[]
-  structure: string
   scaling: boolean
   watermark: boolean
   debug: boolean
   width: number
   foregroundColour: string
+  foregroundAlpha: number
   backgroundColour: string
+  backgroundAlpha: number
   config: Config
 }
 
 export type Config = {
-  // TODO work out what the FUCK these mean
   s: BlockConfig
   p: BlockConfig
   d: BlockConfig
@@ -42,6 +42,8 @@ export type Config = {
   word: BlockConfig
   buffer: BufferConfig
   automatic: AutomaticConfig
+  sizeScaling: number
+  positionAlgorithm: 'Automatic' | 'Circular' | 'Spiral'
 }
 
 export type BlockConfig = {
