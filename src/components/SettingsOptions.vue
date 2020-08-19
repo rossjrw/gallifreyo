@@ -58,11 +58,10 @@
           <div class="field">
             <div class="select">
               <div class="control">
-                <select v-model="structure">
-                  <option>Simple</option>
-                  <option>Size-Scaled</option>
-                  <option>Spiral</option>
+                <select v-model="positionAlgorithm">
                   <option>Automatic</option>
+                  <option>Circular</option>
+                  <option>Spiral</option>
                 </select>
               </div>
             </div>
@@ -196,10 +195,6 @@ export default Vue.extend({
       get() { return this.$store.state.settings.automatic },
       set(value) { this.setting({ prop: 'automatic', value }) },
     },
-    structure: {
-      get() { return this.$store.state.settings.structure },
-      set(value) { this.setting({ prop: 'structure', value }) },
-    },
     width: {
       get() { return this.$store.state.settings.width },
       set(value) { this.setting({ prop: 'width', value }) },
@@ -231,6 +226,10 @@ export default Vue.extend({
     sizeScaling: {
       get() { return this.$store.state.settings.config.sizeScaling },
       set(value) { this.setting({ prop: 'config.sizeScaling', value }) },
+    },
+    positionAlgorithm: {
+      get() { return this.$store.state.settings.config.positionAlgorithm },
+      set(value) { this.setting({ prop: 'config.positionAlgorithm', value }) },
     },
   }
 })
