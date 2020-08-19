@@ -25,7 +25,9 @@ export default new Vuex.Store({
       automatic: true,
       width: 1024,
       foregroundColour: "#000000",
+      foregroundAlpha: 0,
       backgroundColour: "#FFFFFF",
+      backgroundAlpha: 1,
       config: {
         s: { height: 0.9, width: 1 },
         p: { height: 1.2, width: 1 },
@@ -35,6 +37,8 @@ export default new Vuex.Store({
         word: { height: 1.2, width: 1 },
         buffer: { letter: 0.5, phrase: 0.3 },
         automatic: { scaledLessThan: 6, spiralMoreThan: 9 },
+        sizeScaling: 0,
+        positionAlgorithm: 'Circular',
       },
     },
   } as State,
