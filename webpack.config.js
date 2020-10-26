@@ -4,12 +4,14 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 module.exports = {
-  entry: './src/index.ts',
+  entry: {
+    main: './src/index.ts',
+    collisions: './src/collisions/index.ts',
+  },
   output: {
     filename: 'bundle.[contenthash].js',
     path: path.resolve(__dirname, 'dist'),
   },
-  devtool: "source-map",
   module: {
     rules: [
       {
@@ -64,6 +66,14 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: "Gallifreyo · Gallifreyan Translator",
       template: './src/template.ejs',
+      filename: 'index.html',
+      chunks: ['main'],
+    }),
+    new HtmlWebpackPlugin({
+      title: "Gallifreyo · Collisions Test",
+      template: './src/template.ejs',
+      filename: 'collisions/index.html',
+      chunks: ['collisions'],
     }),
   ],
 };

@@ -41,6 +41,7 @@
     "clean-webpack-plugin": "^3.0.0",
     "core-js": "^3.6.5",
     "css-loader": "^3.5.3",
+    "detect-collisions": "^2.5.2",
     "eslint": "^7.1.0",
     "eslint-plugin-vue": "^6.2.2",
     "html-webpack-plugin": "^4.3.0",
