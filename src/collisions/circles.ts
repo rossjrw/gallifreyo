@@ -1,4 +1,4 @@
-import { Collisions, Circle, Result } from "detect-collisions"
+import { Collisions, Circle, Result, Body } from "detect-collisions"
 import { range } from "lodash"
 
 const width = 600
@@ -44,6 +44,8 @@ export class GrowingCirclesTest {
       this.collisions.createPolygon(0, 0, [thisPoint, nextPoint])
     })
 
+    this.createCircles()
+
     const nextFrame = () => {
       this.update()
       this.frame = requestAnimationFrame(nextFrame)
@@ -52,30 +54,63 @@ export class GrowingCirclesTest {
     this.frame = requestAnimationFrame(nextFrame)
   }
 
+  createCircles(): void {
+    this.bodies = []
+    const circleCount = random(2, 8)
+    const bodyPoints = range(0, circleCount).map(index => {
+      const angle = index * 2 * Math.PI / circleCount - Math.PI / 2
+      return [
+        Math.cos(angle) * width/3 + width/2,
+        Math.sin(angle) * width/3 + width/2,
+      ]
+    })
+    bodyPoints.forEach(point => {
+      console.log("circle", point)
+      this.bodies.push(
+        this.collisions.createCircle(point[0], point[1], random(10, 50))
+      )
+    })
+  }
+
   update(): void {
+    this.bodies.forEach(body => {
+      // body.scale *= 1.01
+    })
+
     this.collisions.update()
 
     this.bodies.forEach(body => {
-      body.x += body.direction_x * speed
-      body.y += body.direction_y * speed
-
       const potentials = body.potentials()
 
-      for (const body2 of potentials) {
-        if (body.collides(body2, result)) {
-          body.x -= result.overlap * result.overlap_x
-          body.y -= result.overlap * result.overlap_y
+      type Touch = {
+        magnitude: number
+        xDir: number
+        yDir: number
+        object: 'word' | 'sentence'
+      }
 
-          let dot = body.direction_x * result.overlap_y + body.direction_y * -result.overlap_x
+      const touches: Touch[] = []
 
-          body.direction_x = 2 * dot * result.overlap_y - body.direction_x
-          body.direction_y = 2 * dot * -result.overlap_x - body.direction_y
-
-          dot = body2.direction_x * result.overlap_y + body2.direction_y * -result.overlap_x
-
-          body2.direction_x = 2 * dot * result.overlap_y - body2.direction_x
-          body2.direction_y = 2 * dot * -result.overlap_x - body2.direction_y
+      potentials.forEach(otherBody => {
+        if (body.collides(otherBody, result)) {
+          touches.push({
+            magnitude: result.overlap,
+            xDir: result.overlap_x,
+            yDir: result.overlap_y,
+            object: isCircle(result.b) ? 'word' : 'sentence',
+          })
+          // body.x -= result.overlap * result.overlap_x
+          // body.y -= result.overlap * result.overlap_y
         }
+      })
+      touches.forEach(touch => {
+        if (touches.length < 3) {
+          body.x -= touch.magnitude * touch.xDir
+          body.y -= touch.magnitude * touch.yDir
+        }
+      })
+      if (touches.length < 2) {
+        body.scale *= 1.01
       }
     })
 
@@ -101,4 +136,8 @@ export class GrowingCirclesTest {
 
 function random(min: number, max: number): number {
   return Math.floor(Math.random() * max) + min
+}
+
+function isCircle(body: Body): body is Circle {
+  return 'radius' in body
 }
