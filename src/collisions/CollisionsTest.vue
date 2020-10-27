@@ -4,9 +4,16 @@
       <label>
         <input type="checkbox"
                v-model="wantsBvh"
-               @change="changeBvh()"
-               id="show-bounding-box">
+               @change="changeBvh()">
         Show Bounding Volume Hierarchy boxes
+      </label>
+    </div>
+    <div>
+      <label>
+        <input type="checkbox"
+               v-model="instant"
+               @change="changeInstant()">
+        Instant mode
       </label>
     </div>
     <div>
@@ -29,11 +36,15 @@ export default Vue.extend({
       test: new GrowingCirclesTest(),
       canvas: null as null | HTMLCanvasElement,
       wantsBvh: false,
+      instant: false,
     }
   },
   methods: {
     changeBvh: function () {
       this.test.wantsBvh = this.wantsBvh
+    },
+    changeInstant: function () {
+      this.test.instant = this.instant
     },
     reset: function () {
       this.test.createCircles()

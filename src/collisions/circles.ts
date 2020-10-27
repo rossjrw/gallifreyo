@@ -15,6 +15,7 @@ export class GrowingCirclesTest {
   bodies: Circle[]
   frame: number
   wantsBvh: boolean
+  instant: boolean
 
   constructor() {
     this.element = document.createElement('div')
@@ -23,7 +24,9 @@ export class GrowingCirclesTest {
     this.collisions = new Collisions()
     this.result = this.collisions.createResult()
     this.bodies = []
+    this.frame = 0
     this.wantsBvh = false
+    this.instant = false
 
     this.canvas.width = width
     this.canvas.height = height
@@ -46,10 +49,14 @@ export class GrowingCirclesTest {
 
     const nextFrame = () => {
       this.update()
-      this.frame = requestAnimationFrame(nextFrame)
+      if (this.instant) {
+        nextFrame()
+      } else {
+        this.frame = requestAnimationFrame(nextFrame)
+      }
     }
 
-    this.frame = requestAnimationFrame(nextFrame)
+    nextFrame()
   }
 
   createCircles(): void {
