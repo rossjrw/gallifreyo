@@ -16,6 +16,8 @@ export class GrowingCirclesTest {
   stopPlease: boolean
   wantsBvh: boolean
   instant: boolean
+  startTime: number
+  endTime: number
 
   constructor() {
     this.element = document.createElement('div')
@@ -27,6 +29,8 @@ export class GrowingCirclesTest {
     this.stopPlease = false
     this.wantsBvh = false
     this.instant = false
+    this.startTime = performance.now()
+    this.endTime = 0
 
     this.canvas.width = width
     this.canvas.height = height
@@ -91,6 +95,8 @@ export class GrowingCirclesTest {
         this.collisions.createCircle(point[0], point[1], ratio)
       )
     })
+
+    this.startTime = performance.now()
   }
 
   update(): void {
@@ -140,6 +146,7 @@ export class GrowingCirclesTest {
 
     if (locks == this.bodies.length) {
       this.stopPlease = true
+      this.endTime = performance.now()
     }
 
     // Clear the canvas

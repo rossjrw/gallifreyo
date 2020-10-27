@@ -21,6 +21,9 @@
         Reset
       </button>
     </div>
+    <div>
+      <p>Took {{time}}ms</p>
+    </div>
   </div>
 </template>
 
@@ -37,6 +40,11 @@ export default Vue.extend({
       canvas: null as null | HTMLCanvasElement,
       wantsBvh: false,
       instant: false,
+    }
+  },
+  computed: {
+    time: {
+      get() { return this.test.endTime - this.test.startTime }
     }
   },
   methods: {
