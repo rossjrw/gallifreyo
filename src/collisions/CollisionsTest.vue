@@ -10,7 +10,7 @@
       </label>
     </div>
     <div>
-      <button>
+      <button @click="reset">
         Reset
       </button>
     </div>
@@ -34,6 +34,9 @@ export default Vue.extend({
   methods: {
     changeBvh: function () {
       this.test.wantsBvh = this.wantsBvh
+    },
+    reset: function () {
+      this.test.createCircles()
     }
   },
   mounted() {

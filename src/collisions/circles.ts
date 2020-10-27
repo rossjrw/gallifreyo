@@ -53,6 +53,7 @@ export class GrowingCirclesTest {
   }
 
   createCircles(): void {
+    this.bodies.forEach(body => body.remove())
     this.bodies = []
     const circleCount = random(2, 8)
     const ratios = range(0, circleCount).map(() => random(10, 50))
