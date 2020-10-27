@@ -48,6 +48,7 @@ export default Vue.extend({
     },
     reset: function () {
       this.test.createCircles()
+      this.test.nextFrame()
     }
   },
   mounted() {

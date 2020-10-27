@@ -13,7 +13,7 @@ export class GrowingCirclesTest {
   collisions: Collisions
   result: Result
   bodies: Circle[]
-  frame: number
+  stopPlease: boolean
   wantsBvh: boolean
   instant: boolean
 
@@ -24,7 +24,7 @@ export class GrowingCirclesTest {
     this.collisions = new Collisions()
     this.result = this.collisions.createResult()
     this.bodies = []
-    this.frame = 0
+    this.stopPlease = false
     this.wantsBvh = false
     this.instant = false
 
@@ -47,16 +47,20 @@ export class GrowingCirclesTest {
 
     this.createCircles()
 
-    const nextFrame = () => {
-      this.update()
-      if (this.instant) {
-        nextFrame()
-      } else {
-        this.frame = requestAnimationFrame(nextFrame)
-      }
-    }
+    this.nextFrame()
+  }
 
-    nextFrame()
+  nextFrame(): void {
+    this.update()
+    if (this.stopPlease) {
+      this.stopPlease = false
+      return
+    }
+    if (this.instant) {
+      this.nextFrame()
+    } else {
+      requestAnimationFrame(() => this.nextFrame())
+    }
   }
 
   createCircles(): void {
@@ -92,6 +96,8 @@ export class GrowingCirclesTest {
   update(): void {
     this.collisions.update()
 
+    let locks = 0
+
     this.bodies.forEach(body => {
       const potentials = body.potentials()
 
@@ -112,8 +118,6 @@ export class GrowingCirclesTest {
             yDir: result.overlap_y,
             object: isCircle(result.b) ? 'word' : 'sentence',
           })
-          // body.x -= result.overlap * result.overlap_x
-          // body.y -= result.overlap * result.overlap_y
         }
       })
       touches.forEach(touch => {
@@ -129,8 +133,14 @@ export class GrowingCirclesTest {
         touches.filter(touch => touch.object === 'word').length < 2
       ) {
         body.scale *= 1.01
+      } else {
+        locks ++
       }
     })
+
+    if (locks == this.bodies.length) {
+      this.stopPlease = true
+    }
 
     // Clear the canvas
     this.context.fillStyle = '#000000'
