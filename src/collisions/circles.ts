@@ -1,12 +1,10 @@
 import { Collisions, Circle, Result, Body } from "detect-collisions"
-import { range } from "lodash"
+import { range, zip } from "lodash"
 
 const width = 600
 const height = width
-const count = 50
-const speed = 1
 const result = new Collisions().createResult()
-const circleRes = 12
+const circleRes = 48
 
 export class GrowingCirclesTest {
   element: HTMLDivElement
@@ -57,26 +55,33 @@ export class GrowingCirclesTest {
   createCircles(): void {
     this.bodies = []
     const circleCount = random(2, 8)
-    const bodyPoints = range(0, circleCount).map(index => {
-      const angle = index * 2 * Math.PI / circleCount - Math.PI / 2
+    const ratios = range(0, circleCount).map(() => random(10, 50))
+    const ratioSum = ratios.reduce((a, b) => a + b, 0)
+    const bodyAngularSizes = ratios.map(ratio => {
+      return ratio * 2 * Math.PI / ratioSum
+    })
+    const bodyAngularLocations = range(0, circleCount).map(index => {
+      return bodyAngularSizes.slice(0, index + 1).reduce(
+        (total, size) => total + size, 0
+      )
+      - (bodyAngularSizes[0] / 2) - (bodyAngularSizes[index] / 2)
+    })
+    const bodyPoints = bodyAngularLocations.map(angle => {
       return [
-        Math.cos(angle) * width/3 + width/2,
-        Math.sin(angle) * width/3 + width/2,
+        Math.cos(angle) * width/2.5 + width/2,
+        Math.sin(angle) * width/2.5 + width/2,
       ]
     })
-    bodyPoints.forEach(point => {
-      console.log("circle", point)
+    zip(bodyPoints, ratios).forEach(body => {
+      const point = body[0]!
+      const ratio = body[1]!
       this.bodies.push(
-        this.collisions.createCircle(point[0], point[1], random(10, 50))
+        this.collisions.createCircle(point[0], point[1], ratio)
       )
     })
   }
 
   update(): void {
-    this.bodies.forEach(body => {
-      // body.scale *= 1.01
-    })
-
     this.collisions.update()
 
     this.bodies.forEach(body => {
@@ -104,12 +109,17 @@ export class GrowingCirclesTest {
         }
       })
       touches.forEach(touch => {
+        // Lock the position if touching 3 objects
         if (touches.length < 3) {
           body.x -= touch.magnitude * touch.xDir
           body.y -= touch.magnitude * touch.yDir
         }
       })
-      if (touches.length < 2) {
+      // Lock the size if touching 2 objects, but count the border once
+      if (
+        (touches.some(touch => touch.object === 'sentence') ? 1 : 0) +
+        touches.filter(touch => touch.object === 'word').length < 2
+      ) {
         body.scale *= 1.01
       }
     })
