@@ -4,7 +4,8 @@ import { range, zip } from "lodash"
 const width = 600
 const height = width
 const result = new Collisions().createResult()
-const circleRes = 48
+const circleRes = 16
+const growth = 1.02
 
 export class GrowingCirclesTest {
   element: HTMLDivElement
@@ -68,10 +69,18 @@ export class GrowingCirclesTest {
   }
 
   createCircles(): void {
+    /**
+     * Generate, position and size the word circles.
+     */
+    // Clear all existing circles from the screen.
     this.bodies.forEach(body => body.remove())
     this.bodies = []
+    // Pick a random number of circles to generate.
     const circleCount = random(2, 8)
-    const ratios = range(0, circleCount).map(() => random(10, 50))
+    // Ratios determine the relative sizes of the circles.
+    // This will eventually be dependent on the length of the word. Note that
+    // there is no upper limit.
+    const ratios = range(0, circleCount).map(() => random(1, 8))
     const ratioSum = ratios.reduce((a, b) => a + b, 0)
     const bodyAngularSizes = ratios.map(ratio => {
       return ratio * 2 * Math.PI / ratioSum
@@ -138,7 +147,7 @@ export class GrowingCirclesTest {
         (touches.some(touch => touch.object === 'sentence') ? 1 : 0) +
         touches.filter(touch => touch.object === 'word').length < 2
       ) {
-        body.scale *= 1.01
+        body.scale *= growth
       } else {
         locks ++
       }
