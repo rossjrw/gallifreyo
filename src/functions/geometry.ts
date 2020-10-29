@@ -184,3 +184,39 @@ function getSpiralCoord(
   // this does need to be multiplied by the multiplier to be usable
   // why are they both negative? I do not know. but it works.
 }
+
+export function circleIntersectionPoints(
+  x0: number,
+  y0: number,
+  r0: number,
+  x1: number,
+  y1: number,
+  r1: number,
+): number[] {
+  /**
+   * Calculates the points of intersection of two circles given their
+   * coordinates and radii.
+   * @param x0: x-coordinate of the first circle.
+   * @param y0: y-coordinate of the first circle.
+   * @param r0: Radius of the first circle.
+   * @param x0: x-coordinate of the second circle.
+   * @param y0: y-coordinate of the second circle.
+   * @param r0: Radius of the second circle.
+   * @returns [x, x, y, y] for the two points of intersection.
+   */
+  const dx = x1 - x0
+  const dy = y1 - y0
+  const d = Math.hypot(dy, dx)
+  const a = ((r0 * r0) - (r1 * r1) + (d * d)) / (2.0 * d)
+  const x2 = x0 + (dx * a / d)
+  const y2 = y0 + (dy * a / d)
+  const h = Math.sqrt((r0 * r0) - (a * a))
+  const rx = -dy * (h / d)
+  const ry = dx * (h / d)
+  const xi = x2 + rx
+  const xi_prime = x2 - rx
+  const yi = y2 + ry
+  const yi_prime = y2 - ry
+  return [xi, xi_prime, yi, yi_prime]
+  // xi is positive, xi_prime is negative for the word-letter situation
+}

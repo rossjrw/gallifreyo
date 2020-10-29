@@ -61,11 +61,7 @@ export class Word extends Phrase {
         - (this.phrases[0].subletters[0].absoluteAngularSize! / 2)
         - (this.phrases[index].subletters[0].absoluteAngularSize! / 2)
       )
-      renderLetter(
-        this,
-        letter!,
-        vAngle,
-      )
+      letter.render(this, vAngle)
     })
   }
 }
