@@ -1,6 +1,5 @@
 import { Settings } from '@/types/state'
 import { Sentence } from '@/classes/Sentence'
-import { renderSentence } from '@/functions/render/sentence'
 
 export function drawTokenisedInput(
   tokenisedInput: Sentence[],
@@ -20,12 +19,8 @@ export function drawTokenisedInput(
   // will have their own locations). In future I should pass just one phrase to
   // this function; a top-level phrase that contains only paragraphs.
   tokenisedInput.forEach(sentence => {
-    // Set initial coordinates and radii of the sentence
-    sentence.x = 0
-    sentence.y = 0
-    sentence.radius = 100
     // Render it
-    renderSentence(sentence, settings)
+    sentence.render(settings)
   })
   return tokenisedInput
 }
