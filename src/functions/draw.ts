@@ -20,7 +20,7 @@ export function drawTokenisedInput(
   // this function; a top-level phrase that contains only paragraphs.
   tokenisedInput.forEach(sentence => {
     // Render it
-    sentence.render(settings)
+    sentence.render()
   })
   return tokenisedInput
 }

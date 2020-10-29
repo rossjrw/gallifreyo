@@ -1,3 +1,4 @@
+import { Settings } from '@/types/state'
 import { LetterData } from '@/types/alphabets'
 import { Sentence } from '@/classes/Sentence'
 import { Word } from '@/classes/Word'
@@ -10,11 +11,13 @@ export function tokeniseSentence (
   sentence: string,
   splitBy: string[],
   alphabets: string[],
+  settings: Settings,
 ): Sentence[]
 export function tokeniseSentence(
   sentence: string,
   splitBy: string[],
   alphabets: string[],
+  settings: Settings,
 ): (Sentence | Word)[] {
   /**
    * Takes a string and converts it to tokens. Tokens are dicts that instruct
@@ -27,6 +30,7 @@ export function tokeniseSentence(
    * words are can be anything. Most words will also be sentences.
    * @param splitBy: An array of strings by which to split
    * @param alphabets: List of alphabet names to use
+   * @param settings: A settings object to pass to the constructed phrases.
    * @returns A list of tokenised phrases.
    */
   // This is a recursive function that pops from splitBy. There are two
@@ -45,13 +49,15 @@ export function tokeniseSentence(
       // This phrase should be split further
       return new Sentence(
         ID_COUNTER++,
-        tokeniseSentence(phrase, splitBy.slice(1), alphabets)
+        settings,
+        tokeniseSentence(phrase, splitBy.slice(1), alphabets, settings)
       )
     } else {
       // The delimiters have been used up, so sentence is a word.
       return new Word(
         ID_COUNTER++,
-        tokeniseAWordIntoLetters(phrase, alphabets)
+        settings,
+        tokeniseAWordIntoLetters(phrase, alphabets, settings)
       )
     }
   })
@@ -61,6 +67,7 @@ export function tokeniseSentence(
 function tokeniseAWordIntoLetters(
   word: string,
   alphabets: string[],
+  settings: Settings,
 ): Letter[] {
   /**
    * Takes a word as a string. Iterates through it to return its phrases
@@ -111,6 +118,7 @@ function tokeniseAWordIntoLetters(
   const letters: Letter[] = subletterCharacters.map(characters => {
     return new Letter(
       ID_COUNTER++,
+      settings,
       characters.map(
         (character: string) => {
           return {

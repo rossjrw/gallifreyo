@@ -6,8 +6,8 @@ export class Sentence extends Phrase {
   depth: 'sentence'
   phrases: (Sentence | Word)[]
 
-  constructor(id: number, phrases: (Sentence | Word)[]) {
-    super(id)
+  constructor(id: number, settings: Settings, phrases: (Sentence | Word)[]) {
+    super(id, settings)
     this.depth = 'sentence'
     this.phrases = phrases
     // Initial geometry values, may be overridden later
@@ -16,7 +16,7 @@ export class Sentence extends Phrase {
     this.radius = 100
   }
 
-  render (settings: Settings): void {
+  render (): void {
     this.paths = []
 
     // If this sentence contains more than one subphrase, then draw a circle
@@ -35,11 +35,11 @@ export class Sentence extends Phrase {
       if(Array.isArray(phrase.phrases)){
         // This is a word
         phrase.relativeAngularSize = Math.pow(
-          phrase.phrases.length, settings.config.sizeScaling
+          phrase.phrases.length, this.settings.config.sizeScaling
         )
       } else {
         // This is a buffer
-        phrase.relativeAngularSize = settings.config.buffer.phrase
+        phrase.relativeAngularSize = this.settings.config.buffer.phrase
       }
     })
 
@@ -62,7 +62,7 @@ export class Sentence extends Phrase {
     // point do not yet exist
     relativeAngularSizeSum = this.phrases.reduce((total, phrase) => {
       return total + phrase.relativeAngularSize!
-    }, 0) + (settings.config.buffer.phrase * this.phrases.length)
+    }, 0) + (this.settings.config.buffer.phrase * this.phrases.length)
 
     // Convert relative angles to absolute angles (radians)
     this.phrases.forEach((phrase) => {
@@ -74,8 +74,8 @@ export class Sentence extends Phrase {
     // Assign positions and calculate the size of each subphrase, and then
     // render them
     this.phrases.forEach((phrase, index) => {
-      phrase.calculateGeometry(this, index, relativeAngularSizeSum, settings)
-      phrase.render(settings)
+      phrase.calculateGeometry(this, index, relativeAngularSizeSum)
+      phrase.render()
     })
 
     // Make the debug paths for the subphrases

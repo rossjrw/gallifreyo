@@ -49,6 +49,7 @@ export default new Vuex.Store({
           state.text,
           state.settings.splits,
           state.settings.selectedAlphabets,
+          state.settings,
         ),
         state.settings
       )

@@ -8,11 +8,13 @@ export abstract class Text {
    * Base class for all written nodes.
    */
   id: number
+  settings: Settings
   angularLocation?: number
   paths?: Path[]
 
-  constructor (id: number) {
+  constructor (id: number, settings: Settings) {
     this.id = id
+    this.settings = settings
   }
 }
 
@@ -26,15 +28,14 @@ export abstract class Phrase extends Text {
   y?: number
   radius?: number
 
-  constructor (id: number) {
-    super(id)
+  constructor (id: number, settings: Settings) {
+    super(id, settings)
   }
 
   calculateGeometry (
     parent: Sentence,
     index: number,
     relativeAngularSizeSum: number,
-    settings: Settings,
   ): void {
     /**
      * Calculates a phrase's geometry relative to its parent phrase. The parent
@@ -52,7 +53,7 @@ export abstract class Phrase extends Text {
      * angularLocation
      */
 
-    let structure = settings.config.positionAlgorithm
+    let structure = this.settings.config.positionAlgorithm
 
     // If the positioning algorithm is marked as automatic, pick the best one
     // for this phrase
@@ -71,7 +72,7 @@ export abstract class Phrase extends Text {
       if (parent.phrases.length > 1) {
         const subphraseRadius = (
           parent.radius! * Math.sin(radialSubtension)
-          / (settings.config.word.height * Math.sin(radialSubtension) + 1)
+          / (this.settings.config.word.height * Math.sin(radialSubtension) + 1)
         )
         this.radius = subphraseRadius
       } else {
@@ -89,16 +90,16 @@ export abstract class Phrase extends Text {
         )
         - (parent.phrases[0].absoluteAngularSize! / 2)
         - (this.absoluteAngularSize! / 2)
-        + (index * settings.config.buffer.phrase * 2 * Math.PI
+        + (index * this.settings.config.buffer.phrase * 2 * Math.PI
            / relativeAngularSizeSum)
       )
 
       // Calculate coordinates for transformation
       const translate = {
         x: Math.cos(this.angularLocation! + Math.PI / 2) *
-          (-parent.radius! + (settings.config.word.height * this.radius!)),
+          (-parent.radius! + (this.settings.config.word.height * this.radius!)),
         y: Math.sin(this.angularLocation! + Math.PI / 2) *
-          (-parent.radius! + (settings.config.word.height * this.radius!)),
+          (-parent.radius! + (this.settings.config.word.height * this.radius!)),
       }
       this.x = parent.x! + translate.x
       this.y = parent.y! + translate.y
@@ -110,7 +111,7 @@ export abstract class Phrase extends Text {
 
       // Spiral buffer is both the distance between spiral rungs and the
       // distance between words, to ensure visually consistent spacing.
-      const spiralBuffer = 1 + settings.config.buffer.phrase
+      const spiralBuffer = 1 + this.settings.config.buffer.phrase
 
       // Use the y coordinate of a theoretical final letter to estimate the
       // radius of the spiral

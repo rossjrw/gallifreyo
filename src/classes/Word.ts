@@ -8,22 +8,23 @@ export class Word extends Phrase {
   // Token properties
   phrases: Letter[]
 
-  constructor (id: number, phrases: Letter[]) {
-    super(id)
+  constructor (id: number, settings: Settings, phrases: Letter[]) {
+    super(id, settings)
     this.depth = 'word'
     this.phrases = phrases
   }
 
-  render (settings: Settings): void {
+  render (): void {
     // XXX a lot of this function is very similar to geometry.ts
-    // for each letter, render it
+
     // Word already has x, y and radius from geometry.ts
+
     this.paths = []
 
     // Assign relative angles and other letter-based properties to each
     // letter
     this.phrases.forEach((letter) => {
-      letterDataFromBlock(letter, settings)
+      letterDataFromBlock(letter, this.settings)
     })
 
     // Calculate the sum of the relative angles
@@ -44,7 +45,7 @@ export class Word extends Phrase {
 
     // Calculate the absolute angle subtended by a single vowel, so that it is
     // consistent across the entire word
-    const vAngle = settings.config.v.width * 2 * Math.PI / relativeAngularSizeSum
+    const vAngle = this.settings.config.v.width * 2 * Math.PI / relativeAngularSizeSum
 
     // Assign positions and calculate the size of each subphrase, and then
     // render them

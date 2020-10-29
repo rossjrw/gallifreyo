@@ -1,3 +1,4 @@
+import { Settings } from '@/types/state'
 import { Text } from '@/classes/Phrase'
 import { Word } from '@/classes/Word'
 import { Subletter } from '@/types/phrases'
@@ -11,8 +12,8 @@ export class Letter extends Text {
   // Drawing properties
   transform?: string
 
-  constructor (id: number, subletters: Subletter[]) {
-    super(id)
+  constructor (id: number, settings: Settings, subletters: Subletter[]) {
+    super(id, settings)
     this.depth = 'letter'
     this.subletters = subletters
   }
