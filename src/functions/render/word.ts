@@ -1,5 +1,6 @@
 import { Settings } from '@/types/state'
-import { Word, Letter } from '@/types/phrases'
+import { Word } from '@/classes/Word'
+import { Letter } from '@/classes/Letter'
 import { letterDataFromBlock } from '@/functions/blocks';
 import { renderLetter } from '@/functions/render/letter'
 

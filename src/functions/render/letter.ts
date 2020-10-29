@@ -1,4 +1,5 @@
-import { Word, Letter } from '@/types/phrases'
+import { Word } from '@/classes/Word'
+import { Letter } from '@/classes/Letter'
 
 export function renderLetter(
   word: Word,

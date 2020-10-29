@@ -1,5 +1,6 @@
 import { Settings } from '@/types/state'
-import { Sentence, Word } from '@/types/phrases'
+import { Sentence } from '@/classes/Sentence'
+import { Word } from '@/classes/Word'
 import { calculateSubphraseGeometry } from '@/functions/geometry'
 import { renderWord } from '@/functions/render/word'
 
@@ -21,7 +22,7 @@ export function renderSentence(
   }
 
   // Assign relative angles to each subphrase
-  sentence.phrases.forEach((phrase: Sentence | Word) => {
+  sentence.phrases.forEach(phrase => {
     if(Array.isArray(phrase.phrases)){
       // This is a word
       phrase.relativeAngularSize = Math.pow(

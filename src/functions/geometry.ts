@@ -1,5 +1,6 @@
 import { Settings } from '@/types/state'
-import { Sentence, Word } from '@/types/phrases'
+import { Sentence } from '@/classes/Sentence'
+import { Word } from '@/classes/Word'
 
 export function calculateSubphraseGeometry(
   sentence: Sentence,

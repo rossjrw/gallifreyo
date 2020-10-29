@@ -1,5 +1,4 @@
 import { LetterData } from '@/types/alphabets'
-import { Phrase } from '@/classes/Phrase'
 import { Sentence } from '@/classes/Sentence'
 import { Word } from '@/classes/Word'
 import { Letter } from '@/classes/Letter'
@@ -7,11 +6,16 @@ import { getLetters } from '@/functions/alphabets'
 
 let ID_COUNTER = 0
 
+export function tokeniseSentence (
+  sentence: string,
+  splitBy: string[],
+  alphabets: string[],
+): Sentence[]
 export function tokeniseSentence(
   sentence: string,
   splitBy: string[],
   alphabets: string[],
-): Phrase[] {
+): (Sentence | Word)[] {
   /**
    * Takes a string and converts it to tokens. Tokens are dicts that instruct
    * the renderer on what to draw e.g. what letters and shapes are present.
@@ -33,26 +37,24 @@ export function tokeniseSentence(
   //    2. If all the delimiters have been used up, then the string is a word.
   //    It needs to be broken up into letters and tokenised, and then returned.
   // As a result, a nested structure of tokenised words should be produced.
-  const phrases: Phrase[] = sentence.split(splitBy[0]).map(
-    (phrase: string) => {
-      // Split the sentence by the first splitBy into a series of phrases.
-      // Right now, we don't care what those phrases actually are. I'm using
-      // "phrases" to ambiguously mean either a sentence or a word.
-      if (splitBy.length > 1) {
-        // This phrase should be split further
-        return new Sentence(
-          ID_COUNTER++,
-          tokeniseSentence(phrase, splitBy.slice(1), alphabets)
-        )
-      } else {
-        // The delimiters have been used up, so sentence is a word.
-        return new Word(
-          ID_COUNTER++,
-          tokeniseAWordIntoLetters(phrase, alphabets)
-        )
-      }
+  const phrases = sentence.split(splitBy[0]).map(phrase => {
+    // Split the sentence by the first splitBy into a series of phrases.
+    // Right now, we don't care what those phrases actually are. I'm using
+    // "phrases" to ambiguously mean either a sentence or a word.
+    if (splitBy.length > 1) {
+      // This phrase should be split further
+      return new Sentence(
+        ID_COUNTER++,
+        tokeniseSentence(phrase, splitBy.slice(1), alphabets)
+      )
+    } else {
+      // The delimiters have been used up, so sentence is a word.
+      return new Word(
+        ID_COUNTER++,
+        tokeniseAWordIntoLetters(phrase, alphabets)
+      )
     }
-  )
+  })
   return phrases
 }
 
@@ -102,27 +104,25 @@ function tokeniseAWordIntoLetters(
 
   // Add a buffer letter after each letter
   subletterCharacters = subletterCharacters.map(
-    (characters: string[]) => [characters, ["BUFFER"]]
+    characters => [characters, ["BUFFER"]]
   ).flat()
 
   // Convert subletter characters to subletters
-  const letters: Letter[] = subletterCharacters.map(
-    (characters: string[]): Letter => {
-      return new Letter(
-        ID_COUNTER++,
-        characters.map(
-          (character: string) => {
-            return {
-              depth: "subletter",
-              ...getLetters(alphabets).find(
-                (letter) => letter.value === character
-              )!
-            }
+  const letters: Letter[] = subletterCharacters.map(characters => {
+    return new Letter(
+      ID_COUNTER++,
+      characters.map(
+        (character: string) => {
+          return {
+            depth: 'subletter',
+            ...getLetters(alphabets).find(
+              (letter) => letter.value === character
+            )!
           }
-        )
+        }
       )
-    }
-  )
+    )
+  })
   return letters
 }
 
