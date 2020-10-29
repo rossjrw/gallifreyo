@@ -1,7 +1,6 @@
 import { Settings } from '@/types/state'
 import { Phrase } from '@/classes/Phrase'
 import { Word } from '@/classes/Word'
-import { calculateSubphraseGeometry } from '@/functions/geometry'
 
 export class Sentence extends Phrase {
   depth: 'sentence'
@@ -72,15 +71,10 @@ export class Sentence extends Phrase {
       )
     })
 
-    // Assign positions and calculate the size of each subphrase, and then render
-    // them
-    this.phrases.forEach((phrase, subphrase) => {
-      calculateSubphraseGeometry(
-        this,
-        subphrase,
-        relativeAngularSizeSum,
-        settings,
-      )
+    // Assign positions and calculate the size of each subphrase, and then
+    // render them
+    this.phrases.forEach((phrase, index) => {
+      phrase.calculateGeometry(this, index, relativeAngularSizeSum, settings)
       phrase.render(settings)
     })
 
