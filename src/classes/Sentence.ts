@@ -2,7 +2,6 @@ import { Settings } from '@/types/state'
 import { Phrase } from '@/classes/Phrase'
 import { Word } from '@/classes/Word'
 import { calculateSubphraseGeometry } from '@/functions/geometry'
-import { renderWord } from '@/functions/render/word'
 
 export class Sentence extends Phrase {
   depth: 'sentence'
@@ -82,15 +81,7 @@ export class Sentence extends Phrase {
         relativeAngularSizeSum,
         settings,
       )
-      // TODO if subphrase is not word... recurse?
-      if (phrase.depth === 'sentence') {
-        phrase.render(settings)
-      } else if (phrase.depth === 'word') {
-        renderWord(
-          phrase,
-          settings,
-        )
-      }
+      phrase.render(settings)
     })
 
     // Make the debug paths for the subphrases
