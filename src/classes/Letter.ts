@@ -1,21 +1,17 @@
-class Letter {
+import { Text } from '@/classes/Phrase'
+import { Subletter } from '@/types/phrases'
+
+export class Letter extends Text {
   depth: "letter"
-  // Token properties
-  id: string | number
   subletters: Subletter[]
   // Render properties
   height?: number
-  angularLocation?: number
   // Drawing properties
-  paths?: Path[]
   transform?: string
-}
 
-class Subletter extends LetterData {
-  depth: "subletter"
-  // Render properties
-  height?: number
-  full?: boolean // Circle is full or cut off by word line
-  relativeAngularSize?: number
-  absoluteAngularSize?: number
+  constructor (id: number, subletters: Subletter[]) {
+    super(id)
+    this.depth = 'letter'
+    this.subletters = subletters
+  }
 }

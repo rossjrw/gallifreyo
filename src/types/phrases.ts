@@ -19,3 +19,12 @@ export interface Path {
   type: "default" | "debug"
   purpose?: "angle" | "position" | "circle"
 }
+
+export type Subletter = LetterData & {
+  depth: "subletter"
+  // Render properties
+  height?: number
+  full?: boolean // Circle is full or cut off by word line
+  relativeAngularSize?: number
+  absoluteAngularSize?: number
+}

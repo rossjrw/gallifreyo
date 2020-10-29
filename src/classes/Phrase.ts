@@ -1,20 +1,29 @@
 import { Path } from '@/types/phrases'
 
-export abstract class Phrase {
+export abstract class Text {
+  /**
+   * Base class for all written nodes.
+   */
+  id: number
+  angularLocation?: number
+  paths?: Path[]
+
+  constructor (id: number) {
+    this.id = id
+  }
+}
+
+export abstract class Phrase extends Text {
   /**
    * A phrase is the base class for sentences and words.
    */
-  id: string | number // TODO Which one?
   relativeAngularSize?: number
   absoluteAngularSize?: number
-  angularLocation?: number
   x?: number
   y?: number
   radius?: number
-  // Drawing properties
-  paths?: Path[]
 
-  constructor () {
-    /* TODO */
+  constructor (id: number) {
+    super(id)
   }
 }

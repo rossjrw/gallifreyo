@@ -1,7 +1,12 @@
 import { Phrase } from '@/classes/Phrase'
-import { Word } from '@/classes/Word'
 
-class Sentence extends Phrase {
+export class Sentence extends Phrase {
   depth: 'sentence'
-  phrases: (Sentence | Word)[]
+  phrases: Phrase[]
+
+  constructor(id: number, phrases: Phrase[]) {
+    super(id)
+    this.depth = 'sentence'
+    this.phrases = phrases
+  }
 }
