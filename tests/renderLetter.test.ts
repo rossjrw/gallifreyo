@@ -1,4 +1,4 @@
-import { circleIntersectionPoints } from '../src/functions/render/letter'
+import { circleIntersectionPoints } from '../src/functions/geometry'
 
 describe("circle intersection calculator", () => {
   it("calculates intersection points", () => {
