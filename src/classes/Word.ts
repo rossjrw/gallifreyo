@@ -2,7 +2,6 @@ import { Settings } from '@/types/state'
 import { Phrase } from '@/classes/Phrase'
 import { Letter } from '@/classes/Letter'
 import { letterDataFromBlock } from '@/functions/blocks';
-import { renderLetter } from '@/functions/render/letter'
 
 export class Word extends Phrase {
   depth: "word"
