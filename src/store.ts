@@ -37,7 +37,7 @@ export default new Vuex.Store({
         buffer: { letter: 0.5, phrase: 0.3 },
         automatic: { scaledLessThan: 6, spiralMoreThan: 9 },
         sizeScaling: 0,
-        positionAlgorithm: 'Circular',
+        positionAlgorithm: 'Radial',
       },
     },
   } as State,

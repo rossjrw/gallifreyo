@@ -43,7 +43,7 @@ export type Config = {
   buffer: BufferConfig
   automatic: AutomaticConfig
   sizeScaling: number
-  positionAlgorithm: 'Automatic' | 'Circular' | 'Spiral'
+  positionAlgorithm: 'Automatic' | 'Radial' | 'Spiral'
 }
 
 export type BlockConfig = {

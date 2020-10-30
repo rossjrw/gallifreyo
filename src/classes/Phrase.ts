@@ -61,11 +61,11 @@ export abstract class Phrase extends Text {
       if (parent.phrases.length > 8) {
         structure = 'Spiral'
       } else {
-        structure = 'Circular'
+        structure = 'Radial'
       }
     }
 
-    if (structure === 'Circular') {
+    if (structure === 'Radial') {
       // The basic algorithm with everything subtending angles of a circle
       // Calculate the angle subtended by the subphrase's radius
       const radialSubtension = this.absoluteAngularSize! / 2
