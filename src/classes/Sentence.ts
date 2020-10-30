@@ -30,46 +30,18 @@ export class Sentence extends Phrase {
       this.paths.push({d: sentencePath, type: 'default'})
     }
 
-    // Assign relative angles to each subphrase
-    this.phrases.forEach(phrase => {
-      if(Array.isArray(phrase.phrases)){
-        // This is a word
-        phrase.relativeAngularSize = Math.pow(
-          phrase.phrases.length, this.settings.config.sizeScaling
-        )
-      } else {
-        // This is a buffer
-        phrase.relativeAngularSize = this.settings.config.buffer.phrase
-      }
-    })
-
-    // Calculate the sum of the relative angles, excluding buffers
-    let relativeAngularSizeSum = this.phrases.reduce((total, phrase) => {
-      return total + phrase.relativeAngularSize!
-    }, 0)
-
-    // Normalise relative angles such that they average to 1
-    // This is so that buffers are always consistent
-    this.phrases.forEach((phrase) => {
-      phrase.relativeAngularSize = (
-        phrase.relativeAngularSize! /
-          (relativeAngularSizeSum / this.phrases.length)
-      )
-    })
+    // Assign normalised relative angles to each subphrase
+    this.addRelativeAngularSizes()
 
     // Calculate the sum of the relative angles, including buffers
-    // Note that this calculation includes buffers between letters, which at this
-    // point do not yet exist
-    relativeAngularSizeSum = this.phrases.reduce((total, phrase) => {
+    // Note that this calculation includes buffers between letters, which at
+    // this point do not yet exist
+    const relativeAngularSizeSum = this.phrases.reduce((total, phrase) => {
       return total + phrase.relativeAngularSize!
     }, 0) + (this.settings.config.buffer.phrase * this.phrases.length)
 
     // Convert relative angles to absolute angles (radians)
-    this.phrases.forEach((phrase) => {
-      phrase.absoluteAngularSize = (
-        phrase.relativeAngularSize! * 2 * Math.PI / relativeAngularSizeSum
-      )
-    })
+    this.addAbsoluteAngularSizes(relativeAngularSizeSum)
 
     // Assign positions and calculate the size of each subphrase, and then
     // render them
@@ -136,7 +108,49 @@ export class Sentence extends Phrase {
         type: 'debug',
         purpose: 'position',
       })
+    })
+  }
 
+  addRelativeAngularSizes (): void {
+    /**
+     * Sets the relative angular size on each subphrase, normalised such that
+     * they average to 1.
+     */
+    this.phrases.forEach(phrase => {
+      if(Array.isArray(phrase.phrases)){
+        // This is a word
+        phrase.relativeAngularSize = Math.pow(
+          phrase.phrases.length, this.settings.config.sizeScaling
+        )
+      } else {
+        // This is a buffer
+        phrase.relativeAngularSize = this.settings.config.buffer.phrase
+      }
+    })
+
+    // Calculate the sum of the relative angles, excluding buffers
+    const relativeAngularSizeSum = this.phrases.reduce((total, phrase) => {
+      return total + phrase.relativeAngularSize!
+    }, 0)
+
+    // Normalise relative angles such that they average to 1
+    // This is so that buffers are always consistent
+    this.phrases.forEach((phrase) => {
+      phrase.relativeAngularSize = (
+        phrase.relativeAngularSize! /
+          (relativeAngularSizeSum / this.phrases.length)
+      )
+    })
+  }
+
+  addAbsoluteAngularSizes (relativeAngularSizeSum: number): void {
+    /**
+     * Convert relative angular sizes on subphrases to absolute angular sizes.
+     */
+    this.phrases.forEach((phrase) => {
+      phrase.absoluteAngularSize = (
+        phrase.relativeAngularSize! * 2 * Math.PI / relativeAngularSizeSum
+      )
     })
   }
 }
