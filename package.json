@@ -54,7 +54,6 @@
     "source-map-loader": "^0.2.4",
     "style-loader": "^1.2.1",
     "svg-url-loader": "^6.0.0",
-    "toml": "^3.0.0",
     "typescript": "^3.9.3",
     "vue": "^2.6.11",
     "vue-loader": "^15.9.2",
