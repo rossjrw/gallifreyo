@@ -1,3 +1,5 @@
+import { sum } from "lodash"
+
 import { Settings } from '@/types/state'
 import { Text } from '@/classes/Phrase'
 import { Word } from '@/classes/Word'
@@ -118,30 +120,34 @@ export class Letter extends Text {
       )[2],
     }
 
-    // The start of this segment of the word line, where this letter connects to
-    // the previous one.
+    // The start of this segment of the word line, where this letter connects
+    // to the previous one.
     const wordStart = {
-      x: (wordCentre.x +
-          (letterBase.x - wordCentre.x) * Math.cos(-angleSubtended / 2) -
-          (letterBase.y - wordCentre.y) * Math.sin(-angleSubtended / 2)
-         ),
-         y: (wordCentre.y +
-             (letterBase.x - wordCentre.x) * Math.sin(-angleSubtended / 2) +
-             (letterBase.y - wordCentre.y) * Math.cos(-angleSubtended / 2)
-            ),
+      x: sum([
+        wordCentre.x,
+        (letterBase.x - wordCentre.x) * Math.cos(-angleSubtended / 2),
+        (letterBase.y - wordCentre.y) * Math.sin(-angleSubtended / 2) * -1,
+      ]),
+      y: sum([
+        wordCentre.y,
+        (letterBase.x - wordCentre.x) * Math.sin(-angleSubtended / 2),
+        (letterBase.y - wordCentre.y) * Math.cos(-angleSubtended / 2),
+      ])
     }
 
     // The end of this segment of the word line, where this letter connects to
     // the next one.
     const wordEnd = {
-      x: (wordCentre.x +
-          (letterBase.x - wordCentre.x) * Math.cos(angleSubtended / 2) -
-          (letterBase.y - wordCentre.y) * Math.sin(angleSubtended / 2)
-         ),
-         y: (wordCentre.y +
-             (letterBase.x - wordCentre.x) * Math.sin(angleSubtended / 2) +
-             (letterBase.y - wordCentre.y) * Math.cos(angleSubtended / 2)
-            ),
+      x: sum([
+        wordCentre.x,
+        (letterBase.x - wordCentre.x) * Math.cos(angleSubtended / 2),
+        (letterBase.y - wordCentre.y) * Math.sin(angleSubtended / 2) * -1,
+      ]),
+      y: sum([
+        wordCentre.y,
+        (letterBase.x - wordCentre.x) * Math.sin(angleSubtended / 2),
+        (letterBase.y - wordCentre.y) * Math.cos(angleSubtended / 2),
+      ])
     }
 
     // Always start from the first part of this letter's segment of the word
@@ -150,8 +156,8 @@ export class Letter extends Text {
 
     if (["s", "p", "d", "f"].includes(subletters[0].block)) {
       // Start with non-vowel, non-buffer blocks
-      // A letter that is 'full' has a complete circle, regardless of whether or
-      // not it intersects with the word.
+      // A letter that is 'full' has a complete circle, regardless of whether
+      // or not it intersects with the word.
       if (subletters[0].full) {
         // Draw uninterrupted word segment
         path += `A ${word.radius} ${word.radius} 0 0 1 ${wordEnd.x} ${wordEnd.y}`
