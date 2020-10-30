@@ -1,6 +1,6 @@
 import { BlockName } from '@/types/alphabets'
 import { Settings } from '@/types/state'
-import { Letter } from '@/types/phrases'
+import { Letter } from '@/classes/Letter'
 
 type BlockSetting = {
   height?: number
