@@ -23,29 +23,23 @@ export class Word extends Phrase {
 
     // Assign relative angles and other letter-based properties to each
     // letter
-    this.phrases.forEach((letter) => {
-      letterDataFromBlock(letter, this.settings)
-    })
+    this.addBlockDataToLetters()
 
     // Calculate the sum of the relative angles
     // Note that buffers are their own letters, so do not need to be excepted
     // Also note that a letter's relative angle is held by its first subletter
-    const relativeAngularSizeSum = this.phrases.reduce(
-      (total, letter) => {
-        return total + letter.subletters[0].relativeAngularSize!
-      }, 0
-    )
+    const relativeAngularSizeSum = this.phrases.reduce((total, letter) => {
+      return total + letter.subletters[0].relativeAngularSize!
+    }, 0)
 
     // Convert relative angles to absolute angles (radians)
-    this.phrases.forEach((letter) => {
-      letter.subletters[0].absoluteAngularSize = (
-        letter.subletters[0].relativeAngularSize! * 2 * Math.PI / relativeAngularSizeSum
-      )
-    })
+    this.addAbsoluteAngularSizes(relativeAngularSizeSum)
 
     // Calculate the absolute angle subtended by a single vowel, so that it is
     // consistent across the entire word
-    const vAngle = this.settings.config.v.width * 2 * Math.PI / relativeAngularSizeSum
+    const vowelAngularSize = (
+      this.settings.config.v.width * 2 * Math.PI / relativeAngularSizeSum
+    )
 
     // Assign positions and calculate the size of each subphrase, and then
     // render them
@@ -54,14 +48,29 @@ export class Word extends Phrase {
       // Sum the angles of the letters so far
       // Do not need to include buffer distance spefically, because the buffers
       // already exist as phantom letters
-      letter.angularLocation = (
-        this.phrases.slice(0, index + 1).reduce((total, letter) => {
-            return total + letter.subletters[0].absoluteAngularSize!
-          }, 0)
-        - (this.phrases[0].subletters[0].absoluteAngularSize! / 2)
-        - (this.phrases[index].subletters[0].absoluteAngularSize! / 2)
+      letter.addAngularLocation(this, index)
+      letter.render(this, vowelAngularSize)
+    })
+  }
+
+  addBlockDataToLetters (): void {
+    /**
+     * Add letter data from the block presets.
+     */
+    this.phrases.forEach((letter) => {
+      letterDataFromBlock(letter, this.settings)
+    })
+  }
+
+  addAbsoluteAngularSizes (relativeAngularSizeSum: number): void {
+    /**
+     * Convert relative angular sizes on letters to absolute angular sizes.
+     */
+    this.phrases.forEach((letter) => {
+      letter.subletters[0].absoluteAngularSize = (
+        letter.subletters[0].relativeAngularSize! * 2 * Math.PI
+        / relativeAngularSizeSum
       )
-      letter.render(this, vAngle)
     })
   }
 }

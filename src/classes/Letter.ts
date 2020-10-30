@@ -234,4 +234,21 @@ export class Letter extends Text {
       purpose: 'circle',
     })
   }
+
+  addAngularLocation (word: Word, index: number): void {
+    /**
+     * Set the angular location of this letter based on its position in the
+     * word.
+     *
+     * @param word: The word that contains this letter.
+     * @param index: The index of this letter in the word.
+     */
+    this.angularLocation = (
+      word.phrases.slice(0, index + 1).reduce((total, letter) => {
+        return total + letter.subletters[0].absoluteAngularSize!
+      }, 0)
+      - (word.phrases[0].subletters[0].absoluteAngularSize! / 2)
+      - (word.phrases[index].subletters[0].absoluteAngularSize! / 2)
+    )
+  }
 }
