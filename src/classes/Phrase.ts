@@ -41,8 +41,10 @@ export abstract class Phrase extends Text {
      * Calculates a phrase's geometry relative to its parent phrase. The parent
      * phrase should be a sentence, i.e. this phrase should not be a letter.
      *
-     * 'Geometry' refers to the x, y, radius and angularLocation properties of
-     * a phrase.
+     * 'Geometry' refers to the x, y, and  properties of a phrase, with
+     * angularLocation sometimes being used as an intermediary property.
+     *
+     * This method selects a positioning algorithm and then executes it.
      *
      * @param parent: The parent phrase.
      * @param index: The index of the subphrase in the parent phrase.
@@ -66,76 +68,9 @@ export abstract class Phrase extends Text {
     }
 
     if (structure === 'Radial') {
-      // The basic algorithm with everything subtending angles of a circle
-      // Calculate the angle subtended by the subphrase's radius
-      const radialSubtension = this.absoluteAngularSize! / 2
-      if (parent.phrases.length > 1) {
-        const subphraseRadius = (
-          parent.radius! * Math.sin(radialSubtension)
-          / (this.settings.config.word.height * Math.sin(radialSubtension) + 1)
-        )
-        this.radius = subphraseRadius
-      } else {
-        this.radius = parent.radius!
-      }
-
-      // Calculate the angle that this subphrase is at relative to its parent
-      // phrase
-      // For sentences, this does include buffers
-      this.addAngularLocation(parent, index, relativeAngularSizeSum)
-
-      // Calculate coordinates for transformation
-      const translate = {
-        x: Math.cos(this.angularLocation! + Math.PI / 2) *
-          (-parent.radius! + (this.settings.config.word.height * this.radius!)),
-        y: Math.sin(this.angularLocation! + Math.PI / 2) *
-          (-parent.radius! + (this.settings.config.word.height * this.radius!)),
-      }
-      this.x = parent.x! + translate.x
-      this.y = parent.y! + translate.y
-
+      this.calculateRadialGeometry(parent, index, relativeAngularSizeSum)
     } else if (structure === 'Spiral') {
-      // For long sentences is is likely appropriate to place each word on the
-      // path of a spiral, to avoid excessive wasted space in the middle of the
-      // circle.
-
-      // Spiral buffer is both the distance between spiral rungs and the
-      // distance between words, to ensure visually consistent spacing.
-      const spiralBuffer = 1 + this.settings.config.buffer.phrase
-
-      // Use the y coordinate of a theoretical final letter to estimate the
-      // radius of the spiral
-      // The final letter would be place in the middle of the spiral
-      const estimatedSpiralRadius = -getSpiralCoord(
-        spiralBuffer,
-        spiralBuffer,
-        parent.phrases.length,
-        0 // XXX n is reversed - should this be length also?
-      )[1]
-
-      // Spirals are slightly smaller than circles, so calculate the wanted
-      // radius into a multiplier value
-      // TODO more refined process including centre shifting
-      // XXX I don't think /2 is correct
-      const targetSpiralRadius = parent.radius! / 2
-      const multiplier = targetSpiralRadius / estimatedSpiralRadius
-
-      this.radius = multiplier/2
-      // why does it need to be /2 ???
-      // because the multiplier is the length of the unit diameter
-
-      // Calculate coordinates of the word
-      const coords = getSpiralCoord(
-        spiralBuffer,
-        spiralBuffer,
-        parent.phrases.length,
-        // length is sent instead of length-1 to ignore the final point of the
-        // spiral - do not want to render a word exactly in the centre
-        index,
-        multiplier,
-      )
-      this.x = parent.x! + coords[0]
-      this.y = parent.y! + coords[1]
+      this.calculateSpiralGeometry(parent, index)
     }
   }
 
@@ -147,6 +82,8 @@ export abstract class Phrase extends Text {
     /**
      * Set the angular location of this subphrase based on its position in the
      * parent phrase.
+     *
+     * Used for positioning in the Radial and Organic algorithms.
      *
      * @param parent: The sentence that contains this phrase.
      * @param index: The index of this letter in the word.
@@ -164,5 +101,101 @@ export abstract class Phrase extends Text {
       + (index * this.settings.config.buffer.phrase * 2 * Math.PI
          / relativeAngularSizeSum)
     )
+  }
+
+  calculateRadialGeometry (
+    parent: Sentence,
+    index: number,
+    relativeAngularSizeSum: number,
+  ): void {
+    /**
+     * The basic positioning algorithm. Each subphrase is placed around a
+     * circle, taking up as much space as possible in its allocated segment.
+     *
+     * Size scaling affects the angle subtended by each phrase within the
+     * circle.
+     *
+     * Works well at low disparity. Much faster than the organic algorithm.
+     */
+    // The basic algorithm with everything subtending angles of a circle
+    // Calculate the angle subtended by the subphrase's radius
+    const radialSubtension = this.absoluteAngularSize! / 2
+    if (parent.phrases.length > 1) {
+      const subphraseRadius = (
+        parent.radius! * Math.sin(radialSubtension)
+        / (this.settings.config.word.height * Math.sin(radialSubtension) + 1)
+      )
+      this.radius = subphraseRadius
+    } else {
+      this.radius = parent.radius!
+    }
+
+    // Calculate the angle that this subphrase is at relative to its parent
+    // phrase
+    // For sentences, this does include buffers
+    this.addAngularLocation(parent, index, relativeAngularSizeSum)
+
+    // Calculate coordinates for transformation
+    const translate = {
+      x: Math.cos(this.angularLocation! + Math.PI / 2) *
+        (-parent.radius! + (this.settings.config.word.height * this.radius!)),
+      y: Math.sin(this.angularLocation! + Math.PI / 2) *
+        (-parent.radius! + (this.settings.config.word.height * this.radius!)),
+    }
+    this.x = parent.x! + translate.x
+    this.y = parent.y! + translate.y
+  }
+
+  calculateSpiralGeometry (
+    parent: Sentence,
+    index: number,
+  ): void {
+    /**
+     * A more advanced positioning algorithm. Places each subphrase on the
+     * path of a spiral. This makes good use of the normally-unused space in
+     * the middle of the phrase.
+     *
+     * Size-scaling affects the length of the spiral that the subphrase takes
+     * up, though this can cause it to overlap with neighbouring rungs.
+     *
+     * Works well for very long phrases.
+     */
+    // Spiral buffer is both the distance between spiral rungs and the
+    // distance between words, to ensure visually consistent spacing.
+    const spiralBuffer = 1 + this.settings.config.buffer.phrase
+
+    // Use the y coordinate of a theoretical final letter to estimate the
+    // radius of the spiral
+    // The final letter would be place in the middle of the spiral
+    const estimatedSpiralRadius = -getSpiralCoord(
+      spiralBuffer,
+      spiralBuffer,
+      parent.phrases.length,
+      0 // XXX n is reversed - should this be length also?
+    )[1]
+
+    // Spirals are slightly smaller than circles, so calculate the wanted
+    // radius into a multiplier value
+    // TODO more refined process including centre shifting
+    // XXX I don't think /2 is correct
+    const targetSpiralRadius = parent.radius! / 2
+    const multiplier = targetSpiralRadius / estimatedSpiralRadius
+
+    this.radius = multiplier/2
+    // why does it need to be /2 ???
+    // because the multiplier is the length of the unit diameter
+
+    // Calculate coordinates of the word
+    const coords = getSpiralCoord(
+      spiralBuffer,
+      spiralBuffer,
+      parent.phrases.length,
+      // length is sent instead of length-1 to ignore the final point of the
+      // spiral - do not want to render a word exactly in the centre
+      index,
+      multiplier,
+    )
+    this.x = parent.x! + coords[0]
+    this.y = parent.y! + coords[1]
   }
 }
