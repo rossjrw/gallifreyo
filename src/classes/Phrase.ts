@@ -71,6 +71,8 @@ export abstract class Phrase extends Text {
       this.calculateRadialGeometry(parent, index, relativeAngularSizeSum)
     } else if (structure === 'Spiral') {
       this.calculateSpiralGeometry(parent, index)
+    } else if (structure === 'Organic') {
+      this.calculateOrganicGeometry(parent, index, relativeAngularSizeSum)
     }
   }
 
