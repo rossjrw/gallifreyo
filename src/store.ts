@@ -51,7 +51,6 @@ export default new Vuex.Store({
           state.settings.selectedAlphabets,
           state.settings,
         ),
-        state.settings
       )
       fixBoundingBox()
     },
