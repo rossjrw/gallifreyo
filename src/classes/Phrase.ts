@@ -81,8 +81,7 @@ export abstract class Phrase extends TextNode {
 
       // Calculate the angle that this subphrase is at relative to its parent
       // phrase
-      // For sentences, this does include buffers
-      this.addAngularLocation(parent, index, relativeAngularSizeSum)
+      this.addAngularLocation(parent, index)
 
       // Calculate coordinates for transformation
       const translate = {
@@ -142,7 +141,6 @@ export abstract class Phrase extends TextNode {
   addAngularLocation (
     parent: Sentence,
     index: number,
-    relativeAngularSizeSum: number,
   ): void {
     /**
      * Set the angular location of this subphrase based on its position in the
@@ -150,8 +148,6 @@ export abstract class Phrase extends TextNode {
      *
      * @param parent: The sentence that contains this phrase.
      * @param index: The index of this letter in the word.
-     * @param relativeAngularSizeSum: The sum of all the relative anglular
-     * sizes in the parent sentence.
      */
     this.angularLocation = (
       parent.phrases.slice(0, index + 1).reduce(
@@ -161,8 +157,6 @@ export abstract class Phrase extends TextNode {
       )
       - (parent.phrases[0].absoluteAngularSize! / 2)
       - (this.absoluteAngularSize! / 2)
-      + (index * this.settings.config.buffer.phrase * 2 * Math.PI
-         / relativeAngularSizeSum)
     )
   }
 }

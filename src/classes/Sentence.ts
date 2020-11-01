@@ -33,12 +33,10 @@ export class Sentence extends Phrase {
     // Assign normalised relative angles to each subphrase
     this.addRelativeAngularSizes()
 
-    // Calculate the sum of the relative angles, including buffers
-    // Note that this calculation includes buffers between letters, which at
-    // this point do not yet exist
+    // Calculate the sum of the relative angles
     const relativeAngularSizeSum = this.phrases.reduce((total, phrase) => {
       return total + phrase.relativeAngularSize!
-    }, 0) + (this.settings.config.buffer.phrase * this.phrases.length)
+    }, 0)
 
     // Convert relative angles to absolute angles (radians)
     this.addAbsoluteAngularSizes(relativeAngularSizeSum)
@@ -146,6 +144,8 @@ export class Sentence extends Phrase {
   addAbsoluteAngularSizes (relativeAngularSizeSum: number): void {
     /**
      * Convert relative angular sizes on subphrases to absolute angular sizes.
+     *
+     * TODO This will fail when the relative angular sizes do not average to 1.
      */
     this.phrases.forEach((phrase) => {
       phrase.absoluteAngularSize = (
