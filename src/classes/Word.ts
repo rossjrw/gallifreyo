@@ -14,7 +14,7 @@ export class Word extends Phrase {
     this.phrases = phrases
   }
 
-  render (): void {
+  draw (): void {
     // XXX a lot of this function is very similar to geometry.ts
 
     // Word already has x, y and radius from geometry.ts
@@ -49,7 +49,7 @@ export class Word extends Phrase {
       // Do not need to include buffer distance spefically, because the buffers
       // already exist as phantom letters
       letter.addAngularLocation(this, index)
-      letter.render(this, vowelAngularSize)
+      letter.draw(this, vowelAngularSize)
     })
   }
 

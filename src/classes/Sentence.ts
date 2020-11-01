@@ -16,7 +16,7 @@ export class Sentence extends Phrase {
     this.radius = 100
   }
 
-  render (): void {
+  draw (): void {
     this.paths = []
 
     // If this sentence contains more than one subphrase, then draw a circle
@@ -47,7 +47,7 @@ export class Sentence extends Phrase {
     // render them
     this.phrases.forEach((phrase, index) => {
       phrase.calculateGeometry(this, index, relativeAngularSizeSum)
-      phrase.render()
+      phrase.draw()
     })
 
     // Make the debug paths for the subphrases

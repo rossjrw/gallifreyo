@@ -1,12 +1,12 @@
 import { sum } from "lodash"
 
 import { Settings } from '@/types/state'
-import { Text } from '@/classes/Phrase'
+import { TextNode } from '@/classes/Phrase'
 import { Word } from '@/classes/Word'
 import { Subletter } from '@/types/phrases'
 import { circleIntersectionPoints } from '@/functions/geometry'
 
-export class Letter extends Text {
+export class Letter extends TextNode {
   depth: "letter"
   subletters: Subletter[]
   // Render properties
@@ -20,7 +20,7 @@ export class Letter extends Text {
     this.subletters = subletters
   }
 
-  render (word: Word, angleSubtendedByVowel: number): void {
+  draw (word: Word, angleSubtendedByVowel: number): void {
     /**
      * Generates the SVG path for a given letter and attaches it as letter.d.
      *

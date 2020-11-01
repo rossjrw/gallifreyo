@@ -3,7 +3,7 @@ import { Settings } from '@/types/state'
 import { Sentence } from '@/classes/Sentence'
 import { getSpiralCoord } from '@/functions/geometry'
 
-export abstract class Text {
+export abstract class TextNode {
   /**
    * Base class for all written nodes.
    */
@@ -18,7 +18,7 @@ export abstract class Text {
   }
 }
 
-export abstract class Phrase extends Text {
+export abstract class Phrase extends TextNode {
   /**
    * Base class for sentences and words.
    */
