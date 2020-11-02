@@ -26,6 +26,7 @@ export abstract class Phrase extends TextNode {
   absoluteAngularSize?: number
   x?: number
   y?: number
+  bufferRadius?: number
   radius?: number
 
   constructor (id: number, settings: Settings) {
@@ -70,9 +71,11 @@ export abstract class Phrase extends TextNode {
           parent.radius! * Math.sin(radialSubtension)
           / (Math.sin(radialSubtension) + 1)
         )
-        this.radius = subphraseRadius
+        this.bufferRadius = subphraseRadius
+        this.radius = this.bufferRadius * this.settings.config.buffer.phrase
       } else {
-        this.radius = parent.radius!
+        this.bufferRadius = parent.radius!
+        this.radius = this.bufferRadius
       }
 
       // Calculate the angle that this subphrase is at relative to its parent
@@ -82,9 +85,9 @@ export abstract class Phrase extends TextNode {
       // Calculate coordinates for transformation
       const translate = {
         x: Math.cos(this.angularLocation! + Math.PI / 2) *
-          (-parent.radius! + this.radius!),
+          (-parent.radius! + this.bufferRadius!),
         y: Math.sin(this.angularLocation! + Math.PI / 2) *
-          (-parent.radius! + this.radius!),
+          (-parent.radius! + this.bufferRadius!),
       }
       this.x = parent.x! + translate.x
       this.y = parent.y! + translate.y
@@ -115,7 +118,8 @@ export abstract class Phrase extends TextNode {
       const targetSpiralRadius = parent.radius! / 2
       const multiplier = targetSpiralRadius / estimatedSpiralRadius
 
-      this.radius = multiplier/2
+      this.bufferRadius = multiplier/2
+      this.radius = this.bufferRadius * this.settings.config.buffer.phrase
       // why does it need to be /2 ???
       // because the multiplier is the length of the unit diameter
 
