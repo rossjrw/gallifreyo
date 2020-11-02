@@ -1,12 +1,12 @@
 import { sum } from "lodash"
 
 import { Settings } from '@/types/state'
-import { Text } from '@/classes/Phrase'
+import { TextNode } from '@/classes/Phrase'
 import { Word } from '@/classes/Word'
 import { Subletter } from '@/types/phrases'
 import { circleIntersectionPoints } from '@/functions/geometry'
 
-export class Letter extends Text {
+export class Letter extends TextNode {
   depth: "letter"
   subletters: Subletter[]
   // Render properties
@@ -20,7 +20,7 @@ export class Letter extends Text {
     this.subletters = subletters
   }
 
-  render (word: Word, angleSubtendedByVowel: number): void {
+  draw (word: Word, angleSubtendedByVowel: number): void {
     /**
      * Generates the SVG path for a given letter and attaches it as letter.d.
      *
@@ -30,8 +30,6 @@ export class Letter extends Text {
      * @returns void; letter retains path information.
      */
     const subletters = this.subletters
-
-    this.paths = []
 
     // The width of this letter as an angle
     const angleSubtended = subletters[0].absoluteAngularSize!
@@ -79,8 +77,12 @@ export class Letter extends Text {
         if (["s", "p"].includes(subletters[0].block)) {
           vowelStart = letterCentre
           vowelDistance = 0
-        } else if (["d", "f", "v"].includes(subletters[0].block)) {
+        } else if (["f", "v"].includes(subletters[0].block)) {
           vowelDistance = 0
+        } else if (subletters[0].block === "d") {
+          // Nudge a centred vowel just inside the radius - it is ambiguous
+          // with a vert=1 vowel otherwise
+          vowelDistance = vowelRadius
         }
       } else if (subletters[1].vert === 1) {
         vowelStart = letterCentre

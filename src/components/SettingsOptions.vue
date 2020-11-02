@@ -128,7 +128,7 @@
             </div>
             <div class="control">
               <input type="number"
-                     class="input alpha"
+                     class="input"
                      v-model="foregroundAlpha">
             </div>
           </div>
@@ -245,7 +245,7 @@ input[type=color] {
   min-width: 2.5em;
 }
 
-.alpha {
-  max-width: 4rem;
+input[type=number] {
+  max-width: 5.5em;
 }
 </style>

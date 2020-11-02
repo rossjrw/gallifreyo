@@ -17,9 +17,7 @@ export class Sentence extends Phrase {
     this.radius = 100
   }
 
-  render (): void {
-    this.paths = []
-
+  draw (): void {
     // If this sentence contains more than one subphrase, then draw a circle
     // around it
     if (this.phrases.length > 1) {
@@ -34,12 +32,10 @@ export class Sentence extends Phrase {
     // Assign normalised relative angles to each subphrase
     this.addRelativeAngularSizes()
 
-    // Calculate the sum of the relative angles, including buffers
-    // Note that this calculation includes buffers between letters, which at
-    // this point do not yet exist
+    // Calculate the sum of the relative angles
     const relativeAngularSizeSum = this.phrases.reduce((total, phrase) => {
       return total + phrase.relativeAngularSize!
-    }, 0) + (this.settings.config.buffer.phrase * this.phrases.length)
+    }, 0)
 
     // Convert relative angles to absolute angles (radians)
     this.addAbsoluteAngularSizes(relativeAngularSizeSum)
@@ -48,7 +44,7 @@ export class Sentence extends Phrase {
     this.calculateGeometry(relativeAngularSizeSum)
 
     // Render them
-    this.phrases.forEach(phrase => phrase.render())
+    this.phrases.forEach(phrase => phrase.draw())
 
     // Make the debug paths for the subphrases
     this.phrases.forEach((phrase, index) => {
@@ -117,15 +113,9 @@ export class Sentence extends Phrase {
      * they average to 1.
      */
     this.phrases.forEach(phrase => {
-      if(Array.isArray(phrase.phrases)){
-        // This is a word
-        phrase.relativeAngularSize = Math.pow(
-          phrase.phrases.length, this.settings.config.sizeScaling
-        )
-      } else {
-        // This is a buffer
-        phrase.relativeAngularSize = this.settings.config.buffer.phrase
-      }
+      phrase.relativeAngularSize = Math.pow(
+        phrase.phrases.length, this.settings.config.sizeScaling
+      )
     })
 
     // Calculate the sum of the relative angles, excluding buffers
@@ -146,6 +136,8 @@ export class Sentence extends Phrase {
   addAbsoluteAngularSizes (relativeAngularSizeSum: number): void {
     /**
      * Convert relative angular sizes on subphrases to absolute angular sizes.
+     *
+     * TODO This will fail when the relative angular sizes do not average to 1.
      */
     this.phrases.forEach((phrase) => {
       phrase.absoluteAngularSize = (
@@ -187,15 +179,29 @@ export class Sentence extends Phrase {
     }
 
     if (positionAlgorithm === 'Radial') {
-      this.calculateRadialGeometry(relativeAngularSizeSum)
+      this.calculateRadialGeometry()
     } else if (positionAlgorithm === 'Spiral') {
       this.calculateSpiralGeometry()
     } else if (positionAlgorithm === 'Organic') {
       this.calculateOrganicGeometry(relativeAngularSizeSum)
     }
+
+    this.phrases.forEach(subphrase => {
+      // Make a debug path to show the buffer
+      let bufferDebugPath = ""
+      bufferDebugPath += `M ${subphrase.x} ${subphrase.y}`
+      bufferDebugPath += `m ${-subphrase.bufferRadius!} 0`
+      bufferDebugPath += `a ${subphrase.bufferRadius} ${subphrase.bufferRadius} 0 1 1 ${2 * subphrase.bufferRadius!} 0`
+      bufferDebugPath += `a ${subphrase.bufferRadius} ${subphrase.bufferRadius} 0 1 1 ${-2 * subphrase.bufferRadius!} 0`
+      subphrase.paths.push({
+        d: bufferDebugPath,
+        type: 'debug',
+        purpose: 'circle',
+      })
+    })
   }
 
-  calculateRadialGeometry (relativeAngularSizeSum: number): void {
+  calculateRadialGeometry (): void {
     /**
      * The basic positioning algorithm. Each subphrase is placed around a
      * circle, taking up as much space as possible in its allocated segment.
@@ -211,28 +217,25 @@ export class Sentence extends Phrase {
       if (this.phrases.length > 1) {
         const subphraseRadius = (
           (this.radius! * Math.sin(radialSubtension))
-          / (subphrase.settings.config.word.height
-             * Math.sin(radialSubtension)
-             + 1)
+          / (Math.sin(radialSubtension) + 1)
         )
-        subphrase.radius = subphraseRadius
+        subphrase.bufferRadius = subphraseRadius
+        subphrase.radius = subphrase.bufferRadius * subphrase.settings.config.buffer.phrase
       } else {
-        subphrase.radius = this.radius!
+        subphrase.bufferRadius = this.radius!
+        subphrase.radius = subphrase.bufferRadius
       }
 
       // Calculate the angle that this subphrase is at relative to its parent
       // phrase
-      // For sentences, this does include buffers
-      subphrase.addAngularLocation(this, index, relativeAngularSizeSum)
+      subphrase.addAngularLocation(this, index)
 
       // Calculate coordinates for transformation
       const translate = {
         x: Math.cos(subphrase.angularLocation! + Math.PI / 2) *
-          (-this.radius! + (
-            this.settings.config.word.height * subphrase.radius!)),
+          (-this.radius! + subphrase.bufferRadius!),
         y: Math.sin(subphrase.angularLocation! + Math.PI / 2) *
-          (-this.radius! + (
-            this.settings.config.word.height * subphrase.radius!)),
+          (-this.radius! + subphrase.bufferRadius!),
       }
       subphrase.x = this.x! + translate.x
       subphrase.y = this.y! + translate.y
@@ -272,7 +275,8 @@ export class Sentence extends Phrase {
     const multiplier = targetSpiralRadius / estimatedSpiralRadius
 
     this.phrases.forEach((subphrase, index) => {
-      subphrase.radius = multiplier/2
+      subphrase.bufferRadius = multiplier / 2
+      subphrase.radius = subphrase.bufferRadius * this.settings.config.buffer.phrase
       // why does it need to be /2 ???
       // because the multiplier is the length of the unit diameter
 
