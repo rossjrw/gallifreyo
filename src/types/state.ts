@@ -39,7 +39,6 @@ export type Config = {
   d: BlockConfig
   f: BlockConfig
   v: VowelBlockConfig
-  word: BlockConfig
   buffer: BufferConfig
   automatic: AutomaticConfig
   sizeScaling: number

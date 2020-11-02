@@ -3,22 +3,23 @@ import { Settings } from '@/types/state'
 import { Sentence } from '@/classes/Sentence'
 import { getSpiralCoord } from '@/functions/geometry'
 
-export abstract class Text {
+export abstract class TextNode {
   /**
    * Base class for all written nodes.
    */
   id: number
   settings: Settings
   angularLocation?: number
-  paths?: Path[]
+  paths: Path[]
 
   constructor (id: number, settings: Settings) {
     this.id = id
     this.settings = settings
+    this.paths = []
   }
 }
 
-export abstract class Phrase extends Text {
+export abstract class Phrase extends TextNode {
   /**
    * Base class for sentences and words.
    */
@@ -26,6 +27,7 @@ export abstract class Phrase extends Text {
   absoluteAngularSize?: number
   x?: number
   y?: number
+  bufferRadius?: number
   radius?: number
 
   constructor (id: number, settings: Settings) {
@@ -35,7 +37,6 @@ export abstract class Phrase extends Text {
   calculateGeometry (
     parent: Sentence,
     index: number,
-    relativeAngularSizeSum: number,
   ): void {
     /**
      * Calculates a phrase's geometry relative to its parent phrase. The parent
@@ -46,9 +47,6 @@ export abstract class Phrase extends Text {
      *
      * @param parent: The parent phrase.
      * @param index: The index of the subphrase in the parent phrase.
-     * @param structure: The algorithm to use for positioning and sizing.
-     * @param relativeAngularSizeSum: The sum of relative angles for all
-     * phrases and buffers in the parent phrase.
      * @returns void; Modifies the subphrase in place to add x, y, radius, and
      * angularLocation
      */
@@ -72,24 +70,25 @@ export abstract class Phrase extends Text {
       if (parent.phrases.length > 1) {
         const subphraseRadius = (
           parent.radius! * Math.sin(radialSubtension)
-          / (this.settings.config.word.height * Math.sin(radialSubtension) + 1)
+          / (Math.sin(radialSubtension) + 1)
         )
-        this.radius = subphraseRadius
+        this.bufferRadius = subphraseRadius
+        this.radius = this.bufferRadius * this.settings.config.buffer.phrase
       } else {
-        this.radius = parent.radius!
+        this.bufferRadius = parent.radius!
+        this.radius = this.bufferRadius
       }
 
       // Calculate the angle that this subphrase is at relative to its parent
       // phrase
-      // For sentences, this does include buffers
-      this.addAngularLocation(parent, index, relativeAngularSizeSum)
+      this.addAngularLocation(parent, index)
 
       // Calculate coordinates for transformation
       const translate = {
         x: Math.cos(this.angularLocation! + Math.PI / 2) *
-          (-parent.radius! + (this.settings.config.word.height * this.radius!)),
+          (-parent.radius! + this.bufferRadius!),
         y: Math.sin(this.angularLocation! + Math.PI / 2) *
-          (-parent.radius! + (this.settings.config.word.height * this.radius!)),
+          (-parent.radius! + this.bufferRadius!),
       }
       this.x = parent.x! + translate.x
       this.y = parent.y! + translate.y
@@ -120,7 +119,8 @@ export abstract class Phrase extends Text {
       const targetSpiralRadius = parent.radius! / 2
       const multiplier = targetSpiralRadius / estimatedSpiralRadius
 
-      this.radius = multiplier/2
+      this.bufferRadius = multiplier/2
+      this.radius = this.bufferRadius * this.settings.config.buffer.phrase
       // why does it need to be /2 ???
       // because the multiplier is the length of the unit diameter
 
@@ -137,12 +137,23 @@ export abstract class Phrase extends Text {
       this.x = parent.x! + coords[0]
       this.y = parent.y! + coords[1]
     }
+
+    // Make a debug path to show the buffer
+    let bufferDebugPath = ""
+    bufferDebugPath += `M ${this.x} ${this.y}`
+    bufferDebugPath += `m ${-this.bufferRadius!} 0`
+    bufferDebugPath += `a ${this.bufferRadius} ${this.bufferRadius} 0 1 1 ${2 * this.bufferRadius!} 0`
+    bufferDebugPath += `a ${this.bufferRadius} ${this.bufferRadius} 0 1 1 ${-2 * this.bufferRadius!} 0`
+    this.paths.push({
+      d: bufferDebugPath,
+      type: 'debug',
+      purpose: 'circle',
+    })
   }
 
   addAngularLocation (
     parent: Sentence,
     index: number,
-    relativeAngularSizeSum: number,
   ): void {
     /**
      * Set the angular location of this subphrase based on its position in the
@@ -150,8 +161,6 @@ export abstract class Phrase extends Text {
      *
      * @param parent: The sentence that contains this phrase.
      * @param index: The index of this letter in the word.
-     * @param relativeAngularSizeSum: The sum of all the relative anglular
-     * sizes in the parent sentence.
      */
     this.angularLocation = (
       parent.phrases.slice(0, index + 1).reduce(
@@ -161,8 +170,6 @@ export abstract class Phrase extends Text {
       )
       - (parent.phrases[0].absoluteAngularSize! / 2)
       - (this.absoluteAngularSize! / 2)
-      + (index * this.settings.config.buffer.phrase * 2 * Math.PI
-         / relativeAngularSizeSum)
     )
   }
 }

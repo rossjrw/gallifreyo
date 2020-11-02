@@ -33,8 +33,7 @@ export default new Vuex.Store({
         d: { height: -0.4, width: 2 },
         f: { height: 0, width: 0.75 },
         v: { height: 2, width: 1, r: 0.1 },
-        word: { height: 1.2, width: 1 },
-        buffer: { letter: 0.5, phrase: 0.3 },
+        buffer: { letter: 0.5, phrase: 0.8 },
         automatic: { scaledLessThan: 6, spiralMoreThan: 9 },
         sizeScaling: 0,
         positionAlgorithm: 'Circular',
@@ -51,7 +50,6 @@ export default new Vuex.Store({
           state.settings.selectedAlphabets,
           state.settings,
         ),
-        state.settings
       )
       fixBoundingBox()
     },

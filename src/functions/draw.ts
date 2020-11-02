@@ -1,9 +1,7 @@
-import { Settings } from '@/types/state'
 import { Sentence } from '@/classes/Sentence'
 
 export function drawTokenisedInput(
   tokenisedInput: Sentence[],
-  settings: Settings,
 ): Sentence[] {
   /**
    * Renders the tokenised input into an SVG image.
@@ -20,7 +18,7 @@ export function drawTokenisedInput(
   // this function; a top-level phrase that contains only paragraphs.
   tokenisedInput.forEach(sentence => {
     // Render it
-    sentence.render()
+    sentence.draw()
   })
   return tokenisedInput
 }
