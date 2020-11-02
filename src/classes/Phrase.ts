@@ -72,7 +72,7 @@ export abstract class Phrase extends TextNode {
       if (parent.phrases.length > 1) {
         const subphraseRadius = (
           parent.radius! * Math.sin(radialSubtension)
-          / (this.settings.config.word.height * Math.sin(radialSubtension) + 1)
+          / (Math.sin(radialSubtension) + 1)
         )
         this.radius = subphraseRadius
       } else {
@@ -86,9 +86,9 @@ export abstract class Phrase extends TextNode {
       // Calculate coordinates for transformation
       const translate = {
         x: Math.cos(this.angularLocation! + Math.PI / 2) *
-          (-parent.radius! + (this.settings.config.word.height * this.radius!)),
+          (-parent.radius! + this.radius!),
         y: Math.sin(this.angularLocation! + Math.PI / 2) *
-          (-parent.radius! + (this.settings.config.word.height * this.radius!)),
+          (-parent.radius! + this.radius!),
       }
       this.x = parent.x! + translate.x
       this.y = parent.y! + translate.y
