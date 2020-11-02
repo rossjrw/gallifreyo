@@ -10,11 +10,12 @@ export abstract class TextNode {
   id: number
   settings: Settings
   angularLocation?: number
-  paths?: Path[]
+  paths: Path[]
 
   constructor (id: number, settings: Settings) {
     this.id = id
     this.settings = settings
+    this.paths = []
   }
 }
 
@@ -136,6 +137,18 @@ export abstract class Phrase extends TextNode {
       this.x = parent.x! + coords[0]
       this.y = parent.y! + coords[1]
     }
+
+    // Make a debug path to show the buffer
+    let bufferDebugPath = ""
+    bufferDebugPath += `M ${this.x} ${this.y}`
+    bufferDebugPath += `m ${-this.bufferRadius!} 0`
+    bufferDebugPath += `a ${this.bufferRadius} ${this.bufferRadius} 0 1 1 ${2 * this.bufferRadius!} 0`
+    bufferDebugPath += `a ${this.bufferRadius} ${this.bufferRadius} 0 1 1 ${-2 * this.bufferRadius!} 0`
+    this.paths.push({
+      d: bufferDebugPath,
+      type: 'debug',
+      purpose: 'circle',
+    })
   }
 
   addAngularLocation (

@@ -17,8 +17,6 @@ export class Sentence extends Phrase {
   }
 
   draw (): void {
-    this.paths = []
-
     // If this sentence contains more than one subphrase, then draw a circle
     // around it
     if (this.phrases.length > 1) {

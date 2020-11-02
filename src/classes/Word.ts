@@ -17,9 +17,7 @@ export class Word extends Phrase {
   draw (): void {
     // XXX a lot of this function is very similar to geometry.ts
 
-    // Word already has x, y and radius from geometry.ts
-
-    this.paths = []
+    // Word already has x, y and radius from geometry.ts 
 
     // Assign relative angles and other letter-based properties to each
     // letter
