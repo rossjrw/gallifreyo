@@ -79,8 +79,12 @@ export class Letter extends Text {
         if (["s", "p"].includes(subletters[0].block)) {
           vowelStart = letterCentre
           vowelDistance = 0
-        } else if (["d", "f", "v"].includes(subletters[0].block)) {
+        } else if (["f", "v"].includes(subletters[0].block)) {
           vowelDistance = 0
+        } else if (subletters[0].block === "d") {
+          // Nudge a centred vowel just inside the radius - it is ambiguous
+          // with a vert=1 vowel otherwise
+          vowelDistance = vowelRadius
         }
       } else if (subletters[1].vert === 1) {
         vowelStart = letterCentre
