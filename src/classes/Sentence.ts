@@ -44,7 +44,7 @@ export class Sentence extends Phrase {
     // Assign positions and calculate the size of each subphrase, and then
     // render them
     this.phrases.forEach((phrase, index) => {
-      phrase.calculateGeometry(this, index, relativeAngularSizeSum)
+      phrase.calculateGeometry(this, index)
       phrase.draw()
     })
 
@@ -115,15 +115,9 @@ export class Sentence extends Phrase {
      * they average to 1.
      */
     this.phrases.forEach(phrase => {
-      if(Array.isArray(phrase.phrases)){
-        // This is a word
-        phrase.relativeAngularSize = Math.pow(
-          phrase.phrases.length, this.settings.config.sizeScaling
-        )
-      } else {
-        // This is a buffer
-        phrase.relativeAngularSize = this.settings.config.buffer.phrase
-      }
+      phrase.relativeAngularSize = Math.pow(
+        phrase.phrases.length, this.settings.config.sizeScaling
+      )
     })
 
     // Calculate the sum of the relative angles, excluding buffers

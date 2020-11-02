@@ -35,7 +35,6 @@ export abstract class Phrase extends TextNode {
   calculateGeometry (
     parent: Sentence,
     index: number,
-    relativeAngularSizeSum: number,
   ): void {
     /**
      * Calculates a phrase's geometry relative to its parent phrase. The parent
@@ -46,9 +45,6 @@ export abstract class Phrase extends TextNode {
      *
      * @param parent: The parent phrase.
      * @param index: The index of the subphrase in the parent phrase.
-     * @param structure: The algorithm to use for positioning and sizing.
-     * @param relativeAngularSizeSum: The sum of relative angles for all
-     * phrases and buffers in the parent phrase.
      * @returns void; Modifies the subphrase in place to add x, y, radius, and
      * angularLocation
      */
