@@ -154,95 +154,79 @@ export class Letter extends TextNode {
       ])
     }
 
-    // Always start from the first part of this letter's segment of the word
-    // circle line.
-    let path = `M ${wordStart.x} ${wordStart.y}`
-
     if (["s", "p", "d", "f"].includes(subletters[0].block)) {
       // Start with non-vowel, non-buffer blocks
       // A letter that is 'full' has a complete circle, regardless of whether
       // or not it intersects with the word.
       if (subletters[0].full) {
         // Draw uninterrupted word segment
-        path += `A ${word.radius} ${word.radius} 0 0 1 ${wordEnd.x} ${wordEnd.y}`
+        this.drawArc(
+          wordStart, wordEnd, word.radius,
+          { largeArc: false, sweep: true },
+        )
         // Jump to letter circle and draw it
-        path += `M ${letterCentre.x} ${letterCentre.y}`
-        path += `m -${letterRadius} 0`
-        path += `a ${letterRadius} ${letterRadius} 0 1 1 ${2 * letterRadius} 0`
-        path += `a ${letterRadius} ${letterRadius} 0 1 1 ${-2 * letterRadius} 0`
-        // Jump back to end of word segment and declare finished
-        path += `M ${wordEnd.x} ${wordEnd.y}`
+        this.drawCircle(letterCentre, letterRadius)
       } else {
         // Draw word segment until intersection
-        path += `A ${word.radius} ${word.radius} 0 0 1 ${letterStart.x} ${letterStart.y}`
+        this.drawArc(
+          wordStart, letterStart, word.radius,
+          { largeArc: false, sweep: true },
+        )
         // Draw along letter curve until next intersection
-        if (subletters[0].block == "s") {
-          // Select the correct arc to draw
-          // TODO determine this programmatically, not by block
-          path += `A ${letterRadius} ${letterRadius} 0 1 0 ${letterEnd.x} ${letterEnd.y}`
-        } else {
-          path += `A ${letterRadius} ${letterRadius} 0 0 0 ${letterEnd.x} ${letterEnd.y}`
-        }
+        // TODO determine arc programmatically, not by block
+        this.drawArc(
+          letterStart, letterEnd, letterRadius,
+          { largeArc: subletters[0].block === "s", sweep: false },
+        )
         // Draw remainder of word segment and declare finished
-        path += `A ${word.radius} ${word.radius} 0 0 1 ${wordEnd.x} ${wordEnd.y}`
+        this.drawArc(
+          letterEnd, wordEnd, word.radius,
+          { largeArc: false, sweep: true },
+        )
       }
       // Draw any vowels
       if(subletters.length == 2){
         // Jump to the vowel and draw its circle
-        path += `M ${vowelCentre.x} ${vowelCentre.y}`
-        path += `m -${vowelRadius} 0`
-        path += `a ${vowelRadius} ${vowelRadius} 0 1 1 ${2 * vowelRadius} 0`
-        path += `a ${vowelRadius} ${vowelRadius} 0 1 1 ${-2 * vowelRadius} 0`
-        // Jump back to end of word segment and declare finished
-        path += `M ${wordEnd.x} ${wordEnd.y}`
+        this.drawCircle(vowelCentre, vowelRadius)
 
-        const vowelDebugPath = `M ${wordCentre.x} ${wordCentre.y} L ${vowelCentre.x} ${vowelCentre.y} l -${vowelRadius} 0 l ${2 * vowelRadius} 0`
-        this.paths.push({
-          d: vowelDebugPath,
-          type: 'debug',
-          purpose: 'position',
-        })
+        this.drawLine(
+          wordCentre, vowelCentre,
+          { type: 'debug', purpose: 'position' },
+        )
       }
     } else if (subletters[0].block === `buffer`) {
       // Draw the buffer, which is just an empty word segment
-      path += `A ${word.radius} ${word.radius} 0 0 1 ${wordEnd.x} ${wordEnd.y}`
+      this.drawArc(
+        wordStart, wordEnd, word.radius,
+        { largeArc: false, sweep: true },
+      )
     } else if (subletters[0].block === "v") {
       // Draw the uninterrupted word segment
-      path += `A ${word.radius} ${word.radius} 0 0 1 ${wordEnd.x} ${wordEnd.y}`
+      this.drawArc(
+        wordStart, wordEnd, word.radius,
+        { largeArc: false, sweep: true },
+      )
       // Jump to the vowel and draw its circle
-      path += `M ${vowelCentre.x} ${vowelCentre.y}`
-      path += `m -${vowelRadius} 0`
-      path += `a ${vowelRadius} ${vowelRadius} 0 1 1 ${2 * vowelRadius} 0`
-      path += `a ${vowelRadius} ${vowelRadius} 0 1 1 ${-2 * vowelRadius} 0`
-      // Jump back to end of word segment and declare finished
-      path += `M ${wordEnd.x} ${wordEnd.y}`
+      this.drawCircle(vowelCentre, vowelRadius)
 
-      const vowelDebugPath = `M ${wordCentre.x} ${wordCentre.y} L ${vowelCentre.x} ${vowelCentre.y} l -${vowelRadius} 0 l ${2 * vowelRadius} 0`
-      this.paths.push({
-        d: vowelDebugPath,
-        type: 'debug',
-        purpose: 'position',
-      })
+      this.drawLine(
+        wordCentre, vowelCentre,
+        { type: 'debug', purpose: 'position' },
+      )
     }
 
-    this.paths.push({d: path, type: 'default'})
-
-    const consonantDebugPath = `M ${wordCentre.x} ${wordCentre.y} L ${wordStart.x} ${wordStart.y}`
-    this.paths.push({
-      d: consonantDebugPath,
-      type: 'debug',
-      purpose: 'angle',
-    })
+    // Make a debug path to show inter-letter boundaries
+    this.drawLine(
+      wordCentre, wordStart,
+      { type: 'debug', purpose: 'angle' },
+    )
 
     // Make a debug path to show the percieved size of the word
-    let wordCircleDebugPath = ""
-    wordCircleDebugPath += `M ${wordStart.x} ${wordStart.y}`
-    wordCircleDebugPath += `A ${word.radius} ${word.radius} 0 0 1 ${wordEnd.x} ${wordEnd.y}`
-    this.paths.push({
-      d: wordCircleDebugPath,
-      type: 'debug',
-      purpose: 'circle',
-    })
+    this.drawArc(
+      wordStart, wordEnd, word.radius,
+      { largeArc: false, sweep: true },
+      { type: 'debug', purpose: 'circle' },
+    )
   }
 
   addAngularLocation (word: Word, index: number): void {
