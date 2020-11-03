@@ -97,14 +97,15 @@ export class Sentence extends Phrase {
 
       // Positional debug path: red lines to show the position of the phrase
       // relative to its parent and its radius
-      let subphrasePositionDebugPath = ""
-      subphrasePositionDebugPath += `M ${this.x} ${this.y} L ${phrase.x} ${phrase.y}`
-      subphrasePositionDebugPath += `m ${-phrase.radius!} 0 l ${2 * phrase.radius!} 0`
-      phrase.paths!.push({
-        d: subphrasePositionDebugPath,
-        type: 'debug',
-        purpose: 'position',
-      })
+      this.drawLine(
+        this, phrase,
+        { type: 'debug', purpose: 'position' },
+      )
+      this.drawLine(
+        { x: phrase.x - phrase.radius, y: phrase.y },
+        { x: phrase.x + phrase.radius, y: phrase.y },
+        { type: 'debug', purpose: 'position' },
+      )
     })
   }
 

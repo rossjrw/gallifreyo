@@ -26,7 +26,11 @@ export abstract class TextNode {
     this.paths = []
   }
 
-  drawCircle (centre: Point, radius: number, intent: Intent): void {
+  drawCircle (
+    centre: Point,
+    radius: number,
+    intent: Intent = { type: 'default'},
+  ): void {
     /**
      * Draw a circle of a radius around a point.
      */
@@ -43,7 +47,7 @@ export abstract class TextNode {
     to: Point,
     radius: number,
     { largeArc, sweep }: { largeArc: boolean, sweep: boolean },
-    intent: Intent,
+    intent: Intent = { type: 'default'},
   ): void {
     /**
      * Draw a curve between two points of known radius.
@@ -55,7 +59,11 @@ export abstract class TextNode {
     this.paths.push({ d: path, ...intent })
   }
 
-  drawLine (from: Point, to: Point, intent: Intent): void {
+  drawLine (
+    from: Point,
+    to: Point,
+    intent: Intent = { type: 'default'},
+  ): void {
     /**
      * Draw a line between two points.
      */
@@ -188,16 +196,10 @@ export abstract class Phrase extends TextNode {
     }
 
     // Make a debug path to show the buffer
-    let bufferDebugPath = ""
-    bufferDebugPath += `M ${this.x} ${this.y}`
-    bufferDebugPath += `m ${-this.bufferRadius!} 0`
-    bufferDebugPath += `a ${this.bufferRadius} ${this.bufferRadius} 0 1 1 ${2 * this.bufferRadius!} 0`
-    bufferDebugPath += `a ${this.bufferRadius} ${this.bufferRadius} 0 1 1 ${-2 * this.bufferRadius!} 0`
-    this.paths.push({
-      d: bufferDebugPath,
-      type: 'debug',
-      purpose: 'circle',
-    })
+    this.drawCircle(
+      this, this.bufferRadius!,
+      { type: 'debug', purpose: 'circle' },
+    )
   }
 
   addAngularLocation (
