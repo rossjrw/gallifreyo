@@ -11,22 +11,13 @@ export class Sentence extends Phrase {
     super(id, settings)
     this.depth = 'sentence'
     this.phrases = phrases
-    // Initial geometry values, may be overridden later
-    this.x = 0
-    this.y = 0
-    this.radius = 100
   }
 
   draw (): void {
     // If this sentence contains more than one subphrase, then draw a circle
     // around it
     if (this.phrases.length > 1) {
-      let sentencePath = ""
-      sentencePath += `M ${this.x} ${this.y}`
-      sentencePath += `m -${this.radius} 0`
-      sentencePath += `a ${this.radius} ${this.radius} 0 1 1 ${2 * this.radius!} 0`
-      sentencePath += `a ${this.radius} ${this.radius} 0 1 1 ${-2 * this.radius!} 0`
-      this.paths.push({d: sentencePath, type: 'default'})
+      this.drawCircle(this, this.radius, { type: 'default' })
     }
 
     // Assign normalised relative angles to each subphrase
@@ -50,60 +41,71 @@ export class Sentence extends Phrase {
     this.phrases.forEach((phrase, index) => {
       // Angular debug path: blue lines to show the angle subtended by this
       // phrase
-      let subphraseAngularDebugPath = ""
       // XXX phrase.angularLocation CAN be undef (spiral)
       const subphraseAngularLocations = {
         start: {
-          x: this.x! + Math.sin(
+          x: this.x + Math.sin(
             phrase.angularLocation! - phrase.absoluteAngularSize! / 2
-          ) * this.radius!,
-          y: this.y! - Math.cos(
+          ) * this.radius,
+          y: this.y - Math.cos(
             phrase.angularLocation! - phrase.absoluteAngularSize! / 2
-          ) * this.radius!,
+          ) * this.radius,
         },
         end: {
-          x: this.x! + Math.sin(
+          x: this.x + Math.sin(
             phrase.angularLocation! + phrase.absoluteAngularSize! / 2
-          ) * this.radius!,
-          y: this.y! - Math.cos(
+          ) * this.radius,
+          y: this.y - Math.cos(
             phrase.angularLocation! + phrase.absoluteAngularSize! / 2
-          ) * this.radius!,
+          ) * this.radius,
         }
       }
-      subphraseAngularDebugPath += `M ${this.x} ${this.y} L ${subphraseAngularLocations.start.x} ${subphraseAngularLocations.start.y}`
-      subphraseAngularDebugPath += `M ${this.x} ${this.y} L ${subphraseAngularLocations.end.x} ${subphraseAngularLocations.end.y}`
-      const sizeMod = (index + 1) / 10
+      this.drawLine(
+        this, subphraseAngularLocations.start,
+        { type: 'debug', purpose: 'angle' },
+      )
+      this.drawLine(
+        this, subphraseAngularLocations.end,
+        { type: 'debug', purpose: 'angle' },
+      )
+      const sizeMod = (index + 1) / 20
       const angularDebugPathCurvePoints = {
         start: {
-          x: this.x! +
-            -(this.x! - subphraseAngularLocations.start.x) * sizeMod,
-          y: this.y! +
-            -(this.y! - subphraseAngularLocations.start.y) * sizeMod,
+          x: this.x - (this.x - subphraseAngularLocations.start.x) * sizeMod,
+          y: this.y - (this.y - subphraseAngularLocations.start.y) * sizeMod,
         },
         end: {
-          x: this.x! +
-            -(this.x! - subphraseAngularLocations.end.x) * sizeMod,
-          y: this.y! +
-            -(this.y! - subphraseAngularLocations.end.y) * sizeMod,
+          x: this.x - (this.x - subphraseAngularLocations.end.x) * sizeMod,
+          y: this.y - (this.y - subphraseAngularLocations.end.y) * sizeMod,
         }
       }
-      subphraseAngularDebugPath += `M ${angularDebugPathCurvePoints.start.x} ${angularDebugPathCurvePoints.start.y} A ${this.radius! * sizeMod} ${this.radius! * sizeMod} 0 ${phrase.absoluteAngularSize! > Math.PI ? "1" : "0"} 1 ${angularDebugPathCurvePoints.end.x} ${angularDebugPathCurvePoints.end.y}`
-      phrase.paths!.push({
-        d: subphraseAngularDebugPath,
-        type: 'debug',
-        purpose: 'angle',
-      })
+      this.drawArc(
+        angularDebugPathCurvePoints.start,
+        angularDebugPathCurvePoints.end,
+        this.radius * sizeMod,
+        { largeArc: phrase.absoluteAngularSize! > Math.PI, sweep: true },
+        { type: 'debug', purpose: 'angle' },
+      )
+      this.drawLine(
+        this, subphraseAngularLocations.start,
+        { type: 'debug', purpose: 'angle' },
+      )
+      this.drawLine(
+        this, subphraseAngularLocations.end,
+        { type: 'debug', purpose: 'angle' },
+      )
 
       // Positional debug path: red lines to show the position of the phrase
       // relative to its parent and its radius
-      let subphrasePositionDebugPath = ""
-      subphrasePositionDebugPath += `M ${this.x} ${this.y} L ${phrase.x} ${phrase.y}`
-      subphrasePositionDebugPath += `m ${-phrase.radius!} 0 l ${2 * phrase.radius!} 0`
-      phrase.paths!.push({
-        d: subphrasePositionDebugPath,
-        type: 'debug',
-        purpose: 'position',
-      })
+      this.drawLine(
+        this, phrase,
+        { type: 'debug', purpose: 'position' },
+      )
+      this.drawLine(
+        { x: phrase.x - phrase.radius, y: phrase.y },
+        { x: phrase.x + phrase.radius, y: phrase.y },
+        { type: 'debug', purpose: 'position' },
+      )
     })
   }
 
@@ -159,7 +161,6 @@ export class Sentence extends Phrase {
      *
      * @param parent: The parent phrase.
      * @param index: The index of the subphrase in the parent phrase.
-     * @param structure: The algorithm to use for positioning and sizing.
      * @param relativeAngularSizeSum: The sum of relative angles for all
      * phrases and buffers in the parent phrase.
      * @returns void; Modifies the subphrase in place to add x, y, radius, and
@@ -188,16 +189,10 @@ export class Sentence extends Phrase {
 
     this.phrases.forEach(subphrase => {
       // Make a debug path to show the buffer
-      let bufferDebugPath = ""
-      bufferDebugPath += `M ${subphrase.x} ${subphrase.y}`
-      bufferDebugPath += `m ${-subphrase.bufferRadius!} 0`
-      bufferDebugPath += `a ${subphrase.bufferRadius} ${subphrase.bufferRadius} 0 1 1 ${2 * subphrase.bufferRadius!} 0`
-      bufferDebugPath += `a ${subphrase.bufferRadius} ${subphrase.bufferRadius} 0 1 1 ${-2 * subphrase.bufferRadius!} 0`
-      subphrase.paths.push({
-        d: bufferDebugPath,
-        type: 'debug',
-        purpose: 'circle',
-      })
+      subphrase.drawCircle(
+        subphrase, subphrase.bufferRadius!,
+        { type: 'debug', purpose: 'circle' },
+      )
     })
   }
 
