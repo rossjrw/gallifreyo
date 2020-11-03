@@ -1,7 +1,15 @@
+import { compress } from "compress-tag"
+
 import { Path } from '@/types/phrases'
 import { Settings } from '@/types/state'
 import { Sentence } from '@/classes/Sentence'
 import { getSpiralCoord } from '@/functions/geometry'
+
+type Point = { x: number, y: number }
+type Intent = {
+  type: 'default' | 'debug'
+  purpose?: 'angle' | 'position' | 'circle'
+}
 
 export abstract class TextNode {
   /**
@@ -17,6 +25,43 @@ export abstract class TextNode {
     this.settings = settings
     this.paths = []
   }
+
+  drawCircle (centre: Point, radius: number, intent: Intent): void {
+    /**
+     * Draw a circle of a radius around a point.
+     */
+    const path = compress`
+      M ${centre.x} ${centre.y}
+      m -${radius} 0
+      a ${radius} ${radius} 0 1 1 ${2 * radius} 0
+      a ${radius} ${radius} 0 1 1 ${-2 * radius} 0`
+    this.paths.push({ d: path, ...intent })
+  }
+
+  drawArc (
+    from: Point,
+    to: Point,
+    radius: number,
+    { largeArc, sweep }: { largeArc: boolean, sweep: boolean },
+    intent: Intent,
+  ): void {
+    /**
+     * Draw a curve between two points of known radius.
+     */
+    const path = compress`
+      M ${from.x} ${from.y}
+      A ${radius} ${radius} 0 ${largeArc ? "1" : "0"} ${sweep ? "1" : "0"}
+        ${to.x} ${to.y}`
+    this.paths.push({ d: path, ...intent })
+  }
+
+  drawLine (from: Point, to: Point, intent: Intent): void {
+    /**
+     * Draw a line between two points.
+     */
+    const path = `M ${from.x} ${from.y} L ${to.x} ${to.y}`
+    this.paths.push({ d: path, ...intent })
+  }
 }
 
 export abstract class Phrase extends TextNode {
@@ -25,13 +70,17 @@ export abstract class Phrase extends TextNode {
    */
   relativeAngularSize?: number
   absoluteAngularSize?: number
-  x?: number
-  y?: number
+  x: number
+  y: number
   bufferRadius?: number
-  radius?: number
+  radius: number
 
   constructor (id: number, settings: Settings) {
     super(id, settings)
+    // Initial geometry values, may be overridden later
+    this.x = 0
+    this.y = 0
+    this.radius = 100
   }
 
   calculateGeometry (
