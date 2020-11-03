@@ -1,3 +1,6 @@
+import { Collisions } from "detect-collisions"
+import { range } from "lodash"
+
 import { Settings } from '@/types/state'
 import { Phrase } from '@/classes/Phrase'
 import { Word } from '@/classes/Word'
@@ -20,6 +23,8 @@ export class Sentence extends Phrase {
       this.drawCircle(this, this.radius, { type: 'default' })
     }
 
+    // XXX Should relative and absolute angular sizes be computed in
+    // calculateGeometry? They're not required for all positioning algorithms
     // Assign normalised relative angles to each subphrase
     this.addRelativeAngularSizes()
 
@@ -32,7 +37,7 @@ export class Sentence extends Phrase {
     this.addAbsoluteAngularSizes(relativeAngularSizeSum)
 
     // Assign positions and calculate the size of each subphrase
-    this.calculateGeometry(relativeAngularSizeSum)
+    this.calculateGeometry()
 
     // Render them
     this.phrases.forEach(phrase => phrase.draw())
@@ -148,9 +153,7 @@ export class Sentence extends Phrase {
     })
   }
 
-  calculateGeometry (
-    relativeAngularSizeSum: number,
-  ): void {
+  calculateGeometry (): void {
     /**
      * Calculates the geometry of each of this sentence's subphrases.
      *
@@ -179,12 +182,17 @@ export class Sentence extends Phrase {
       }
     }
 
+    // The organic algorithm breaks for single phrases
+    if (positionAlgorithm === 'Organic' && this.phrases.length === 1) {
+      positionAlgorithm = 'Radial'
+    }
+
     if (positionAlgorithm === 'Radial') {
       this.calculateRadialGeometry()
     } else if (positionAlgorithm === 'Spiral') {
       this.calculateSpiralGeometry()
     } else if (positionAlgorithm === 'Organic') {
-      this.calculateOrganicGeometry(relativeAngularSizeSum)
+      this.calculateOrganicGeometry()
     }
 
     this.phrases.forEach(subphrase => {
@@ -209,12 +217,12 @@ export class Sentence extends Phrase {
     this.phrases.forEach((subphrase, index) => {
       // Calculate the angle subtended by the subphrase's radius
       const radialSubtension = subphrase.absoluteAngularSize! / 2
+      // Derive the radii of the buffer and the subphrase itself
       if (this.phrases.length > 1) {
-        const subphraseRadius = (
+        subphrase.bufferRadius = (
           (this.radius! * Math.sin(radialSubtension))
           / (Math.sin(radialSubtension) + 1)
         )
-        subphrase.bufferRadius = subphraseRadius
         subphrase.radius = subphrase.bufferRadius * subphrase.settings.config.buffer.phrase
       } else {
         subphrase.bufferRadius = this.radius!
@@ -290,7 +298,7 @@ export class Sentence extends Phrase {
     })
   }
 
-  calculateOrganicGeometry (relativeAngularSizeSum: number): void {
+  calculateOrganicGeometry (): void {
     /**
      * An advanced positioning algorithm. Each subphrase is initially placed
      * around a circle, and then they are all grown simultaneously, pushing
@@ -302,5 +310,115 @@ export class Sentence extends Phrase {
      * Works well for medium-to-low length phrases. Much slower than the other
      * algorithms.
      */
+    const collisions = new Collisions()
+    const result = collisions.createResult()
+    const boundaryRes = 16
+    const growth = 1.02
+
+    // Generate the containing circle
+    const boundaryPoints = range(0, boundaryRes).map(index => {
+      const angle = index * 2 * Math.PI / boundaryRes - Math.PI / 2
+      return [
+        (Math.cos(angle) + 1) * this.radius! + this.x!,
+        (Math.sin(angle) + 1) * this.radius! + this.y!,
+      ]
+    })
+    boundaryPoints.forEach((thisPoint, index) => {
+      const nextIndex = index == boundaryRes - 1 ? 0 : index + 1
+      const nextPoint = boundaryPoints[nextIndex]
+      collisions.createPolygon(0, 0, [thisPoint, nextPoint])
+    })
+
+    // Compute necessary properties on each subphrase
+    // XXX Mostly duplicated from radial algorithm - TODO split algorithms into
+    // their own files and reuse functions
+    this.phrases.forEach((subphrase, index) => {
+      // Calculate the angle subtended by the subphrase's radius
+      const radialSubtension = subphrase.absoluteAngularSize! / 2
+      // Derive the radii of the buffer and the subphrase itself
+      if (this.phrases.length > 1) {
+        subphrase.bufferRadius = (
+          (this.radius! * Math.sin(radialSubtension))
+          / (Math.sin(radialSubtension) + 1)
+        )
+      } else {
+        subphrase.bufferRadius = this.radius!
+      }
+
+      // Calculate the angle that this subphrase is at relative to its parent
+      // phrase
+      subphrase.addAngularLocation(this, index)
+
+      // Calculate coordinates for transformation
+      const translate = {
+        x: Math.cos(subphrase.angularLocation! + Math.PI / 2) *
+          (-this.radius! + subphrase.bufferRadius!),
+        y: Math.sin(subphrase.angularLocation! + Math.PI / 2) *
+          (-this.radius! + subphrase.bufferRadius!),
+      }
+      subphrase.x = this.x! + translate.x
+      subphrase.y = this.y! + translate.y
+    })
+
+    // Create collision bodies from subphrases.
+    const bodies = this.phrases.map(phrase => {
+      return collisions.createCircle(
+        phrase.x, phrase.y, phrase.relativeAngularSize
+      )
+    })
+
+    let locks = 0
+    let count = 0
+    console.log("Doing organic")
+    while (locks < bodies.length || count === 50) {
+      locks = 0
+      count++
+      collisions.update()
+
+      bodies.forEach(body => {
+        const potentials = body.potentials()
+
+        const touches: {
+          magnitude: number
+          xDir: number
+          yDir: number
+          object: 'body' | 'boundary'
+        }[] = []
+
+        potentials.forEach(otherBody => {
+          if (body.collides(otherBody, result)) {
+            touches.push({
+              magnitude: result.overlap,
+              xDir: result.overlap_x,
+              yDir: result.overlap_y,
+              object: 'radius' in result.b ? 'body' : 'boundary',
+            })
+          }
+        })
+        touches.forEach(touch => {
+          // Lock the position if touching 3 objects
+          if (touches.length < 3) {
+            body.x -= touch.magnitude * touch.xDir
+            body.y -= touch.magnitude * touch.yDir
+          }
+        })
+        // Lock the size if touching 2 objects, but count the border once
+        if (
+          (touches.some(touch => touch.object === 'boundary') ? 1 : 0) +
+          touches.filter(touch => touch.object === 'body').length < 2
+        ) {
+          body.scale *= growth
+        } else {
+          locks ++
+        }
+      })
+    }
+
+    // Simulation is finished - extract the positions and sizes
+    this.phrases.forEach((subphrase, index) => {
+      subphrase.x = bodies[index].x
+      subphrase.y = bodies[index].y
+      subphrase.radius = bodies[index].radius
+    })
   }
 }

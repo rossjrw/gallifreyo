@@ -90,10 +90,7 @@ export abstract class Phrase extends TextNode {
     this.radius = 100
   }
 
-  addAngularLocation (
-    parent: Sentence,
-    index: number,
-  ): void {
+  addAngularLocation (parent: Sentence, index: number): void {
     /**
      * Set the angular location of this subphrase based on its position in the
      * parent phrase.
