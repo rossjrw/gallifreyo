@@ -1,7 +1,9 @@
+const webpack = require('webpack');
 const path = require('path');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const version = require('project-version');
 
 module.exports = {
   entry: {
@@ -61,6 +63,9 @@ module.exports = {
     },
   },
   plugins: [
+    new webpack.DefinePlugin({
+      __VERSION__: JSON.stringify(version)
+    }),
     new CleanWebpackPlugin(),
     new VueLoaderPlugin(),
     new HtmlWebpackPlugin({

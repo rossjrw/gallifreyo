@@ -2,7 +2,7 @@
   <footer class="card">
     <div class="card-content content has-text-centered">
       <p>
-      <strong>Gallifreyo</strong>
+      <strong>Gallifreyo</strong> v{{version}}
       by <a href="https://github.com/rossjrw">Ross Williams</a>.
       </p>
       <p>
@@ -34,9 +34,19 @@
 </template>
 
 <script lang="ts">
+// Defined in webpack config
+declare const __VERSION__: string
+
 import Vue from "vue"
 
-export default Vue.extend({})
+export default Vue.extend({
+  name: "Title",
+  data() {
+    return {
+      version: __VERSION__,
+    }
+  }
+})
 </script>
 
 <style lang="scss">
