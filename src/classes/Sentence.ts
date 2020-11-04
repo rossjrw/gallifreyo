@@ -153,6 +153,14 @@ export class Sentence extends Phrase {
     })
   }
 
+  addRadiusFromBuffer (parent: Sentence): void {
+    /**
+     * Calculate the radius of this sentence from the buffer radius.
+     */
+    const bufferWidth = parent.radius * this.settings.config.buffer.sentence
+    this.radius = this.bufferRadius! - bufferWidth
+  }
+
   calculateGeometry (): void {
     /**
      * Calculates the geometry of each of this sentence's subphrases.
@@ -223,7 +231,7 @@ export class Sentence extends Phrase {
           (this.radius! * Math.sin(radialSubtension))
           / (Math.sin(radialSubtension) + 1)
         )
-        subphrase.radius = subphrase.bufferRadius * subphrase.settings.config.buffer.phrase
+        subphrase.addRadiusFromBuffer(this)
       } else {
         subphrase.bufferRadius = this.radius!
         subphrase.radius = subphrase.bufferRadius
@@ -258,7 +266,7 @@ export class Sentence extends Phrase {
      */
     // Spiral buffer is both the distance between spiral rungs and the
     // distance between words, to ensure visually consistent spacing.
-    const spiralBuffer = 1 + this.settings.config.buffer.phrase
+    const spiralBuffer = 1 + this.settings.config.buffer.word
 
     // Use the y coordinate of a theoretical final letter to estimate the
     // radius of the spiral
@@ -279,7 +287,7 @@ export class Sentence extends Phrase {
 
     this.phrases.forEach((subphrase, index) => {
       subphrase.bufferRadius = multiplier / 2
-      subphrase.radius = subphrase.bufferRadius * this.settings.config.buffer.phrase
+      subphrase.addRadiusFromBuffer(this)
       // why does it need to be /2 ???
       // because the multiplier is the length of the unit diameter
 
@@ -422,7 +430,7 @@ export class Sentence extends Phrase {
       subphrase.x = bodies[index].x
       subphrase.y = bodies[index].y
       subphrase.bufferRadius = bodies[index].radius * bodies[index].scale
-      subphrase.radius = subphrase.bufferRadius * subphrase.settings.config.buffer.phrase
+      subphrase.addRadiusFromBuffer(this)
     })
   }
 }
