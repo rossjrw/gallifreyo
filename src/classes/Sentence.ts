@@ -319,14 +319,19 @@ export class Sentence extends Phrase {
     const boundaryPoints = range(0, boundaryRes).map(index => {
       const angle = index * 2 * Math.PI / boundaryRes - Math.PI / 2
       return [
-        (Math.cos(angle) + 1) * this.radius! + this.x!,
-        (Math.sin(angle) + 1) * this.radius! + this.y!,
+        Math.cos(angle) * this.radius + this.x,
+        Math.sin(angle) * this.radius + this.y,
       ]
     })
     boundaryPoints.forEach((thisPoint, index) => {
       const nextIndex = index == boundaryRes - 1 ? 0 : index + 1
       const nextPoint = boundaryPoints[nextIndex]
       collisions.createPolygon(0, 0, [thisPoint, nextPoint])
+      this.drawLine(
+        { x: thisPoint[0], y: thisPoint[1] },
+        { x: nextPoint[0], y: nextPoint[1] },
+        { type: 'debug', purpose: 'circle' },
+      )
     })
 
     // Compute necessary properties on each subphrase
@@ -368,11 +373,9 @@ export class Sentence extends Phrase {
     })
 
     let locks = 0
-    let count = 0
     console.log("Doing organic")
-    while (locks < bodies.length || count === 50) {
+    while (locks < bodies.length) {
       locks = 0
-      count++
       collisions.update()
 
       bodies.forEach(body => {
@@ -418,7 +421,8 @@ export class Sentence extends Phrase {
     this.phrases.forEach((subphrase, index) => {
       subphrase.x = bodies[index].x
       subphrase.y = bodies[index].y
-      subphrase.radius = bodies[index].radius
+      subphrase.bufferRadius = bodies[index].radius * bodies[index].scale
+      subphrase.radius = subphrase.bufferRadius * subphrase.settings.config.buffer.phrase
     })
   }
 }
