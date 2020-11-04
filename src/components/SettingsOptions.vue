@@ -60,7 +60,8 @@
               <div class="control">
                 <select v-model="positionAlgorithm">
                   <option>Automatic</option>
-                  <option>Circular</option>
+                  <option>Radial</option>
+                  <option>Organic</option>
                   <option>Spiral</option>
                 </select>
               </div>

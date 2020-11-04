@@ -1,5 +1,6 @@
 import { Settings } from '@/types/state'
 import { Phrase } from '@/classes/Phrase'
+import { Sentence } from '@/classes/Sentence'
 import { Letter } from '@/classes/Letter'
 import { letterDataFromBlock } from '@/functions/blocks';
 
@@ -17,7 +18,7 @@ export class Word extends Phrase {
   draw (): void {
     // XXX a lot of this function is very similar to geometry.ts
 
-    // Word already has x, y and radius from geometry.ts 
+    // Word already has x, y and radius from geometry.ts
 
     // Assign relative angles and other letter-based properties to each
     // letter
@@ -70,5 +71,15 @@ export class Word extends Phrase {
         / relativeAngularSizeSum
       )
     })
+  }
+
+  addRadiusFromBuffer (_parent: Sentence): void {
+    /**
+     * Calculate the radius of this sentence from the buffer radius.
+     *
+     * Parent is passed to this for consistency with the same method on
+     * Sentence, as they are not distinguishable.
+     */
+    this.radius = this.bufferRadius! * (1 - this.settings.config.buffer.word)
   }
 }

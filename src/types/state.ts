@@ -42,7 +42,7 @@ export type Config = {
   buffer: BufferConfig
   automatic: AutomaticConfig
   sizeScaling: number
-  positionAlgorithm: 'Automatic' | 'Circular' | 'Spiral'
+  positionAlgorithm: 'Automatic' | 'Radial' | 'Organic' | 'Spiral'
 }
 
 export type BlockConfig = {
@@ -57,7 +57,8 @@ export type VowelBlockConfig = BlockConfig & {
 
 export type BufferConfig = {
   letter: number
-  phrase: number
+  word: number
+  sentence: number
 }
 
 export type AutomaticConfig = {

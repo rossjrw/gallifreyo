@@ -4,15 +4,25 @@
       <label>
         <input type="checkbox"
                v-model="wantsBvh"
-               @change="changeBvh()"
-               id="show-bounding-box">
+               @change="changeBvh()">
         Show Bounding Volume Hierarchy boxes
+      </label>
+    </div>
+    <div>
+      <label>
+        <input type="checkbox"
+               v-model="instant"
+               @change="changeInstant()">
+        Instant mode
       </label>
     </div>
     <div>
       <button @click="reset">
         Reset
       </button>
+    </div>
+    <div>
+      <p>Took {{time}}ms</p>
     </div>
   </div>
 </template>
@@ -29,14 +39,24 @@ export default Vue.extend({
       test: new GrowingCirclesTest(),
       canvas: null as null | HTMLCanvasElement,
       wantsBvh: false,
+      instant: false,
+    }
+  },
+  computed: {
+    time: {
+      get() { return this.test.endTime - this.test.startTime }
     }
   },
   methods: {
     changeBvh: function () {
       this.test.wantsBvh = this.wantsBvh
     },
+    changeInstant: function () {
+      this.test.instant = this.instant
+    },
     reset: function () {
       this.test.createCircles()
+      this.test.nextFrame()
     }
   },
   mounted() {

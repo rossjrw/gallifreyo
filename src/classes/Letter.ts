@@ -31,8 +31,6 @@ export class Letter extends TextNode {
      */
     const subletters = this.subletters
 
-    this.paths = []
-
     // The width of this letter as an angle
     const angleSubtended = subletters[0].absoluteAngularSize!
 
