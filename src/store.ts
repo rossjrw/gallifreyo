@@ -33,7 +33,7 @@ export default new Vuex.Store({
         d: { height: -0.4, width: 2 },
         f: { height: 0, width: 0.75 },
         v: { height: 2, width: 1, r: 0.1 },
-        buffer: { letter: 0.5, phrase: 0.8 },
+        buffer: { letter: 0.5, word: 0.2, sentence: 0.1 },
         automatic: { scaledLessThan: 6, spiralMoreThan: 9 },
         sizeScaling: 0,
         positionAlgorithm: 'Radial',

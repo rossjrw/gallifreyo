@@ -57,7 +57,8 @@ export type VowelBlockConfig = BlockConfig & {
 
 export type BufferConfig = {
   letter: number
-  phrase: number
+  word: number
+  sentence: number
 }
 
 export type AutomaticConfig = {
