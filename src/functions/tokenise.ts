@@ -41,7 +41,10 @@ export function tokeniseSentence(
   //    2. If all the delimiters have been used up, then the string is a word.
   //    It needs to be broken up into letters and tokenised, and then returned.
   // As a result, a nested structure of tokenised words should be produced.
-  const phrases = sentence.split(splitBy[0]).map(phrase => {
+  const phrases = sentence.split(splitBy[0]).filter(phrase => {
+    // Strip out empty phrases
+    return phrase.length > 0
+  }).map(phrase => {
     // Split the sentence by the first splitBy into a series of phrases.
     // Right now, we don't care what those phrases actually are. I'm using
     // "phrases" to ambiguously mean either a sentence or a word.
