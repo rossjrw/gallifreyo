@@ -178,23 +178,37 @@ export class Sentence extends Phrase {
      * angularLocation
      */
 
+    // Get the global default algorithm
     let positionAlgorithm = this.settings.config.positionAlgorithm
 
-    // If the positioning algorithm is marked as automatic, pick the best one
-    // for this phrase
-    if (positionAlgorithm === 'Automatic') {
-      if (this.phrases.length > 8) {
-        positionAlgorithm = 'Spiral'
-      } else {
-        positionAlgorithm = 'Radial'
-      }
-    }
-
-    // The organic algorithm breaks for single phrases
-    if (positionAlgorithm === 'Organic' && this.phrases.length === 1) {
+    // The radial algorithm is the only one that really works for single words
+    if (this.phrases.length === 1) {
       positionAlgorithm = 'Radial'
     }
 
+    // If the positioning algorithm is marked as automatic, pick the best one
+    if (positionAlgorithm === 'Automatic') {
+      if (this.phrases.length > 8) {
+        // Spiral is best for long sentences
+        positionAlgorithm = 'Spiral'
+      } else {
+        // Choose between radial and organic based on disparity (the difference
+        // between the longest and shortest subphrase)
+        // Organic is an objective improvement over radial, but it doesn't look
+        // very different at low disparity
+        const lengths = this.phrases.map(phrase => phrase.phrases.length)
+        const shortest = Math.min(...lengths)
+        const longest = Math.max(...lengths)
+        positionAlgorithm = longest - shortest > 3 ? 'Organic' : 'Radial'
+      }
+    }
+
+    // If there is no size scaling, organic should be identical to radial
+    if (positionAlgorithm === 'Organic' && !this.settings.config.sizeScaling) {
+      positionAlgorithm = 'Radial'
+    }
+
+    // Execute the chosen algorithm
     if (positionAlgorithm === 'Radial') {
       this.calculateRadialGeometry()
     } else if (positionAlgorithm === 'Spiral') {
