@@ -356,36 +356,8 @@ export class Sentence extends Phrase {
       )
     })
 
-    // Compute necessary properties on each subphrase
-    // XXX Mostly duplicated from radial algorithm - TODO split algorithms into
-    // their own files and reuse functions
-    this.phrases.forEach((subphrase, index) => {
-      // Calculate the angle subtended by the subphrase's radius
-      const radialSubtension = subphrase.absoluteAngularSize! / 2
-      // Derive the radii of the buffer and the subphrase itself
-      if (this.phrases.length > 1) {
-        subphrase.bufferRadius = (
-          (this.radius! * Math.sin(radialSubtension))
-          / (Math.sin(radialSubtension) + 1)
-        )
-      } else {
-        subphrase.bufferRadius = this.radius!
-      }
-
-      // Calculate the angle that this subphrase is at relative to its parent
-      // phrase
-      subphrase.addAngularLocation(this, index)
-
-      // Calculate coordinates for transformation
-      const translate = {
-        x: Math.cos(subphrase.angularLocation! + Math.PI / 2) *
-          (-this.radius! + subphrase.bufferRadius!),
-        y: Math.sin(subphrase.angularLocation! + Math.PI / 2) *
-          (-this.radius! + subphrase.bufferRadius!),
-      }
-      subphrase.x = this.x! + translate.x
-      subphrase.y = this.y! + translate.y
-    })
+    // Compute initial properties on each subphrase
+    this.calculateRadialGeometry()
 
     // Create collision bodies from subphrases.
     const bodies = this.phrases.map(phrase => {
