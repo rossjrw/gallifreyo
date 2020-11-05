@@ -1,5 +1,5 @@
 import { AlphabetsData } from '@/types/alphabets'
-import { Sentence } from '@/types/phrases'
+import { Sentence } from '@/classes/Sentence'
 
 /*
  * State
@@ -39,11 +39,10 @@ export type Config = {
   d: BlockConfig
   f: BlockConfig
   v: VowelBlockConfig
-  word: BlockConfig
   buffer: BufferConfig
   automatic: AutomaticConfig
   sizeScaling: number
-  positionAlgorithm: 'Automatic' | 'Circular' | 'Spiral'
+  positionAlgorithm: 'Automatic' | 'Radial' | 'Organic' | 'Spiral'
 }
 
 export type BlockConfig = {
@@ -58,7 +57,8 @@ export type VowelBlockConfig = BlockConfig & {
 
 export type BufferConfig = {
   letter: number
-  phrase: number
+  word: number
+  sentence: number
 }
 
 export type AutomaticConfig = {

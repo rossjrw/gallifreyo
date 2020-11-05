@@ -20,7 +20,8 @@ export type LetterData = {
   value: string
   block: BlockName
   action?: TokenAction
-  dots: number
-  vert: number
-  lines: number
+  dots?: number
+  vert?: number
+  line?: number
+  lines?: number
 }

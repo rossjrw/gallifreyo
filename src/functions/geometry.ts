@@ -1,138 +1,4 @@
-import { Settings } from '@/types/state'
-import { Sentence, Word } from '@/types/phrases'
-
-export function calculateSubphraseGeometry(
-  sentence: Sentence,
-  w: number, // XXX only used as index
-  relativeAngularSizeSum: number, // the sum of relative angles
-  settings: Settings,
-): void {
-  /**
-   * Calculates a phrase's geometry relative to its parent phrase. The parent
-   * phrase should be a sentence, i.e. this phrase should not be a letter.
-   *
-   * @param sentence: The parent phrase.
-   * @param w: The index of the subphrase in the parent phrase.
-   * @param structure: The algorithm to use for positioning and sizing.
-   * @param relativeAngularSizeSum: The sum of relative angles for all phrases
-   * and buffers in the parent phrase.
-   * sentence.
-   * @returns void; Modifies the subphrase in place to add x, y, radius, and
-   * angularLocation
-   */
-
-  let structure = settings.config.positionAlgorithm
-
-  // If the positioning algorithm is marked as automatic, pick the best one
-  if (structure === 'Automatic') {
-    if (sentence.phrases.length > 8) {
-      structure = 'Spiral'
-    } else {
-      structure = 'Circular'
-    }
-  }
-
-  if (structure === 'Circular') {
-    // The basic algorithm with everything subtending angles of a circle
-    // Calculate the angle subtended by the subphrase's radius
-    const radialSubtension = sentence.phrases[w].absoluteAngularSize! / 2
-    if (sentence.phrases.length > 1) {
-      const subphraseRadius = (
-        sentence.radius! * Math.sin(radialSubtension)
-        / (settings.config.word.height * Math.sin(radialSubtension) + 1)
-      )
-      sentence.phrases[w].radius = subphraseRadius
-    } else {
-      sentence.phrases[w].radius = sentence.radius!
-    }
-
-    // Calculate the angle that this subphrase is at relative to its parent
-    // phrase
-    // For sentences, this does include buffers
-    sentence.phrases[w].angularLocation = (
-      sentence.phrases.slice(0, w + 1).reduce(
-        (total: number, phrase: Sentence | Word) => {
-          return total + phrase.absoluteAngularSize!
-        }, 0
-      )
-      - (sentence.phrases[0].absoluteAngularSize! / 2)
-      - (sentence.phrases[w].absoluteAngularSize! / 2)
-      + (w * settings.config.buffer.phrase * 2 * Math.PI
-         / relativeAngularSizeSum)
-    )
-
-    // Calculate coordinates for transformation
-    const translate = {
-      x: Math.cos(sentence.phrases[w].angularLocation! + Math.PI / 2) *
-        (-sentence.radius! + (settings.config.word.height * sentence.phrases[w].radius!)),
-      y: Math.sin(sentence.phrases[w].angularLocation! + Math.PI / 2) *
-        (-sentence.radius! + (settings.config.word.height * sentence.phrases[w].radius!)),
-    }
-    sentence.phrases[w].x = sentence.x! + translate.x
-    sentence.phrases[w].y = sentence.y! + translate.y
-
-  } else if (structure === 'Spiral') {
-    // For long sentences is is likely appropriate to place each word on the
-    // path of a spiral, to avoid excessive wasted space in the middle of the
-    // circle.
-
-    // Spiral buffer is both the distance between spiral rungs and the distance
-    // between words, to ensure visually consistent spacing.
-    // The spiral buffer must remain constant through the whole spiral -
-    // luckily, the average of the relative angles is 1
-    const spiralBuffer = 1 + settings.config.buffer.phrase
-
-    // Use the y coordinate of a theoretical final letter to estimate the
-    // radius of the spiral
-    // The final letter would be place in the middle of the spiral
-    const estimatedSpiralRadius = -getSpiralCoord(
-      spiralBuffer,
-      spiralBuffer,
-      sentence.phrases.length,
-      0,
-    )[1]
-
-    // Spirals are slightly smaller than circles, so calculate the wanted
-    // radius into a multiplier value
-    // TODO more refined process including centre shifting
-    // XXX I don't think /2 is correct
-    const targetSpiralRadius = sentence.radius!
-    const multiplier = targetSpiralRadius / estimatedSpiralRadius
-
-    sentence.phrases[w].radius = sentence.phrases[w].relativeAngularSize! * multiplier/2
-    // why does it need to be /2 ???
-    // because the multiplier is the length of the unit diameter
-
-    // Calculate the cumulative sum of relative angles, to simulate their
-    // effect on the position of this node along the spiral
-    const relativeAngularSizeSum = (
-      sentence.phrases.slice(0, w + 1).reduce(
-        (total: number, phrase: Sentence | Word) => {
-          return total + phrase.relativeAngularSize!
-        }, 0
-      )
-      - (sentence.phrases[0].relativeAngularSize! / 2)
-      - (sentence.phrases[w].relativeAngularSize! / 2)
-    )
-
-    // Calculate coordinates of the word
-    const coords = getSpiralCoord(
-      spiralBuffer,
-      spiralBuffer,
-      sentence.phrases.length,
-      // length is sent instead of length-1 to ignore the final point of the
-      // spiral - do not want to render a word exactly in the centre
-      relativeAngularSizeSum,
-      // w,
-      multiplier,
-    )
-
-    sentence.phrases[w].x = sentence.x! + coords[0] - multiplier/2
-    sentence.phrases[w].y = sentence.y! + coords[1] + multiplier/2
-  }
-}
-
-function getSpiralCoord(
+export function getSpiralCoord(
   rungWidth: number,
   pointSpacing: number,
   totalPoints: number,
@@ -197,4 +63,40 @@ function getSpiralCoord(
   return [-x, -y]
   // this does need to be multiplied by the multiplier to be usable
   // why are they both negative? I do not know. but it works.
+}
+
+export function circleIntersectionPoints(
+  x0: number,
+  y0: number,
+  r0: number,
+  x1: number,
+  y1: number,
+  r1: number,
+): number[] {
+  /**
+   * Calculates the points of intersection of two circles given their
+   * coordinates and radii.
+   * @param x0: x-coordinate of the first circle.
+   * @param y0: y-coordinate of the first circle.
+   * @param r0: Radius of the first circle.
+   * @param x0: x-coordinate of the second circle.
+   * @param y0: y-coordinate of the second circle.
+   * @param r0: Radius of the second circle.
+   * @returns [x, x, y, y] for the two points of intersection.
+   */
+  const dx = x1 - x0
+  const dy = y1 - y0
+  const d = Math.hypot(dy, dx)
+  const a = ((r0 * r0) - (r1 * r1) + (d * d)) / (2.0 * d)
+  const x2 = x0 + (dx * a / d)
+  const y2 = y0 + (dy * a / d)
+  const h = Math.sqrt((r0 * r0) - (a * a))
+  const rx = -dy * (h / d)
+  const ry = dx * (h / d)
+  const xi = x2 + rx
+  const xi_prime = x2 - rx
+  const yi = y2 + ry
+  const yi_prime = y2 - ry
+  return [xi, xi_prime, yi, yi_prime]
+  // xi is positive, xi_prime is negative for the word-letter situation
 }

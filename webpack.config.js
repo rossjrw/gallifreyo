@@ -1,15 +1,19 @@
+const webpack = require('webpack');
 const path = require('path');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const version = require('project-version');
 
 module.exports = {
-  entry: './src/index.ts',
+  entry: {
+    main: './src/index.ts',
+    collisions: './src/collisions/index.ts',
+  },
   output: {
     filename: 'bundle.[contenthash].js',
     path: path.resolve(__dirname, 'dist'),
   },
-  devtool: "source-map",
   module: {
     rules: [
       {
@@ -59,11 +63,22 @@ module.exports = {
     },
   },
   plugins: [
+    new webpack.DefinePlugin({
+      __VERSION__: JSON.stringify(version)
+    }),
     new CleanWebpackPlugin(),
     new VueLoaderPlugin(),
     new HtmlWebpackPlugin({
       title: "Gallifreyo · Gallifreyan Translator",
       template: './src/template.ejs',
+      filename: 'index.html',
+      chunks: ['main'],
+    }),
+    new HtmlWebpackPlugin({
+      title: "Gallifreyo · Collisions Test",
+      template: './src/template.ejs',
+      filename: 'collisions/index.html',
+      chunks: ['collisions'],
     }),
   ],
 };
