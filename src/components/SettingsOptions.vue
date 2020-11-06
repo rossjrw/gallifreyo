@@ -34,7 +34,7 @@
                      min="0"
                      max="2"
                      step="0.01"
-                     v-model="sizeScaling">
+                     v-model.number="sizeScaling">
             </div>
             <div class="control">
               <input type="number"
@@ -42,7 +42,7 @@
                      min="0"
                      max="2"
                      step="0.01"
-                     v-model="sizeScaling">
+                     v-model.number="sizeScaling">
             </div>
           </div>
         </div>
@@ -81,7 +81,7 @@
             <div class="control">
               <input type="number"
                      class="input"
-                     v-model="width">
+                     v-model.number="width">
             </div>
             <div class="control">
               <a class="button is-static">
@@ -129,7 +129,7 @@
             <div class="control">
               <input type="number"
                      class="input"
-                     v-model="foregroundAlpha">
+                     v-model.number="foregroundAlpha">
             </div>
           </div>
         </div>
@@ -158,7 +158,7 @@
             <div class="control">
               <input type="number"
                      class="input alpha"
-                     v-model="backgroundAlpha">
+                     v-model.number="backgroundAlpha">
             </div>
           </div>
         </div>
