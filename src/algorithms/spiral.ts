@@ -28,16 +28,24 @@ export function addSpiralGeometry (sentence: Sentence): void {
 
   // Spirals are slightly smaller than circles, so calculate the wanted
   // radius into a multiplier value
-  // TODO more refined process including centre shifting
-  // XXX I don't think /2 is correct
-  const targetSpiralRadius = sentence.radius! / 2
+  const targetSpiralRadius = sentence.radius!
   const multiplier = targetSpiralRadius / estimatedSpiralRadius
 
   sentence.phrases.forEach((subphrase, index) => {
-    subphrase.bufferRadius = multiplier / 2
+    subphrase.bufferRadius = subphrase.relativeAngularSize! * multiplier / 2
     subphrase.addRadiusFromBuffer(sentence)
-    // why does it need to be /2 ???
-    // because the multiplier is the length of the unit diameter
+    // It needs to be divided by 2 because the multiplier is the length of
+    // the unit diameter
+
+    // The sum of relative angles so far, assuming they average to 1, can be
+    // used as a modified spiral index that is affected by size scaling
+    const cumulativeRelativeAngularSize = (
+      sentence.phrases.slice(0, index + 1).reduce((total, phrase) => {
+        return total + phrase.relativeAngularSize!
+      }, 0)
+      - (sentence.phrases[0].relativeAngularSize! / 2)
+      - (sentence.phrases[index].relativeAngularSize! / 2)
+    )
 
     // Calculate coordinates of the word
     const coords = getSpiralCoord(
@@ -46,10 +54,10 @@ export function addSpiralGeometry (sentence: Sentence): void {
       sentence.phrases.length,
       // length is sent instead of length-1 to ignore the final point of the
       // spiral - do not want to render a word exactly in the centre
-      index,
+      cumulativeRelativeAngularSize,
       multiplier,
     )
-    subphrase.x = sentence.x + coords[0]
-    subphrase.y = sentence.y + coords[1]
+    subphrase.x = sentence.x + coords[0] - multiplier / 2
+    subphrase.y = sentence.y + coords[1] + multiplier / 2
   })
 }
