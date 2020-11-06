@@ -51,7 +51,7 @@
       <div class="field is-horizontal">
         <div class="field-label is-normal">
           <label class="label">
-            Structure
+            Algorithm
           </label>
         </div>
         <div class="field-body">

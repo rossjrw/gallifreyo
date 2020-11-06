@@ -79,7 +79,7 @@ export abstract class Phrase extends TextNode {
   absoluteAngularSize?: number
   x: number
   y: number
-  bufferRadius?: number
+  bufferRadius: number
   radius: number
 
   constructor (id: number, settings: Settings) {
@@ -87,6 +87,7 @@ export abstract class Phrase extends TextNode {
     // Initial geometry values, may be overridden later
     this.x = 0
     this.y = 0
+    this.bufferRadius = 100
     this.radius = 100
   }
 
