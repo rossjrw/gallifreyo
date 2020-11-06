@@ -43,7 +43,7 @@ export function tokeniseSentence(
   // As a result, a nested structure of tokenised words should be produced.
   const phrases = sentence.split(splitBy[0]).filter(phrase => {
     // Strip out empty phrases
-    return phrase.length > 0
+    return phrase.trim().length > 0
   }).map(phrase => {
     // Split the sentence by the first splitBy into a series of phrases.
     // Right now, we don't care what those phrases actually are. I'm using
