@@ -2,9 +2,9 @@ import { Collisions } from "detect-collisions"
 import { range } from "lodash"
 
 import { Sentence } from "@/classes/Sentence"
-import { calculateRadialGeometry } from "@/algorithms/radial"
+import { addRadialGeometry } from "@/algorithms/radial"
 
-export function calculateOrganicGeometry (sentence: Sentence): void {
+export function addOrganicGeometry (sentence: Sentence): void {
   /**
    * An advanced positioning algorithm that extends the radial algorithm.
    * Each subphrase is initially placed around a circle, and then they are all
@@ -34,6 +34,8 @@ export function calculateOrganicGeometry (sentence: Sentence): void {
     const nextIndex = index == boundaryRes - 1 ? 0 : index + 1
     const nextPoint = boundaryPoints[nextIndex]
     collisions.createPolygon(0, 0, [thisPoint, nextPoint])
+
+    // Draw debug lines to visualise the boundary
     sentence.drawLine(
       { x: thisPoint[0], y: thisPoint[1] },
       { x: nextPoint[0], y: nextPoint[1] },
@@ -42,7 +44,7 @@ export function calculateOrganicGeometry (sentence: Sentence): void {
   })
 
   // Compute initial properties on each subphrase
-  calculateRadialGeometry(sentence)
+  addRadialGeometry(sentence, false)
 
   // Create collision bodies from subphrases.
   const bodies = sentence.phrases.map(phrase => {
@@ -52,7 +54,6 @@ export function calculateOrganicGeometry (sentence: Sentence): void {
   })
 
   let locks = 0
-  console.log("Doing organic")
   while (locks < bodies.length) {
     locks = 0
     collisions.update()
@@ -102,5 +103,21 @@ export function calculateOrganicGeometry (sentence: Sentence): void {
     subphrase.y = bodies[index].y
     subphrase.bufferRadius = bodies[index].radius * bodies[index].scale
     subphrase.addRadiusFromBuffer(sentence)
+  })
+
+  // Draw debug lines for the subphrases
+  sentence.phrases.forEach(phrase => {
+    // Draw a circle to show the buffer
+    phrase.drawCircle(
+      phrase, phrase.bufferRadius,
+      { type: 'debug', purpose: 'circle' },
+    )
+
+    // Draw a line to indicate the diameter of the phrase
+    sentence.drawLine(
+      { x: phrase.x - phrase.radius, y: phrase.y },
+      { x: phrase.x + phrase.radius, y: phrase.y },
+      { type: 'debug', purpose: 'position' },
+    )
   })
 }

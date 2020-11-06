@@ -1,7 +1,7 @@
 import { Sentence } from "@/classes/Sentence"
 import { getSpiralCoord } from '@/functions/geometry'
 
-export function calculateSpiralGeometry (sentence: Sentence): void {
+export function addSpiralGeometry (sentence: Sentence): void {
   /**
    * An advanced positioning algorithm. Places each subphrase on the path of
    * a spiral. This makes good use of the normally-unused space in the

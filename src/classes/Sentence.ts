@@ -1,9 +1,9 @@
 import { Settings } from '@/types/state'
 import { Phrase } from '@/classes/Phrase'
 import { Word } from '@/classes/Word'
-import { calculateRadialGeometry } from "@/algorithms/radial"
-import { calculateOrganicGeometry } from "@/algorithms/organic"
-import { calculateSpiralGeometry } from "@/algorithms/spiral"
+import { addRadialGeometry } from "@/algorithms/radial"
+import { addOrganicGeometry } from "@/algorithms/organic"
+import { addSpiralGeometry } from "@/algorithms/spiral"
 
 export class Sentence extends Phrase {
   depth: 'sentence'
@@ -36,81 +36,10 @@ export class Sentence extends Phrase {
     this.addAbsoluteAngularSizes(relativeAngularSizeSum)
 
     // Assign positions and calculate the size of each subphrase
-    this.calculateGeometry()
+    this.addGeometry()
 
     // Render them
     this.phrases.forEach(phrase => phrase.draw())
-
-    // Make the debug paths for the subphrases
-    this.phrases.forEach((phrase, index) => {
-      // Angular debug path: blue lines to show the angle subtended by this
-      // phrase
-      // XXX phrase.angularLocation CAN be undef (spiral)
-      const subphraseAngularLocations = {
-        start: {
-          x: this.x + Math.sin(
-            phrase.angularLocation! - phrase.absoluteAngularSize! / 2
-          ) * this.radius,
-          y: this.y - Math.cos(
-            phrase.angularLocation! - phrase.absoluteAngularSize! / 2
-          ) * this.radius,
-        },
-        end: {
-          x: this.x + Math.sin(
-            phrase.angularLocation! + phrase.absoluteAngularSize! / 2
-          ) * this.radius,
-          y: this.y - Math.cos(
-            phrase.angularLocation! + phrase.absoluteAngularSize! / 2
-          ) * this.radius,
-        }
-      }
-      this.drawLine(
-        this, subphraseAngularLocations.start,
-        { type: 'debug', purpose: 'angle' },
-      )
-      this.drawLine(
-        this, subphraseAngularLocations.end,
-        { type: 'debug', purpose: 'angle' },
-      )
-      const sizeMod = (index + 1) / 20
-      const angularDebugPathCurvePoints = {
-        start: {
-          x: this.x - (this.x - subphraseAngularLocations.start.x) * sizeMod,
-          y: this.y - (this.y - subphraseAngularLocations.start.y) * sizeMod,
-        },
-        end: {
-          x: this.x - (this.x - subphraseAngularLocations.end.x) * sizeMod,
-          y: this.y - (this.y - subphraseAngularLocations.end.y) * sizeMod,
-        }
-      }
-      this.drawArc(
-        angularDebugPathCurvePoints.start,
-        angularDebugPathCurvePoints.end,
-        this.radius * sizeMod,
-        { largeArc: phrase.absoluteAngularSize! > Math.PI, sweep: true },
-        { type: 'debug', purpose: 'angle' },
-      )
-      this.drawLine(
-        this, subphraseAngularLocations.start,
-        { type: 'debug', purpose: 'angle' },
-      )
-      this.drawLine(
-        this, subphraseAngularLocations.end,
-        { type: 'debug', purpose: 'angle' },
-      )
-
-      // Positional debug path: red lines to show the position of the phrase
-      // relative to its parent and its radius
-      this.drawLine(
-        this, phrase,
-        { type: 'debug', purpose: 'position' },
-      )
-      this.drawLine(
-        { x: phrase.x - phrase.radius, y: phrase.y },
-        { x: phrase.x + phrase.radius, y: phrase.y },
-        { type: 'debug', purpose: 'position' },
-      )
-    })
   }
 
   addRelativeAngularSizes (): void {
@@ -160,7 +89,7 @@ export class Sentence extends Phrase {
     this.radius = this.bufferRadius! - bufferWidth
   }
 
-  calculateGeometry (): void {
+  addGeometry (): void {
     /**
      * Calculates the geometry of each of this sentence's subphrases.
      *
@@ -169,12 +98,7 @@ export class Sentence extends Phrase {
      *
      * This method selects a positioning algorithm and then executes it.
      *
-     * @param parent: The parent phrase.
-     * @param index: The index of the subphrase in the parent phrase.
-     * @param relativeAngularSizeSum: The sum of relative angles for all
-     * phrases and buffers in the parent phrase.
-     * @returns void; Modifies the subphrase in place to add x, y, radius, and
-     * angularLocation
+     * @returns void; Modifies the subphrase in place to add x, y, and radius
      */
 
     // Get the global default algorithm
@@ -209,19 +133,11 @@ export class Sentence extends Phrase {
 
     // Execute the chosen algorithm
     if (positionAlgorithm === 'Radial') {
-      calculateRadialGeometry(this)
+      addRadialGeometry(this)
     } else if (positionAlgorithm === 'Spiral') {
-      calculateSpiralGeometry(this)
+      addSpiralGeometry(this)
     } else if (positionAlgorithm === 'Organic') {
-      calculateOrganicGeometry(this)
+      addOrganicGeometry(this)
     }
-
-    this.phrases.forEach(subphrase => {
-      // Make a debug path to show the buffer
-      subphrase.drawCircle(
-        subphrase, subphrase.bufferRadius!,
-        { type: 'debug', purpose: 'circle' },
-      )
-    })
   }
 }
