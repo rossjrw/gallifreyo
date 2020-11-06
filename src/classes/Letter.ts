@@ -160,7 +160,7 @@ export class Letter extends TextNode {
         // Draw uninterrupted word segment
         this.drawArc(
           wordStart, wordEnd, word.radius,
-          { largeArc: false, sweep: true },
+          { largeArc: angleSubtended > Math.PI, sweep: true },
         )
         // Jump to letter circle and draw it
         this.drawCircle(letterCentre, letterRadius)
@@ -192,7 +192,7 @@ export class Letter extends TextNode {
           { type: 'debug', purpose: 'position' },
         )
       }
-    } else if (subletters[0].block === `buffer`) {
+    } else if (subletters[0].block === "buffer") {
       // Draw the buffer, which is just an empty word segment
       this.drawArc(
         wordStart, wordEnd, word.radius,
@@ -202,7 +202,7 @@ export class Letter extends TextNode {
       // Draw the uninterrupted word segment
       this.drawArc(
         wordStart, wordEnd, word.radius,
-        { largeArc: false, sweep: true },
+        { largeArc: angleSubtended > Math.PI, sweep: true },
       )
       // Jump to the vowel and draw its circle
       this.drawCircle(vowelCentre, vowelRadius)
@@ -222,7 +222,7 @@ export class Letter extends TextNode {
     // Make a debug path to show the percieved size of the word
     this.drawArc(
       wordStart, wordEnd, word.radius,
-      { largeArc: false, sweep: true },
+      { largeArc: angleSubtended > Math.PI, sweep: true },
       { type: 'debug', purpose: 'circle' },
     )
   }
