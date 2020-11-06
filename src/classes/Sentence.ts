@@ -114,6 +114,9 @@ export class Sentence extends Phrase {
       if (this.phrases.length > 8) {
         // Spiral is best for long sentences
         positionAlgorithm = 'Spiral'
+      } else if (this.settings.config.sizeScaling === 0) {
+        // If there is no size scaling, organic should be identical to radial
+        positionAlgorithm = 'Radial'
       } else {
         // Choose between radial and organic based on disparity (the difference
         // between the longest and shortest subphrase)
@@ -124,11 +127,6 @@ export class Sentence extends Phrase {
         const longest = Math.max(...lengths)
         positionAlgorithm = longest - shortest > 3 ? 'Organic' : 'Radial'
       }
-    }
-
-    // If there is no size scaling, organic should be identical to radial
-    if (positionAlgorithm === 'Organic' && !this.settings.config.sizeScaling) {
-      positionAlgorithm = 'Radial'
     }
 
     // Execute the chosen algorithm
