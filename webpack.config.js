@@ -73,12 +73,14 @@ module.exports = {
       template: './src/template.ejs',
       filename: 'index.html',
       chunks: ['main'],
+      meta: { viewport: "width=device-width, initial-scale=1" },
     }),
     new HtmlWebpackPlugin({
       title: "Gallifreyo · Collisions Test",
       template: './src/template.ejs',
       filename: 'collisions/index.html',
       chunks: ['collisions'],
+      meta: { viewport: "width=device-width, initial-scale=1" },
     }),
   ],
 };
