@@ -1,6 +1,6 @@
 import { memoize, orderBy, pickBy, values } from "lodash"
 
-import { AlphabetsData, LetterData, AlphabetData } from '@/types/alphabets'
+import { AlphabetsData, LetterData, AlphabetData } from '../types/alphabets'
 
 // Blocks:
 // s: circle intersects partially with line but is mostly enclosed

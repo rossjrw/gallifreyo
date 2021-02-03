@@ -16,52 +16,18 @@ module.exports = {
   },
   module: {
     rules: [
-      {
-        test: /\.vue$/,
-        use: [
-          'vue-loader',
-        ],
-      },
-      {
-        test: /\.tsx?$/,
-        use: 'babel-loader',
-        exclude: /node_modules/,
-      },
+      { test: /\.vue$/, use: ['vue-loader'] },
+      { test: /\.ts$/, use: 'babel-loader' },
       {
         test: /\.s[ac]ss$/,
-        use: [
-          'vue-style-loader',
-          'css-loader',
-          'sass-loader',
-        ],
+        use: ['vue-style-loader', 'css-loader', 'sass-loader'],
       },
-      {
-        test: /\.css$/,
-        use: [
-          'vue-style-loader',
-          'css-loader',
-        ],
-      },
-      {
-        test: /\.toml$/,
-        use: [
-          'raw-loader',
-        ],
-      },
-      {
-        test: /\.svg$/,
-        use: [
-          'svg-url-loader',
-        ],
-      },
+      { test: /\.css$/, use: ['vue-style-loader', 'css-loader'] },
+      { test: /\.toml$/, use: ['raw-loader'] },
+      { test: /\.svg$/, use: ['svg-url-loader'] },
     ],
   },
-  resolve: {
-    extensions: ['.ts', '.js', '.vue'],
-    alias: {
-      '@': path.resolve(__dirname, 'src'),
-    },
-  },
+  resolve: { extensions: ['.ts', '.js', '.vue'] },
   plugins: [
     new webpack.DefinePlugin({
       __VERSION__: JSON.stringify(version)

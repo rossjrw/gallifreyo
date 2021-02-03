@@ -1,9 +1,9 @@
-import { Settings } from '@/types/state'
-import { LetterData } from '@/types/alphabets'
-import { Sentence } from '@/classes/Sentence'
-import { Word } from '@/classes/Word'
-import { Letter } from '@/classes/Letter'
-import { getLetters } from '@/functions/alphabets'
+import { Settings } from '../types/state'
+import { LetterData } from '../types/alphabets'
+import { Sentence } from '../classes/Sentence'
+import { Word } from '../classes/Word'
+import { Letter } from '../classes/Letter'
+import { getLetters } from '../functions/alphabets'
 
 let ID_COUNTER = 0
 

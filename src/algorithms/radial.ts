@@ -1,4 +1,4 @@
-import { Sentence } from "@/classes/Sentence"
+import { Sentence } from "../classes/Sentence"
 
 export function addRadialGeometry (sentence: Sentence, debug = true): void {
   /**

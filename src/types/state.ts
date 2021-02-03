@@ -1,5 +1,5 @@
-import { AlphabetsData } from '@/types/alphabets'
-import { Sentence } from '@/classes/Sentence'
+import { AlphabetsData } from '../types/alphabets'
+import { Sentence } from '../classes/Sentence'
 
 /*
  * State

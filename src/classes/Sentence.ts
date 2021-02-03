@@ -1,9 +1,9 @@
-import { Settings } from '@/types/state'
-import { Phrase } from '@/classes/Phrase'
-import { Word } from '@/classes/Word'
-import { addRadialGeometry } from "@/algorithms/radial"
-import { addOrganicGeometry } from "@/algorithms/organic"
-import { addSpiralGeometry } from "@/algorithms/spiral"
+import { Settings } from '../types/state'
+import { Phrase } from '../classes/Phrase'
+import { Word } from '../classes/Word'
+import { addRadialGeometry } from "../algorithms/radial"
+import { addOrganicGeometry } from "../algorithms/organic"
+import { addSpiralGeometry } from "../algorithms/spiral"
 
 export class Sentence extends Phrase {
   depth: 'sentence'

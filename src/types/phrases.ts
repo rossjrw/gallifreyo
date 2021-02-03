@@ -1,4 +1,4 @@
-import { LetterData } from '@/types/alphabets'
+import { LetterData } from '../types/alphabets'
 
 /*
  * Tokenised and Rendered Input

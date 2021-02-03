@@ -1,10 +1,10 @@
 import { sum } from "lodash"
 
-import { Settings } from '@/types/state'
-import { TextNode } from '@/classes/Phrase'
-import { Word } from '@/classes/Word'
-import { Subletter } from '@/types/phrases'
-import { circleIntersectionPoints } from '@/functions/geometry'
+import { Settings } from '../types/state'
+import { TextNode } from '../classes/Phrase'
+import { Word } from '../classes/Word'
+import { Subletter } from '../types/phrases'
+import { circleIntersectionPoints } from '../functions/geometry'
 
 export class Letter extends TextNode {
   depth: "letter"

@@ -30,7 +30,7 @@
 <script lang="ts">
 import Vue from "vue"
 
-import { GrowingCirclesTest } from '@/collisions/circles'
+import { GrowingCirclesTest } from '../collisions/circles'
 
 export default Vue.extend({
   name: "CollisionsTest",

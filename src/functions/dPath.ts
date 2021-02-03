@@ -1,4 +1,4 @@
-import { Path } from '@/types/phrases'
+import { Path } from '../types/phrases'
 
 export interface SVGPath {
   d: string

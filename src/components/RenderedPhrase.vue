@@ -17,8 +17,8 @@
 <script lang="ts">
 import Vue from "vue"
 
-import RenderedLetter from '@/components/RenderedLetter.vue'
-import { SVGPath, makePaths } from '@/functions/dPath'
+import RenderedLetter from '../components/RenderedLetter.vue'
+import { SVGPath, makePaths } from '../functions/dPath'
 
 export default Vue.extend({
   name: "RenderedPhrase",

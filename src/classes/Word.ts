@@ -1,8 +1,8 @@
-import { Settings } from '@/types/state'
-import { Phrase } from '@/classes/Phrase'
-import { Sentence } from '@/classes/Sentence'
-import { Letter } from '@/classes/Letter'
-import { letterDataFromBlock } from '@/functions/blocks';
+import { Settings } from '../types/state'
+import { Phrase } from '../classes/Phrase'
+import { Sentence } from '../classes/Sentence'
+import { Letter } from '../classes/Letter'
+import { letterDataFromBlock } from '../functions/blocks';
 
 export class Word extends Phrase {
   depth: "word"

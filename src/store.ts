@@ -2,10 +2,10 @@ import Vue from "vue"
 import Vuex from "vuex"
 import { setWith } from "lodash"
 
-import { State } from '@/types/state'
-import { tokeniseSentence } from '@/functions/tokenise'
-import { drawTokenisedInput } from '@/functions/draw'
-import { fixBoundingBox } from '@/functions/box'
+import { State } from './types/state'
+import { tokeniseSentence } from './functions/tokenise'
+import { drawTokenisedInput } from './functions/draw'
+import { fixBoundingBox } from './functions/box'
 
 Vue.use(Vuex)
 

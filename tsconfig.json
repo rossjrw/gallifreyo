@@ -10,19 +10,7 @@
     "esModuleInterop": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
-    "lib": [
-      "es2020",
-      "dom"
-    ],
-    "paths": {
-      "@/*": ["src/*"]
-    }
+    "lib": ["es2020", "dom"]
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.vue"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["src/**/*.ts", "src/**/*.vue"]
 }

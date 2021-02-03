@@ -1,5 +1,5 @@
-import { Sentence } from "@/classes/Sentence"
-import { getSpiralCoord } from '@/functions/geometry'
+import { Sentence } from "../classes/Sentence"
+import { getSpiralCoord } from '../functions/geometry'
 
 export function addSpiralGeometry (sentence: Sentence): void {
   /**

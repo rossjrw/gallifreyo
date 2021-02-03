@@ -1,8 +1,8 @@
 import { Collisions } from "detect-collisions"
 import { range } from "lodash"
 
-import { Sentence } from "@/classes/Sentence"
-import { addRadialGeometry } from "@/algorithms/radial"
+import { Sentence } from "../classes/Sentence"
+import { addRadialGeometry } from "../algorithms/radial"
 
 export function addOrganicGeometry (sentence: Sentence): void {
   /**

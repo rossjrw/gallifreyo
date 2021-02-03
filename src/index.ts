@@ -1,10 +1,10 @@
-import '@/root.scss'
+import './root.scss'
 import Vue from "vue"
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-import App from '@/components/App.vue'
-import store from '@/store'
+import App from './components/App.vue'
+import store from './store'
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 

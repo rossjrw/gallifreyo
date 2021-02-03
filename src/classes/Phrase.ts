@@ -1,8 +1,8 @@
 import { compress } from "compress-tag"
 
-import { Path } from '@/types/phrases'
-import { Settings } from '@/types/state'
-import { Sentence } from '@/classes/Sentence'
+import { Path } from '../types/phrases'
+import { Settings } from '../types/state'
+import { Sentence } from '../classes/Sentence'
 
 type Point = { x: number, y: number }
 type Intent = {

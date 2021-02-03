@@ -10,7 +10,7 @@
 <script lang="ts">
 import Vue from "vue"
 
-import { makePaths } from '@/functions/dPath'
+import { makePaths } from '../functions/dPath'
 
 export default Vue.extend({
   name: "RenderedLetter",
