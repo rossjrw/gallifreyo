@@ -5,7 +5,9 @@
   "scripts": {
     "test": "jest",
     "build": "webpack --config webpack.config.js --mode development",
-    "build-production": "webpack --config webpack.config.js --mode production"
+    "build-production": "webpack --config webpack.config.js --mode production",
+    "lint": "standardx src/**/*.{ts,vue}",
+    "fix": "standardx --fix src/**/*.ts src/**/*.vue"
   },
   "repository": {
     "type": "git",
@@ -54,6 +56,7 @@
     "sass": "^1.26.7",
     "sass-loader": "^8.0.2",
     "source-map-loader": "^0.2.4",
+    "standardx": "^7.0.0",
     "style-loader": "^1.2.1",
     "svg-url-loader": "^6.0.0",
     "typescript": "^3.9.3",
