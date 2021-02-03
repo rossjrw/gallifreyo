@@ -1,17 +1,17 @@
 import { Sentence } from "../classes/Sentence"
 import { getSpiralCoord } from "../functions/geometry"
 
+/**
+ * An advanced positioning algorithm. Places each subphrase on the path of
+ * a spiral. This makes good use of the normally-unused space in the
+ * middle of the phrase.
+ *
+ * Size-scaling affects the length of the spiral that the subphrase takes
+ * up, though this can cause it to overlap with neighbouring rungs.
+ *
+ * Works well for very long phrases.
+ */
 export function addSpiralGeometry (sentence: Sentence): void {
-  /**
-   * An advanced positioning algorithm. Places each subphrase on the path of
-   * a spiral. This makes good use of the normally-unused space in the
-   * middle of the phrase.
-   *
-   * Size-scaling affects the length of the spiral that the subphrase takes
-   * up, though this can cause it to overlap with neighbouring rungs.
-   *
-   * Works well for very long phrases.
-   */
   // Spiral buffer is both the distance between spiral rungs and the
   // distance between words, to ensure visually consistent spacing.
   const spiralBuffer = 1 + sentence.settings.config.buffer.word

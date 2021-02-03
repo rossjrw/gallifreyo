@@ -68,10 +68,10 @@ export class GrowingCirclesTest {
     }
   }
 
+  /**
+   * Generate, position and size the word circles.
+   */
   createCircles (): void {
-    /**
-     * Generate, position and size the word circles.
-     */
     // Clear all existing circles from the screen.
     this.bodies.forEach(body => body.remove())
     this.bodies = []

@@ -52,19 +52,19 @@ export class Word extends Phrase {
     })
   }
 
+  /**
+   * Add letter data from the block presets.
+   */
   addBlockDataToLetters (): void {
-    /**
-     * Add letter data from the block presets.
-     */
     this.phrases.forEach((letter) => {
       letterDataFromBlock(letter, this.settings)
     })
   }
 
+  /**
+   * Convert relative angular sizes on letters to absolute angular sizes.
+   */
   addAbsoluteAngularSizes (relativeAngularSizeSum: number): void {
-    /**
-     * Convert relative angular sizes on letters to absolute angular sizes.
-     */
     this.phrases.forEach((letter) => {
       letter.subletters[0].absoluteAngularSize = (
         letter.subletters[0].relativeAngularSize! * 2 * Math.PI /
@@ -73,13 +73,13 @@ export class Word extends Phrase {
     })
   }
 
+  /**
+   * Calculate the radius of this sentence from the buffer radius.
+   *
+   * Parent is passed to this for consistency with the same method on
+   * Sentence, as they are not distinguishable.
+   */
   addRadiusFromBuffer (_parent: Sentence): void {
-    /**
-     * Calculate the radius of this sentence from the buffer radius.
-     *
-     * Parent is passed to this for consistency with the same method on
-     * Sentence, as they are not distinguishable.
-     */
     this.radius = this.bufferRadius * (1 - this.settings.config.buffer.word)
   }
 }

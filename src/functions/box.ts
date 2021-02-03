@@ -1,7 +1,7 @@
+/**
+ * Sets the bounding box of the rendered SVG to neatly contain its contents.
+ */
 export function fixBoundingBox (): void {
-  /**
-   * Sets the bounding box of the rendered SVG to neatly contain its contents.
-   */
   setTimeout(() => {
     const svgs: NodeListOf<SVGGraphicsElement> = document.querySelectorAll("#render")
     // Get internal size of SVG

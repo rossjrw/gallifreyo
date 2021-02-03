@@ -20,15 +20,15 @@ export class Letter extends TextNode {
     this.subletters = subletters
   }
 
+  /**
+   * Generates the SVG path for a given letter and attaches it as letter.d.
+   *
+   * @param word - The word that contains this letter.
+   * @param angleSubtendedByVowel - The absolute angle to be subtended by a
+   * vowel for this word.
+   * @returns void; letter retains path information.
+   */
   draw (word: Word, angleSubtendedByVowel: number): void {
-    /**
-     * Generates the SVG path for a given letter and attaches it as letter.d.
-     *
-     * @param word: The word that contains this letter.
-     * @param angleSubtendedByVowel: The absolute angle to be subtended by a
-     * vowel for this word.
-     * @returns void; letter retains path information.
-     */
     const subletters = this.subletters
 
     // The width of this letter as an angle
@@ -227,14 +227,14 @@ export class Letter extends TextNode {
     )
   }
 
+  /**
+   * Set the angular location of this letter based on its position in the
+   * word.
+   *
+   * @param word - The word that contains this letter.
+   * @param index - The index of this letter in the word.
+   */
   addAngularLocation (word: Word, index: number): void {
-    /**
-     * Set the angular location of this letter based on its position in the
-     * word.
-     *
-     * @param word: The word that contains this letter.
-     * @param index: The index of this letter in the word.
-     */
     this.angularLocation = (
       word.phrases.slice(0, index + 1).reduce((total, letter) => {
         return total + letter.subletters[0].absoluteAngularSize!

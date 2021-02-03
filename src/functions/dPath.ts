@@ -12,13 +12,13 @@ const debugPurposes = {
   circle: { colour: "limegreen", priority: 0 },
 }
 
+/**
+ * Converts a list of paths to SVG paths.
+ */
 export function makePaths (
   paths: Path[],
   debug: boolean,
 ): SVGPath[] {
-  /**
-   * Converts a list of paths to SVG paths.
-   */
   // Put default paths on top of debug paths
   paths = [...paths].sort((a, b) => {
     // Default always comes first

@@ -4,19 +4,19 @@ import { range } from "lodash"
 import { Sentence } from "../classes/Sentence"
 import { addRadialGeometry } from "../algorithms/radial"
 
+/**
+ * An advanced positioning algorithm that extends the radial algorithm.
+ * Each subphrase is initially placed around a circle, and then they are all
+ * grown simultaneously, pushing each other aside until they occupy as much
+ * space as possible.
+ *
+ * Size scaling affects the initial size of each subphrase and the initial
+ * angle allocated for its growth.
+ *
+ * Works well for medium-to-low length phrases. Much slower than the other
+ * algorithms.
+ */
 export function addOrganicGeometry (sentence: Sentence): void {
-  /**
-   * An advanced positioning algorithm that extends the radial algorithm.
-   * Each subphrase is initially placed around a circle, and then they are all
-   * grown simultaneously, pushing each other aside until they occupy as much
-   * space as possible.
-   *
-   * Size scaling affects the initial size of each subphrase and the initial
-   * angle allocated for its growth.
-   *
-   * Works well for medium-to-low length phrases. Much slower than the other
-   * algorithms.
-   */
   const collisions = new Collisions()
   const result = collisions.createResult()
   const boundaryResolution = 16

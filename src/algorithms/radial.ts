@@ -1,19 +1,19 @@
 import { Sentence } from "../classes/Sentence"
 
+/**
+ * The basic positioning algorithm. Each subphrase is placed around a
+ * circle, taking up as much space as possible in its allocated segment.
+ *
+ * Size scaling affects the angle subtended by each phrase within the
+ * circle.
+ *
+ * Works well at low disparity. Much faster than the organic algorithm.
+ *
+ * @param debug - Boolean; whether or not to draw debug lines. Debug lines
+ * are not desirable if this function is only being used to calculate initial
+ * geometry à la the organic algorithm.
+ */
 export function addRadialGeometry (sentence: Sentence, debug = true): void {
-  /**
-   * The basic positioning algorithm. Each subphrase is placed around a
-   * circle, taking up as much space as possible in its allocated segment.
-   *
-   * Size scaling affects the angle subtended by each phrase within the
-   * circle.
-   *
-   * Works well at low disparity. Much faster than the organic algorithm.
-   *
-   * @param debug: Boolean; whether or not to draw debug lines. Debug lines are
-   * not desirable if this function is only being used to calculate initial
-   * geometry à la the organic algorithm.
-   */
   sentence.phrases.forEach((phrase, index) => {
     // Calculate the angle subtended by the subphrase's radius
     const radialSubtension = phrase.absoluteAngularSize! / 2
