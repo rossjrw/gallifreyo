@@ -30,11 +30,11 @@
 <script lang="ts">
 import Vue from "vue"
 
-import { GrowingCirclesTest } from '../collisions/circles'
+import { GrowingCirclesTest } from "../collisions/circles"
 
 export default Vue.extend({
   name: "CollisionsTest",
-  data() {
+  data () {
     return {
       test: new GrowingCirclesTest(),
       canvas: null as null | HTMLCanvasElement,
@@ -44,8 +44,8 @@ export default Vue.extend({
   },
   computed: {
     time: {
-      get() { return this.test.endTime - this.test.startTime }
-    }
+      get () { return this.test.endTime - this.test.startTime },
+    },
   },
   methods: {
     changeBvh: function () {
@@ -57,9 +57,9 @@ export default Vue.extend({
     reset: function () {
       this.test.createCircles()
       this.test.nextFrame()
-    }
+    },
   },
-  mounted() {
+  mounted () {
     this.canvas = this.test.canvas
     document.getElementById("app")!.appendChild(this.canvas)
   },

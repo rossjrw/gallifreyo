@@ -1,4 +1,4 @@
-export function getSpiralCoord(
+export function getSpiralCoord (
   rungWidth: number,
   pointSpacing: number,
   totalPoints: number,
@@ -23,41 +23,37 @@ export function getSpiralCoord(
 
   // Parametric equations to render the spiral
   const x =
-    (rungWidth / (2 * Math.PI)
-     *
+    (rungWidth / (2 * Math.PI) *
     Math.sqrt(
-      (2 * pointSpacing * selectedPoint) / (rungWidth / (2 * Math.PI))
-    )
-    *
+      (2 * pointSpacing * selectedPoint) / (rungWidth / (2 * Math.PI)),
+    ) *
     Math.cos(
       Math.sqrt(
-        (2 * pointSpacing * selectedPoint) / (rungWidth / (2 * Math.PI))
+        (2 * pointSpacing * selectedPoint) / (rungWidth / (2 * Math.PI)),
       ) -
-      (Math.PI/2) -
+      (Math.PI / 2) -
       Math.sqrt(
-        (2 * pointSpacing * totalPoints) / (rungWidth / (2 * Math.PI))
-      )
+        (2 * pointSpacing * totalPoints) / (rungWidth / (2 * Math.PI)),
+      ),
     ) -
     (rungWidth / 4)
-  ) * multiplier
+    ) * multiplier
 
   const y = (
-    (rungWidth / (2 * Math.PI))
-    *
+    (rungWidth / (2 * Math.PI)) *
     Math.sqrt(
-      (2 * pointSpacing * selectedPoint) / (rungWidth / (2 * Math.PI))
-    )
-    *
+      (2 * pointSpacing * selectedPoint) / (rungWidth / (2 * Math.PI)),
+    ) *
     Math.sin(
       Math.sqrt(
-        (2 * pointSpacing * selectedPoint) / (rungWidth / (2 * Math.PI))
+        (2 * pointSpacing * selectedPoint) / (rungWidth / (2 * Math.PI)),
       ) +
-      (Math.PI/2) -
+      (Math.PI / 2) -
       Math.sqrt(
-        (2 * pointSpacing * totalPoints) / (rungWidth / (2 * Math.PI))
-      )
+        (2 * pointSpacing * totalPoints) / (rungWidth / (2 * Math.PI)),
+      ),
     ) +
-    rungWidth/4
+    rungWidth / 4
   ) * multiplier
 
   return [-x, -y]
@@ -65,7 +61,7 @@ export function getSpiralCoord(
   // why are they both negative? I do not know. but it works.
 }
 
-export function circleIntersectionPoints(
+export function circleIntersectionPoints (
   x0: number,
   y0: number,
   r0: number,
@@ -94,9 +90,9 @@ export function circleIntersectionPoints(
   const rx = -dy * (h / d)
   const ry = dx * (h / d)
   const xi = x2 + rx
-  const xi_prime = x2 - rx
+  const xiPrime = x2 - rx
   const yi = y2 + ry
-  const yi_prime = y2 - ry
-  return [xi, xi_prime, yi, yi_prime]
-  // xi is positive, xi_prime is negative for the word-letter situation
+  const yiPrime = y2 - ry
+  return [xi, xiPrime, yi, yiPrime]
+  // xi is positive, xiPrime is negative for the word-letter situation
 }

@@ -8,7 +8,8 @@
     "plugin:vue/essential",
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:@typescript-eslint/recommended-requiring-type-checking"
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "standard"
   ],
   "globals": {
     "Atomics": "readonly",
@@ -31,6 +32,8 @@
       "warn", { "argsIgnorePattern": "^_" }
     ],
     "@typescript-eslint/no-non-null-assertion": "off",
-    "prefer-template": "error"
+    "prefer-template": "error",
+    "quotes": ["error", "double"],
+    "comma-dangle": ["error", "always-multiline"]
   }
 }

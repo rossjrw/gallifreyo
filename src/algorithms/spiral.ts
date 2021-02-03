@@ -1,5 +1,5 @@
 import { Sentence } from "../classes/Sentence"
-import { getSpiralCoord } from '../functions/geometry'
+import { getSpiralCoord } from "../functions/geometry"
 
 export function addSpiralGeometry (sentence: Sentence): void {
   /**
@@ -23,14 +23,14 @@ export function addSpiralGeometry (sentence: Sentence): void {
     spiralBuffer,
     spiralBuffer,
     sentence.phrases.length,
-    0 // XXX n is reversed - should this be length also?
+    0, // XXX n is reversed - should this be length also?
   )[1]
 
   // Spirals are slightly smaller than circles, so calculate the wanted
   // radius into a multiplier value
   // TODO more refined process including centre shifting
   // XXX I don't think /2 is correct
-  const targetSpiralRadius = sentence.radius! / 2
+  const targetSpiralRadius = sentence.radius / 2
   const multiplier = targetSpiralRadius / estimatedSpiralRadius
 
   sentence.phrases.forEach((subphrase, index) => {

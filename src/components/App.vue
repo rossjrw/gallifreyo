@@ -32,19 +32,24 @@
 
 <script lang="ts">
 import Vue from "vue"
-import Downloads from '../components/Downloads.vue'
-import GithubCorner from '../components/GithubCorner.vue'
-import SettingsOptions from '../components/SettingsOptions.vue'
-import RenderedImage from '../components/RenderedImage.vue'
-import TextInput from '../components/TextInput.vue'
-import Title from '../components/Title.vue'
-import Footer from '../components/Footer.vue'
+import Downloads from "../components/Downloads.vue"
+import GithubCorner from "../components/GithubCorner.vue"
+import SettingsOptions from "../components/SettingsOptions.vue"
+import RenderedImage from "../components/RenderedImage.vue"
+import TextInput from "../components/TextInput.vue"
+import Title from "../components/Title.vue"
+import Footer from "../components/Footer.vue"
 
 export default Vue.extend({
   name: "App",
   components: {
-    Downloads, GithubCorner, SettingsOptions, RenderedImage, TextInput, Title,
-    Footer
+    Downloads,
+    GithubCorner,
+    SettingsOptions,
+    RenderedImage,
+    TextInput,
+    Title,
+    Footer,
   },
 })
 </script>

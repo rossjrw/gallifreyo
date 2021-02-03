@@ -32,10 +32,10 @@ export default Vue.extend({
   name: "TextInput",
   computed: {
     text: {
-      get(): string {
+      get (): string {
         return this.$store.state.text
       },
-      set(text: string): void {
+      set (text: string): void {
         this.$store.dispatch("updateInputText", text)
       },
     },

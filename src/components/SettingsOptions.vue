@@ -189,50 +189,50 @@ import { mapActions } from "vuex"
 export default Vue.extend({
   name: "SettingsOptions",
   methods: {
-    ...mapActions({ setting: 'updateSingleSetting' })
+    ...mapActions({ setting: "updateSingleSetting" }),
   },
   computed: {
     automatic: {
-      get() { return this.$store.state.settings.automatic },
-      set(value) { this.setting({ prop: 'automatic', value }) },
+      get () { return this.$store.state.settings.automatic },
+      set (value) { this.setting({ prop: "automatic", value }) },
     },
     width: {
-      get() { return this.$store.state.settings.width },
-      set(value) { this.setting({ prop: 'width', value }) },
+      get () { return this.$store.state.settings.width },
+      set (value) { this.setting({ prop: "width", value }) },
     },
     watermark: {
-      get() { return this.$store.state.settings.watermark },
-      set(value) { this.setting({ prop: 'watermark', value }) },
+      get () { return this.$store.state.settings.watermark },
+      set (value) { this.setting({ prop: "watermark", value }) },
     },
     foregroundColour: {
-      get() { return this.$store.state.settings.foregroundColour },
-      set(value) { this.setting({ prop: 'foregroundColour', value }) },
+      get () { return this.$store.state.settings.foregroundColour },
+      set (value) { this.setting({ prop: "foregroundColour", value }) },
     },
     foregroundAlpha: {
-      get() { return this.$store.state.settings.foregroundAlpha },
-      set(value) { this.setting({ prop: 'foregroundAlpha', value }) },
+      get () { return this.$store.state.settings.foregroundAlpha },
+      set (value) { this.setting({ prop: "foregroundAlpha", value }) },
     },
     backgroundColour: {
-      get() { return this.$store.state.settings.backgroundColour },
-      set(value) { this.setting({ prop: 'backgroundColour', value }) },
+      get () { return this.$store.state.settings.backgroundColour },
+      set (value) { this.setting({ prop: "backgroundColour", value }) },
     },
     backgroundAlpha: {
-      get() { return this.$store.state.settings.backgroundAlpha },
-      set(value) { this.setting({ prop: 'backgroundAlpha', value }) },
+      get () { return this.$store.state.settings.backgroundAlpha },
+      set (value) { this.setting({ prop: "backgroundAlpha", value }) },
     },
     debug: {
-      get() { return this.$store.state.settings.debug },
-      set(value) { this.setting({ prop: 'debug', value }) },
+      get () { return this.$store.state.settings.debug },
+      set (value) { this.setting({ prop: "debug", value }) },
     },
     sizeScaling: {
-      get() { return this.$store.state.settings.config.sizeScaling },
-      set(value) { this.setting({ prop: 'config.sizeScaling', value }) },
+      get () { return this.$store.state.settings.config.sizeScaling },
+      set (value) { this.setting({ prop: "config.sizeScaling", value }) },
     },
     positionAlgorithm: {
-      get() { return this.$store.state.settings.config.positionAlgorithm },
-      set(value) { this.setting({ prop: 'config.positionAlgorithm', value }) },
+      get () { return this.$store.state.settings.config.positionAlgorithm },
+      set (value) { this.setting({ prop: "config.positionAlgorithm", value }) },
     },
-  }
+  },
 })
 </script>
 

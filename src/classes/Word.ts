@@ -1,8 +1,8 @@
-import { Settings } from '../types/state'
-import { Phrase } from '../classes/Phrase'
-import { Sentence } from '../classes/Sentence'
-import { Letter } from '../classes/Letter'
-import { letterDataFromBlock } from '../functions/blocks';
+import { Settings } from "../types/state"
+import { Phrase } from "../classes/Phrase"
+import { Sentence } from "../classes/Sentence"
+import { Letter } from "../classes/Letter"
+import { letterDataFromBlock } from "../functions/blocks"
 
 export class Word extends Phrase {
   depth: "word"
@@ -11,7 +11,7 @@ export class Word extends Phrase {
 
   constructor (id: number, settings: Settings, phrases: Letter[]) {
     super(id, settings)
-    this.depth = 'word'
+    this.depth = "word"
     this.phrases = phrases
   }
 
@@ -67,8 +67,8 @@ export class Word extends Phrase {
      */
     this.phrases.forEach((letter) => {
       letter.subletters[0].absoluteAngularSize = (
-        letter.subletters[0].relativeAngularSize! * 2 * Math.PI
-        / relativeAngularSizeSum
+        letter.subletters[0].relativeAngularSize! * 2 * Math.PI /
+        relativeAngularSizeSum
       )
     })
   }
@@ -80,6 +80,6 @@ export class Word extends Phrase {
      * Parent is passed to this for consistency with the same method on
      * Sentence, as they are not distinguishable.
      */
-    this.radius = this.bufferRadius! * (1 - this.settings.config.buffer.word)
+    this.radius = this.bufferRadius * (1 - this.settings.config.buffer.word)
   }
 }

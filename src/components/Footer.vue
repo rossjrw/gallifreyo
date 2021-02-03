@@ -35,17 +35,17 @@
 
 <script lang="ts">
 // Defined in webpack config
-declare const __VERSION__: string
-
 import Vue from "vue"
+
+declare const __VERSION__: string
 
 export default Vue.extend({
   name: "Title",
-  data() {
+  data () {
     return {
       version: __VERSION__,
     }
-  }
+  },
 })
 </script>
 

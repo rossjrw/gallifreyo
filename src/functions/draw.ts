@@ -1,6 +1,6 @@
-import { Sentence } from '../classes/Sentence'
+import { Sentence } from "../classes/Sentence"
 
-export function drawTokenisedInput(
+export function drawTokenisedInput (
   tokenisedInput: Sentence[],
 ): Sentence[] {
   /**

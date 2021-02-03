@@ -10,15 +10,15 @@
 <script lang="ts">
 import Vue from "vue"
 
-import { makePaths } from '../functions/dPath'
+import { makePaths } from "../functions/dPath"
 
 export default Vue.extend({
   name: "RenderedLetter",
-  props: ['letter'],
+  props: ["letter"],
   computed: {
-    paths() {
+    paths () {
       return makePaths(this.letter.paths, this.$store.state.settings.debug)
-    }
+    },
   },
 })
 </script>

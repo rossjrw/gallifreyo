@@ -1,13 +1,13 @@
 import { compress } from "compress-tag"
 
-import { Path } from '../types/phrases'
-import { Settings } from '../types/state'
-import { Sentence } from '../classes/Sentence'
+import { Path } from "../types/phrases"
+import { Settings } from "../types/state"
+import { Sentence } from "../classes/Sentence"
 
 type Point = { x: number, y: number }
 type Intent = {
-  type: 'default' | 'debug'
-  purpose?: 'angle' | 'position' | 'circle'
+  type: "default" | "debug"
+  purpose?: "angle" | "position" | "circle"
 }
 
 export abstract class TextNode {
@@ -28,7 +28,7 @@ export abstract class TextNode {
   drawCircle (
     centre: Point,
     radius: number,
-    intent: Intent = { type: 'default'},
+    intent: Intent = { type: "default" },
   ): void {
     /**
      * Draw a circle of a radius around a point.
@@ -46,7 +46,7 @@ export abstract class TextNode {
     to: Point,
     radius: number,
     { largeArc, sweep }: { largeArc: boolean, sweep: boolean },
-    intent: Intent = { type: 'default'},
+    intent: Intent = { type: "default" },
   ): void {
     /**
      * Draw a curve between two points of known radius.
@@ -61,7 +61,7 @@ export abstract class TextNode {
   drawLine (
     from: Point,
     to: Point,
-    intent: Intent = { type: 'default'},
+    intent: Intent = { type: "default" },
   ): void {
     /**
      * Draw a line between two points.
@@ -105,10 +105,10 @@ export abstract class Phrase extends TextNode {
       parent.phrases.slice(0, index + 1).reduce(
         (total, phrase) => {
           return total + phrase.absoluteAngularSize!
-        }, 0
-      )
-      - (parent.phrases[0].absoluteAngularSize! / 2)
-      - (this.absoluteAngularSize! / 2)
+        }, 0,
+      ) -
+      (parent.phrases[0].absoluteAngularSize! / 2) -
+      (this.absoluteAngularSize! / 2)
     )
   }
 }

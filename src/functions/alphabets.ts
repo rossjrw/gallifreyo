@@ -1,6 +1,6 @@
 import { memoize, orderBy, pickBy, values } from "lodash"
 
-import { AlphabetsData, LetterData, AlphabetData } from '../types/alphabets'
+import { AlphabetsData, LetterData, AlphabetData } from "../types/alphabets"
 
 // Blocks:
 // s: circle intersects partially with line but is mostly enclosed
@@ -14,7 +14,7 @@ const alphabets: AlphabetsData = {
     action: "create",
     letters: [
       { value: "BUFFER", block: "buffer" },
-      { value: "_",      block: "buffer" },
+      { value: "_", block: "buffer" },
     ],
   },
 
@@ -22,27 +22,27 @@ const alphabets: AlphabetsData = {
     priority: 1,
     action: "create",
     letters: [
-      { value: "B", block: "s", dots: 0,  lines: 0 },
-      { value: "D", block: "s", dots: 3,  lines: 0 },
-      { value: "F", block: "s", dots: 0,  lines: 3 },
-      { value: "G", block: "s", dots: 0,  lines: 1 },
-      { value: "H", block: "s", dots: 0,  lines: 2 },
-      { value: "J", block: "p", dots: 0,  lines: 0 },
-      { value: "K", block: "p", dots: 2,  lines: 0 },
-      { value: "L", block: "p", dots: 3,  lines: 0 },
-      { value: "M", block: "p", dots: 0,  lines: 3 },
-      { value: "N", block: "p", dots: 0,  lines: 1 },
-      { value: "P", block: "p", dots: 0,  lines: 2 },
-      { value: "T", block: "d", dots: 0,  lines: 0 },
-      { value: "R", block: "d", dots: 3,  lines: 0 },
-      { value: "S", block: "d", dots: 0,  lines: 3 },
-      { value: "V", block: "d", dots: 0,  lines: 1 },
-      { value: "W", block: "d", dots: 0,  lines: 2 },
-      { value: "Y", block: "f", dots: 2,  lines: 0 },
-      { value: "Z", block: "f", dots: 3,  lines: 0 },
-      { value: "X", block: "f", dots: 0,  lines: 2 },
-      { value: "C", block: "p", dots: 4,  lines: 0 },
-      { value: "Q", block: "f", dots: 4,  lines: 0 },
+      { value: "B", block: "s", dots: 0, lines: 0 },
+      { value: "D", block: "s", dots: 3, lines: 0 },
+      { value: "F", block: "s", dots: 0, lines: 3 },
+      { value: "G", block: "s", dots: 0, lines: 1 },
+      { value: "H", block: "s", dots: 0, lines: 2 },
+      { value: "J", block: "p", dots: 0, lines: 0 },
+      { value: "K", block: "p", dots: 2, lines: 0 },
+      { value: "L", block: "p", dots: 3, lines: 0 },
+      { value: "M", block: "p", dots: 0, lines: 3 },
+      { value: "N", block: "p", dots: 0, lines: 1 },
+      { value: "P", block: "p", dots: 0, lines: 2 },
+      { value: "T", block: "d", dots: 0, lines: 0 },
+      { value: "R", block: "d", dots: 3, lines: 0 },
+      { value: "S", block: "d", dots: 0, lines: 3 },
+      { value: "V", block: "d", dots: 0, lines: 1 },
+      { value: "W", block: "d", dots: 0, lines: 2 },
+      { value: "Y", block: "f", dots: 2, lines: 0 },
+      { value: "Z", block: "f", dots: 3, lines: 0 },
+      { value: "X", block: "f", dots: 0, lines: 2 },
+      { value: "C", block: "p", dots: 4, lines: 0 },
+      { value: "Q", block: "f", dots: 4, lines: 0 },
     ],
   },
 
@@ -50,11 +50,11 @@ const alphabets: AlphabetsData = {
     priority: 1,
     action: "attach",
     letters: [
-      { value: "A", block: "v", vert: -1, line: 0  },
-      { value: "E", block: "v", vert: 0,  line: 0  },
-      { value: "I", block: "v", vert: 0,  line: 1  },
-      { value: "O", block: "v", vert: 1,  line: 0  },
-      { value: "U", block: "v", vert: 0,  line: -1 },
+      { value: "A", block: "v", vert: -1, line: 0 },
+      { value: "E", block: "v", vert: 0, line: 0 },
+      { value: "I", block: "v", vert: 0, line: 1 },
+      { value: "O", block: "v", vert: 1, line: 0 },
+      { value: "U", block: "v", vert: 0, line: -1 },
     ],
   },
 
@@ -76,7 +76,7 @@ const alphabets: AlphabetsData = {
 
 // Why waste time calling this function over and over for the same parameters?
 // memoize caches the results per input value
-const getLetters = memoize(function getLetters(
+const getLetters = memoize(function getLetters (
   wantedAlphabets: string[],
 ): LetterData[] {
   /**
@@ -91,22 +91,22 @@ const getLetters = memoize(function getLetters(
   // Extract the data that has been requested
   alphabetsData = pickBy(
     alphabetsData,
-    (_, key) => wantedAlphabets.includes(key)
+    (_, key) => wantedAlphabets.includes(key),
   )
   // Sort the results into priority order
   const alphabetsByPriority: AlphabetData[] = orderBy(
     values(alphabetsData),
     (alphabet: AlphabetData) => alphabet.priority,
-    'desc'
+    "desc",
   )
   // Get the letters array, with the action attached to each letter
   const lettersByPriority: LetterData[][] = alphabetsByPriority.map(
     (alphabet: AlphabetData) => {
       alphabet.letters = alphabet.letters.map(
-        (letter: LetterData) => ({ ...letter, action: alphabet.action })
+        (letter: LetterData) => ({ ...letter, action: alphabet.action }),
       )
       return alphabet.letters
-    }
+    },
   )
   const combinedAlphabetData: LetterData[] = lettersByPriority.flat()
   return combinedAlphabetData

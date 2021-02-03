@@ -1,6 +1,6 @@
-import { BlockName } from '../types/alphabets'
-import { Settings } from '../types/state'
-import { Letter } from '../classes/Letter'
+import { BlockName } from "../types/alphabets"
+import { Settings } from "../types/state"
+import { Letter } from "../classes/Letter"
 
 type BlockSetting = {
   height?: number
@@ -12,7 +12,7 @@ type BlockSettings = {
   [block in BlockName]: BlockSetting
 }
 
-export function letterDataFromBlock(
+export function letterDataFromBlock (
   letter: Letter,
   settings: Settings,
 ): void {
@@ -54,7 +54,7 @@ export function letterDataFromBlock(
       relativeAngularSize: 1,
     },
     buffer: {
-      relativeAngularSize: settings.config.buffer.letter
+      relativeAngularSize: settings.config.buffer.letter,
     },
   }
 

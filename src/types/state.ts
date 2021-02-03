@@ -1,5 +1,5 @@
-import { AlphabetsData } from '../types/alphabets'
-import { Sentence } from '../classes/Sentence'
+import { AlphabetsData } from "../types/alphabets"
+import { Sentence } from "../classes/Sentence"
 
 /*
  * State
@@ -42,12 +42,12 @@ export type Config = {
   buffer: BufferConfig
   automatic: AutomaticConfig
   sizeScaling: number
-  positionAlgorithm: 'Automatic' | 'Radial' | 'Organic' | 'Spiral'
+  positionAlgorithm: "Automatic" | "Radial" | "Organic" | "Spiral"
 }
 
 export type BlockConfig = {
-  height: number  // Height of this letter above (inside) the word circle
-  width: number  // The base relativeAngularSize for a letter in this block
+  height: number // Height of this letter above (inside) the word circle
+  width: number // The base relativeAngularSize for a letter in this block
 }
 
 export type VowelBlockConfig = BlockConfig & {

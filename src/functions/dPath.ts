@@ -1,8 +1,8 @@
-import { Path } from '../types/phrases'
+import { Path } from "../types/phrases"
 
 export interface SVGPath {
   d: string
-  'stroke-width'?: number
+  "stroke-width"?: number
   stroke?: string
 }
 
@@ -33,13 +33,13 @@ export function makePaths (
   })
   // Parse debug paths
   return paths.filter((pathInfo: Path) => {
-    return debug || pathInfo.type !== 'debug'
+    return debug || pathInfo.type !== "debug"
   }).map((pathInfo: Path) => {
     const path: SVGPath = { d: pathInfo.d }
     if (pathInfo.type === "debug") {
-      path['stroke-width'] = 0.5
+      path["stroke-width"] = 0.5
       if (pathInfo.purpose) {
-        path['stroke'] = debugPurposes[pathInfo.purpose].colour
+        path.stroke = debugPurposes[pathInfo.purpose].colour
       }
     }
     return path

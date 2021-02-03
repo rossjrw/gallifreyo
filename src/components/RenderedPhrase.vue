@@ -17,17 +17,17 @@
 <script lang="ts">
 import Vue from "vue"
 
-import RenderedLetter from '../components/RenderedLetter.vue'
-import { SVGPath, makePaths } from '../functions/dPath'
+import RenderedLetter from "../components/RenderedLetter.vue"
+import { SVGPath, makePaths } from "../functions/dPath"
 
 export default Vue.extend({
   name: "RenderedPhrase",
-  props: ['phrase'],
+  props: ["phrase"],
   components: {
     RenderedLetter,
   },
   computed: {
-    paths(): SVGPath[] {
+    paths (): SVGPath[] {
       return makePaths(this.phrase.paths, this.$store.state.settings.debug)
     },
   },

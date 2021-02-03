@@ -1,9 +1,9 @@
-import { Settings } from '../types/state'
-import { LetterData } from '../types/alphabets'
-import { Sentence } from '../classes/Sentence'
-import { Word } from '../classes/Word'
-import { Letter } from '../classes/Letter'
-import { getLetters } from '../functions/alphabets'
+import { Settings } from "../types/state"
+import { LetterData } from "../types/alphabets"
+import { Sentence } from "../classes/Sentence"
+import { Word } from "../classes/Word"
+import { Letter } from "../classes/Letter"
+import { getLetters } from "../functions/alphabets"
 
 let ID_COUNTER = 0
 
@@ -13,7 +13,7 @@ export function tokeniseSentence (
   alphabets: string[],
   settings: Settings,
 ): Sentence[]
-export function tokeniseSentence(
+export function tokeniseSentence (
   sentence: string,
   splitBy: string[],
   alphabets: string[],
@@ -53,21 +53,21 @@ export function tokeniseSentence(
       return new Sentence(
         ID_COUNTER++,
         settings,
-        tokeniseSentence(phrase, splitBy.slice(1), alphabets, settings)
+        tokeniseSentence(phrase, splitBy.slice(1), alphabets, settings),
       )
     } else {
       // The delimiters have been used up, so sentence is a word.
       return new Word(
         ID_COUNTER++,
         settings,
-        tokeniseAWordIntoLetters(phrase, alphabets, settings)
+        tokeniseAWordIntoLetters(phrase, alphabets, settings),
       )
     }
   })
   return phrases
 }
 
-function tokeniseAWordIntoLetters(
+function tokeniseAWordIntoLetters (
   word: string,
   alphabets: string[],
   settings: Settings,
@@ -114,7 +114,7 @@ function tokeniseAWordIntoLetters(
 
   // Add a buffer letter after each letter
   subletterCharacters = subletterCharacters.map(
-    characters => [characters, ["BUFFER"]]
+    characters => [characters, ["BUFFER"]],
   ).flat()
 
   // Convert subletter characters to subletters
@@ -125,19 +125,19 @@ function tokeniseAWordIntoLetters(
       characters.map(
         (character: string) => {
           return {
-            depth: 'subletter',
+            depth: "subletter",
             ...getLetters(alphabets).find(
-              (letter) => letter.value === character
-            )!
+              (letter) => letter.value === character,
+            )!,
           }
-        }
-      )
+        },
+      ),
     )
   })
   return letters
 }
 
-function skimACharacterFromAWord(
+function skimACharacterFromAWord (
   word: string,
   alphabets: string[],
 ): string | null {
@@ -158,7 +158,7 @@ function skimACharacterFromAWord(
   return null
 }
 
-function skimSubletterCharactersFromCharacters(
+function skimSubletterCharactersFromCharacters (
   characters: string[],
   alphabets: string[],
 ): string[] {
