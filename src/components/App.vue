@@ -32,6 +32,7 @@
 
 <script lang="ts">
 import Vue from "vue"
+
 import Downloads from "../components/Downloads.vue"
 import GithubCorner from "../components/GithubCorner.vue"
 import SettingsOptions from "../components/SettingsOptions.vue"

@@ -15,6 +15,8 @@ new Vue({ // eslint-disable-line no-new
   render: h => h(App),
   data: { store },
   mounted () {
-    return this.store.modifyInput("Gallifreyo Test")
+    this.store.modifyInput("Gallifreyo Test")
+    // Needs an extra transliteration to fix the initial bounding box
+    this.store.transliterate()
   },
 })
