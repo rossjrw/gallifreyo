@@ -44,7 +44,7 @@ export default Vue.extend({
   },
   computed: {
     time: {
-      get () { return this.test.endTime - this.test.startTime },
+      get (): number { return this.test.endTime - this.test.startTime },
     },
   },
   methods: {

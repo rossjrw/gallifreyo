@@ -3,10 +3,10 @@ import { Sentence } from "../classes/Sentence"
 
 /*
  * State
- * The Vuex store state
+ * The global state
  */
 
-export type State = {
+export interface State {
   text: string
   alphabets: AlphabetsData
   phrases: Sentence[]

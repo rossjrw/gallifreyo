@@ -20,18 +20,20 @@
 <script lang="ts">
 import Vue from "vue"
 
-import { Phrase } from "../classes/Phrase"
+import store from "../store"
+import { Sentence } from "../classes/Sentence"
 import RenderedPhrase from "../components/RenderedPhrase.vue"
 
 export default Vue.extend({
   name: "RenderedImage",
-  components: {
-    RenderedPhrase,
+  components: { RenderedPhrase },
+  data () {
+    return { store }
   },
   computed: {
     phrases: {
-      get (): Phrase[] {
-        return this.$store.state.phrases
+      get (): Sentence[] {
+        return this.store.state.phrases
       },
     },
   },

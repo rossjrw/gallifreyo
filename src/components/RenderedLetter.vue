@@ -8,16 +8,23 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue"
+import Vue, { PropType } from "vue"
 
-import { makePaths } from "../functions/dPath"
+import store from "../store"
+import { makePaths, SVGPath } from "../functions/dPath"
+import { Letter } from "../classes/Letter"
 
 export default Vue.extend({
   name: "RenderedLetter",
-  props: ["letter"],
+  props: {
+    letter: Object as PropType<Letter>,
+  },
+  data () {
+    return { store }
+  },
   computed: {
-    paths () {
-      return makePaths(this.letter.paths, this.$store.state.settings.debug)
+    paths (): SVGPath[] {
+      return makePaths(this.letter.paths, this.store.state.settings.debug)
     },
   },
 })

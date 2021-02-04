@@ -33,7 +33,7 @@
     ],
     "@typescript-eslint/no-non-null-assertion": "off",
     "prefer-template": "error",
-    "quotes": ["error", "double"],
+    "quotes": ["warn", "double"],
     "comma-dangle": ["error", "always-multiline"]
   }
 }

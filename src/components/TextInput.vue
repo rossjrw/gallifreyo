@@ -28,15 +28,20 @@
 <script lang="ts">
 import Vue from "vue"
 
+import store from "../store"
+
 export default Vue.extend({
   name: "TextInput",
+  data () {
+    return { store }
+  },
   computed: {
     text: {
-      get (): string {
-        return this.$store.state.text
+      get (): typeof store.state.text {
+        return this.store.state.text
       },
-      set (text: string): void {
-        this.$store.dispatch("updateInputText", text)
+      set (value: typeof store.state.text): void {
+        this.store.modifyInput(value)
       },
     },
   },

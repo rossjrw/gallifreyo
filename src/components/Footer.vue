@@ -34,9 +34,9 @@
 </template>
 
 <script lang="ts">
-// Defined in webpack config
 import Vue from "vue"
 
+// Defined in webpack config
 declare const __VERSION__: string
 
 export default Vue.extend({

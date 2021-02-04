@@ -13,8 +13,8 @@ new Vue({ // eslint-disable-line no-new
   template: "<App/>",
   components: { App },
   render: h => h(App),
-  store,
+  data: { store },
   mounted () {
-    return this.$store.dispatch("updateInputText", "Gallifreyo Test")
+    return this.store.modifyInput("Gallifreyo Test")
   },
 })

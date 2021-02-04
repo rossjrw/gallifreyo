@@ -9,7 +9,8 @@
     "esModuleInterop": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
-    "lib": ["es2020", "dom"]
+    "lib": ["es2020", "dom"],
+    "experimentalDecorators": true
   },
   "include": ["src/**/*.ts", "src/**/*.vue"]
 }
