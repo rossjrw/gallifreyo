@@ -1,6 +1,6 @@
-import { BlockName } from '@/types/alphabets'
-import { Settings } from '@/types/state'
-import { Letter } from '@/classes/Letter'
+import { BlockName } from "../types/alphabets"
+import { Settings } from "../types/state"
+import { Letter } from "../classes/Letter"
 
 type BlockSetting = {
   height?: number
@@ -12,22 +12,21 @@ type BlockSettings = {
   [block in BlockName]: BlockSetting
 }
 
-export function letterDataFromBlock(
+/**
+ * Takes a letter with tokenised subletters (i.e. subletters that do not yet
+ * have intermediary data attached to them). Then, from their block (which
+ * was always a placeholder to represent later configuration), supply that
+ * block's configuration.
+ *
+ * Attaches intermediary data to subletters. Modifies letter in place.
+ *
+ * @param letter - The letter to be given block data.
+ * @returns void; modifies letters in place.
+ */
+export function letterDataFromBlock (
   letter: Letter,
   settings: Settings,
 ): void {
-  /**
-   * Takes a letter with tokenised subletters (i.e. subletters that do not yet
-   * have intermediary data attached to them). Then, from their block (which
-   * was always a placeholder to represent later configuration), supply that
-   * block's configuration.
-   *
-   * Attaches intermediary data to subletters. Modifies letter in place.
-   *
-   * @param letter: The letter to be given block data.
-   * @returns void; modifies letters in place.
-   */
-
   const BLOCK_SETTINGS: BlockSettings = {
     s: {
       height: settings.config.s.height,
@@ -54,7 +53,7 @@ export function letterDataFromBlock(
       relativeAngularSize: 1,
     },
     buffer: {
-      relativeAngularSize: settings.config.buffer.letter
+      relativeAngularSize: settings.config.buffer.letter,
     },
   }
 

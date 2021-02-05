@@ -2,7 +2,6 @@
   "compilerOptions": {
     "baseUrl": ".",
     "outDir": "./dist/",
-    "noImplicitAny": true,
     "module": "esnext",
     "target": "esnext",
     "strict": true,
@@ -10,19 +9,8 @@
     "esModuleInterop": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
-    "lib": [
-      "es2020",
-      "dom"
-    ],
-    "paths": {
-      "@/*": ["src/*"]
-    }
+    "lib": ["es2020", "dom"],
+    "experimentalDecorators": true
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.vue"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["src/**/*.ts", "src/**/*.vue"]
 }

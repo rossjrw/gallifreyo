@@ -7,7 +7,9 @@
     "eslint:recommended",
     "plugin:vue/essential",
     "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "standard"
   ],
   "globals": {
     "Atomics": "readonly",
@@ -17,7 +19,9 @@
   "parserOptions": {
     "ecmaVersion": 11,
     "parser": "@typescript-eslint/parser",
-    "sourceType": "module"
+    "sourceType": "module",
+    "project": "./tsconfig.json",
+    "extraFileExtensions": ["vue"]
   },
   "plugins": [
     "vue",
@@ -27,6 +31,9 @@
     "@typescript-eslint/no-unused-vars": [
       "warn", { "argsIgnorePattern": "^_" }
     ],
-    "@typescript-eslint/no-non-null-assertion": "off"
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "prefer-template": "error",
+    "quotes": ["warn", "double"],
+    "comma-dangle": ["error", "always-multiline"]
   }
 }

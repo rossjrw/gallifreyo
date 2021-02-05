@@ -1,16 +1,16 @@
-export function fixBoundingBox(): void {
-  /**
-   * Sets the bounding box of the rendered SVG to neatly contain its contents.
-   */
+/**
+ * Sets the bounding box of the rendered SVG to neatly contain its contents.
+ */
+export function fixBoundingBox (): void {
   setTimeout(() => {
-    const svgs: NodeListOf<SVGGraphicsElement> = document.querySelectorAll("#render");
+    const svgs: NodeListOf<SVGGraphicsElement> = document.querySelectorAll("#render")
     // Get internal size of SVG
     svgs.forEach(svg => {
-      const bbox = svg.getBBox();
+      const bbox = svg.getBBox()
       // Construct and set a viewBox for the SVG
       const bboxSize = Math.max(bbox.width, bbox.height)
-      const viewBox = [bbox.x, bbox.y, bboxSize, bboxSize].join(" ");
-      svg.setAttribute("viewBox", viewBox);
+      const viewBox = [bbox.x, bbox.y, bboxSize, bboxSize].join(" ")
+      svg.setAttribute("viewBox", viewBox)
     })
-  }, 1);
+  }, 1)
 }

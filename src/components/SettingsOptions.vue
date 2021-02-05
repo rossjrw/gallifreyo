@@ -7,20 +7,6 @@
       </p>
 
       <div class="field is-horizontal">
-        <div class="field-label">
-          <label class="label">
-            Automatic translation
-          </label>
-        </div>
-        <div class="field-body">
-          <div class="field">
-            <input type="checkbox"
-                   v-model="automatic">
-          </div>
-        </div>
-      </div>
-
-      <div class="field is-horizontal">
         <div class="field-label is-normal">
           <label class="label">
             Size scaling
@@ -184,55 +170,89 @@
 
 <script lang="ts">
 import Vue from "vue"
-import { mapActions } from "vuex"
+
+import { Settings } from "../types/state"
+import store from "../store"
 
 export default Vue.extend({
   name: "SettingsOptions",
-  methods: {
-    ...mapActions({ setting: 'updateSingleSetting' })
+  data () {
+    return { store }
   },
   computed: {
-    automatic: {
-      get() { return this.$store.state.settings.automatic },
-      set(value) { this.setting({ prop: 'automatic', value }) },
-    },
     width: {
-      get() { return this.$store.state.settings.width },
-      set(value) { this.setting({ prop: 'width', value }) },
-    },
-    watermark: {
-      get() { return this.$store.state.settings.watermark },
-      set(value) { this.setting({ prop: 'watermark', value }) },
-    },
-    foregroundColour: {
-      get() { return this.$store.state.settings.foregroundColour },
-      set(value) { this.setting({ prop: 'foregroundColour', value }) },
-    },
-    foregroundAlpha: {
-      get() { return this.$store.state.settings.foregroundAlpha },
-      set(value) { this.setting({ prop: 'foregroundAlpha', value }) },
-    },
-    backgroundColour: {
-      get() { return this.$store.state.settings.backgroundColour },
-      set(value) { this.setting({ prop: 'backgroundColour', value }) },
-    },
-    backgroundAlpha: {
-      get() { return this.$store.state.settings.backgroundAlpha },
-      set(value) { this.setting({ prop: 'backgroundAlpha', value }) },
+      get (): Settings["width"] {
+        return this.store.state.settings.width
+      },
+      set (value: Settings["width"]): void {
+        this.store.modifySetting(s => { s.width = value })
+      },
     },
     debug: {
-      get() { return this.$store.state.settings.debug },
-      set(value) { this.setting({ prop: 'debug', value }) },
+      get (): Settings["debug"] {
+        return this.store.state.settings.debug
+      },
+      set (value: Settings["debug"]): void {
+        this.store.modifySetting(s => { s.debug = value })
+      },
     },
-    sizeScaling: {
-      get() { return this.$store.state.settings.config.sizeScaling },
-      set(value) { this.setting({ prop: 'config.sizeScaling', value }) },
+    backgroundColour: {
+      get (): Settings["backgroundColour"] {
+        return this.store.state.settings.backgroundColour
+      },
+      set (value: Settings["backgroundColour"]): void {
+        this.store.modifySetting(s => { s.backgroundColour = value })
+      },
+    },
+    backgroundAlpha: {
+      get (): Settings["backgroundAlpha"] {
+        return this.store.state.settings.backgroundAlpha
+      },
+      set (value: Settings["backgroundAlpha"]): void {
+        this.store.modifySetting(s => { s.backgroundAlpha = value })
+      },
+    },
+    foregroundColour: {
+      get (): Settings["foregroundColour"] {
+        return this.store.state.settings.foregroundColour
+      },
+      set (value: Settings["foregroundColour"]): void {
+        this.store.modifySetting(s => { s.foregroundColour = value })
+      },
+    },
+    foregroundAlpha: {
+      get (): Settings["foregroundAlpha"] {
+        return this.store.state.settings.foregroundAlpha
+      },
+      set (value: Settings["foregroundAlpha"]): void {
+        this.store.modifySetting(s => { s.foregroundAlpha = value })
+      },
     },
     positionAlgorithm: {
-      get() { return this.$store.state.settings.config.positionAlgorithm },
-      set(value) { this.setting({ prop: 'config.positionAlgorithm', value }) },
+      get (): Settings["config"]["positionAlgorithm"] {
+        return this.store.state.settings.config.positionAlgorithm
+      },
+      set (value: Settings["config"]["positionAlgorithm"]): void {
+        this.store.modifySetting(s => { s.config.positionAlgorithm = value })
+      },
     },
-  }
+    sizeScaling: {
+      get (): Settings["config"]["sizeScaling"] {
+        return this.store.state.settings.config.sizeScaling
+      },
+      set (value: Settings["config"]["sizeScaling"]): void {
+        this.store.modifySetting(s => { s.config.sizeScaling = value })
+      },
+    },
+    watermark: {
+      get (): Settings["watermark"] {
+        return this.store.state.settings.watermark
+      },
+      set (value: Settings["watermark"]): void {
+        this.store.modifySetting(s => { s.watermark = value })
+      },
+    },
+  },
 })
 </script>
 

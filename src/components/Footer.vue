@@ -34,18 +34,18 @@
 </template>
 
 <script lang="ts">
+import Vue from "vue"
+
 // Defined in webpack config
 declare const __VERSION__: string
 
-import Vue from "vue"
-
 export default Vue.extend({
   name: "Title",
-  data() {
+  data () {
     return {
       version: __VERSION__,
     }
-  }
+  },
 })
 </script>
 

@@ -1,22 +1,15 @@
-import Vue from "vue"
-import Vuex from "vuex"
-import { setWith } from "lodash"
+import { State, Settings } from "./types/state"
+import { tokeniseSentence } from "./functions/tokenise"
+import { drawTokenisedInput } from "./functions/draw"
+import { fixBoundingBox } from "./functions/box"
 
-import { State } from '@/types/state'
-import { tokeniseSentence } from '@/functions/tokenise'
-import { drawTokenisedInput } from '@/functions/draw'
-import { fixBoundingBox } from '@/functions/box'
-
-Vue.use(Vuex)
-
-export default new Vuex.Store({
-  strict: process.env.NODE_ENV !== 'production',
+export default {
   state: {
-    text: "",
+    text: "", // Should only be changed via mutation
     alphabets: {},
     phrases: [],
     settings: {
-      splits: [ "\n\n", "\n", " " ],
+      splits: ["\n\n", "\n", " "],
       selectedAlphabets: ["base", "Sherman", "ShermanVowels"],
       scaling: true, // sentence size scaling
       watermark: true,
@@ -36,42 +29,28 @@ export default new Vuex.Store({
         buffer: { letter: 0.5, word: 0.2, sentence: 0.05 },
         automatic: { scaledLessThan: 6, spiralMoreThan: 9 },
         sizeScaling: 1,
-        positionAlgorithm: 'Automatic',
+        positionAlgorithm: "Automatic",
       },
     },
   } as State,
-  mutations: {
-    transliterate(state: State) {
-      state.phrases = []
-      state.phrases = drawTokenisedInput(
-        tokeniseSentence(
-          state.text,
-          state.settings.splits,
-          state.settings.selectedAlphabets,
-          state.settings,
-        ),
-      )
-      fixBoundingBox()
-    },
-    modifyInput(state: State, newInput: string) {
-      state.text = newInput
-    },
-    modifySingleSetting(state: State, { prop, value }) {
-      setWith(state, prop, value, (nsValue, key, nsObject) => {
-        return Vue.set(nsObject, key, nsValue)
-      })
-    },
+  transliterate (): void {
+    this.state.phrases = []
+    this.state.phrases = drawTokenisedInput(
+      tokeniseSentence(
+        this.state.text,
+        this.state.settings.splits,
+        this.state.settings.selectedAlphabets,
+        this.state.settings,
+      ),
+    )
+    fixBoundingBox()
   },
-  actions: {
-    updateInputText({ commit }, inputText: string) {
-      commit("modifyInput", inputText)
-      commit("transliterate")
-    },
-    updateSingleSetting({ commit }, { prop, value }) {
-      prop = `settings.${prop}`
-      commit("modifySingleSetting", { prop, value })
-      commit("transliterate")
-    },
+  modifyInput (newInput: string): void {
+    this.state.text = newInput
+    this.transliterate()
   },
-})
-
+  modifySetting (setter: (s: Settings) => void): void {
+    setter(this.state.settings)
+    this.transliterate()
+  },
+}

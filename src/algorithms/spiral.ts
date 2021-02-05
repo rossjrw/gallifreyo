@@ -1,17 +1,17 @@
-import { Sentence } from "@/classes/Sentence"
-import { getSpiralCoord } from '@/functions/geometry'
+import { Sentence } from "../classes/Sentence"
+import { getSpiralCoord } from "../functions/geometry"
 
+/**
+ * An advanced positioning algorithm. Places each subphrase on the path of
+ * a spiral. This makes good use of the normally-unused space in the
+ * middle of the phrase.
+ *
+ * Size-scaling affects the length of the spiral that the subphrase takes
+ * up, though this can cause it to overlap with neighbouring rungs.
+ *
+ * Works well for very long phrases.
+ */
 export function addSpiralGeometry (sentence: Sentence): void {
-  /**
-   * An advanced positioning algorithm. Places each subphrase on the path of
-   * a spiral. This makes good use of the normally-unused space in the
-   * middle of the phrase.
-   *
-   * Size-scaling affects the length of the spiral that the subphrase takes
-   * up, though this can cause it to overlap with neighbouring rungs.
-   *
-   * Works well for very long phrases.
-   */
   // Spiral buffer is both the distance between spiral rungs and the
   // distance between words, to ensure visually consistent spacing.
   const spiralBuffer = 1 + sentence.settings.config.buffer.word
@@ -23,14 +23,14 @@ export function addSpiralGeometry (sentence: Sentence): void {
     spiralBuffer,
     spiralBuffer,
     sentence.phrases.length,
-    0 // XXX n is reversed - should this be length also?
+    0, // XXX n is reversed - should this be length also?
   )[1]
 
   // Spirals are slightly smaller than circles, so calculate the wanted
   // radius into a multiplier value
   // TODO more refined process including centre shifting
   // XXX I don't think /2 is correct
-  const targetSpiralRadius = sentence.radius! / 2
+  const targetSpiralRadius = sentence.radius / 2
   const multiplier = targetSpiralRadius / estimatedSpiralRadius
 
   sentence.phrases.forEach((subphrase, index) => {

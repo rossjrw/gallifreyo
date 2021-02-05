@@ -1,10 +1,10 @@
 import { sum } from "lodash"
 
-import { Settings } from '@/types/state'
-import { TextNode } from '@/classes/Phrase'
-import { Word } from '@/classes/Word'
-import { Subletter } from '@/types/phrases'
-import { circleIntersectionPoints } from '@/functions/geometry'
+import { Settings } from "../types/state"
+import { TextNode } from "../classes/Phrase"
+import { Word } from "../classes/Word"
+import { Subletter } from "../types/phrases"
+import { circleIntersectionPoints } from "../functions/geometry"
 
 export class Letter extends TextNode {
   depth: "letter"
@@ -16,19 +16,19 @@ export class Letter extends TextNode {
 
   constructor (id: number, settings: Settings, subletters: Subletter[]) {
     super(id, settings)
-    this.depth = 'letter'
+    this.depth = "letter"
     this.subletters = subletters
   }
 
+  /**
+   * Generates the SVG path for a given letter and attaches it as letter.d.
+   *
+   * @param word - The word that contains this letter.
+   * @param angleSubtendedByVowel - The absolute angle to be subtended by a
+   * vowel for this word.
+   * @returns void; letter retains path information.
+   */
   draw (word: Word, angleSubtendedByVowel: number): void {
-    /**
-     * Generates the SVG path for a given letter and attaches it as letter.d.
-     *
-     * @param word: The word that contains this letter.
-     * @param angleSubtendedByVowel: The absolute angle to be subtended by a
-     * vowel for this word.
-     * @returns void; letter retains path information.
-     */
     const subletters = this.subletters
 
     // The width of this letter as an angle
@@ -39,24 +39,24 @@ export class Letter extends TextNode {
 
     // The centre of the word, i.e. the top of the letter
     const wordCentre = {
-      x: word.x!,
-      y: word.y!,
+      x: word.x,
+      y: word.y,
     }
 
     // Base of letter, a point on the word circle
     const letterBase = {
-      x: wordCentre.x + word.radius! * Math.sin(angle),
-      y: wordCentre.y - word.radius! * Math.cos(angle),
+      x: wordCentre.x + word.radius * Math.sin(angle),
+      y: wordCentre.y - word.radius * Math.cos(angle),
     }
 
     // The radius of the consonant circle
     const letterRadius = (
-      (word.radius! * Math.sin(angleSubtended / 2))
-      / (subletters[0].height! * Math.sin(angleSubtended / 2) + 1)
+      (word.radius * Math.sin(angleSubtended / 2)) /
+      (subletters[0].height! * Math.sin(angleSubtended / 2) + 1)
     )
     const vowelRadius = (
-      (word.radius! * Math.sin(angleSubtendedByVowel / 2))
-      / 4
+      (word.radius * Math.sin(angleSubtendedByVowel / 2)) /
+      4
     )
     // vowelRadius is one quarter of letterRadius for a standard letter,
     // where b = 0. The 'standard letter' here is the v block.
@@ -100,12 +100,12 @@ export class Letter extends TextNode {
     // circle, or NaN if it does not.
     const letterStart = {
       x: circleIntersectionPoints(
-        wordCentre.x, wordCentre.y, word.radius!,
-        letterCentre.x, letterCentre.y, letterRadius
+        wordCentre.x, wordCentre.y, word.radius,
+        letterCentre.x, letterCentre.y, letterRadius,
       )[1],
       y: circleIntersectionPoints(
-        wordCentre.x, wordCentre.y, word.radius!,
-        letterCentre.x, letterCentre.y, letterRadius
+        wordCentre.x, wordCentre.y, word.radius,
+        letterCentre.x, letterCentre.y, letterRadius,
       )[3],
     }
 
@@ -113,12 +113,12 @@ export class Letter extends TextNode {
     // circle, or NaN if it does not.
     const letterEnd = {
       x: circleIntersectionPoints(
-        wordCentre.x, wordCentre.y, word.radius!,
-        letterCentre.x, letterCentre.y, letterRadius
+        wordCentre.x, wordCentre.y, word.radius,
+        letterCentre.x, letterCentre.y, letterRadius,
       )[0],
       y: circleIntersectionPoints(
-        wordCentre.x, wordCentre.y, word.radius!,
-        letterCentre.x, letterCentre.y, letterRadius
+        wordCentre.x, wordCentre.y, word.radius,
+        letterCentre.x, letterCentre.y, letterRadius,
       )[2],
     }
 
@@ -134,7 +134,7 @@ export class Letter extends TextNode {
         wordCentre.y,
         (letterBase.x - wordCentre.x) * Math.sin(-angleSubtended / 2),
         (letterBase.y - wordCentre.y) * Math.cos(-angleSubtended / 2),
-      ])
+      ]),
     }
 
     // The end of this segment of the word line, where this letter connects to
@@ -149,7 +149,7 @@ export class Letter extends TextNode {
         wordCentre.y,
         (letterBase.x - wordCentre.x) * Math.sin(angleSubtended / 2),
         (letterBase.y - wordCentre.y) * Math.cos(angleSubtended / 2),
-      ])
+      ]),
     }
 
     if (["s", "p", "d", "f"].includes(subletters[0].block)) {
@@ -183,13 +183,13 @@ export class Letter extends TextNode {
         )
       }
       // Draw any vowels
-      if(subletters.length == 2){
+      if (subletters.length === 2) {
         // Jump to the vowel and draw its circle
         this.drawCircle(vowelCentre, vowelRadius)
 
         this.drawLine(
           wordCentre, vowelCentre,
-          { type: 'debug', purpose: 'position' },
+          { type: "debug", purpose: "position" },
         )
       }
     } else if (subletters[0].block === "buffer") {
@@ -209,38 +209,38 @@ export class Letter extends TextNode {
 
       this.drawLine(
         wordCentre, vowelCentre,
-        { type: 'debug', purpose: 'position' },
+        { type: "debug", purpose: "position" },
       )
     }
 
     // Make a debug path to show inter-letter boundaries
     this.drawLine(
       wordCentre, wordStart,
-      { type: 'debug', purpose: 'angle' },
+      { type: "debug", purpose: "angle" },
     )
 
     // Make a debug path to show the percieved size of the word
     this.drawArc(
       wordStart, wordEnd, word.radius,
       { largeArc: angleSubtended > Math.PI, sweep: true },
-      { type: 'debug', purpose: 'circle' },
+      { type: "debug", purpose: "circle" },
     )
   }
 
+  /**
+   * Set the angular location of this letter based on its position in the
+   * word.
+   *
+   * @param word - The word that contains this letter.
+   * @param index - The index of this letter in the word.
+   */
   addAngularLocation (word: Word, index: number): void {
-    /**
-     * Set the angular location of this letter based on its position in the
-     * word.
-     *
-     * @param word: The word that contains this letter.
-     * @param index: The index of this letter in the word.
-     */
     this.angularLocation = (
       word.phrases.slice(0, index + 1).reduce((total, letter) => {
         return total + letter.subletters[0].absoluteAngularSize!
-      }, 0)
-      - (word.phrases[0].subletters[0].absoluteAngularSize! / 2)
-      - (word.phrases[index].subletters[0].absoluteAngularSize! / 2)
+      }, 0) -
+      (word.phrases[0].subletters[0].absoluteAngularSize! / 2) -
+      (word.phrases[index].subletters[0].absoluteAngularSize! / 2)
     )
   }
 }

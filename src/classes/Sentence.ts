@@ -1,17 +1,17 @@
-import { Settings } from '@/types/state'
-import { Phrase } from '@/classes/Phrase'
-import { Word } from '@/classes/Word'
-import { addRadialGeometry } from "@/algorithms/radial"
-import { addOrganicGeometry } from "@/algorithms/organic"
-import { addSpiralGeometry } from "@/algorithms/spiral"
+import { Settings } from "../types/state"
+import { Phrase } from "../classes/Phrase"
+import { Word } from "../classes/Word"
+import { addRadialGeometry } from "../algorithms/radial"
+import { addOrganicGeometry } from "../algorithms/organic"
+import { addSpiralGeometry } from "../algorithms/spiral"
 
 export class Sentence extends Phrase {
-  depth: 'sentence'
+  depth: "sentence"
   phrases: (Sentence | Word)[]
 
-  constructor(id: number, settings: Settings, phrases: (Sentence | Word)[]) {
+  constructor (id: number, settings: Settings, phrases: (Sentence | Word)[]) {
     super(id, settings)
-    this.depth = 'sentence'
+    this.depth = "sentence"
     this.phrases = phrases
   }
 
@@ -19,7 +19,7 @@ export class Sentence extends Phrase {
     // If this sentence contains more than one subphrase, then draw a circle
     // around it
     if (this.phrases.length > 1) {
-      this.drawCircle(this, this.radius, { type: 'default' })
+      this.drawCircle(this, this.radius, { type: "default" })
     }
 
     // XXX Should relative and absolute angular sizes be computed in
@@ -42,14 +42,14 @@ export class Sentence extends Phrase {
     this.phrases.forEach(phrase => phrase.draw())
   }
 
+  /**
+   * Sets the relative angular size on each subphrase, normalised such that
+   * they average to 1.
+   */
   addRelativeAngularSizes (): void {
-    /**
-     * Sets the relative angular size on each subphrase, normalised such that
-     * they average to 1.
-     */
     this.phrases.forEach(phrase => {
       phrase.relativeAngularSize = Math.pow(
-        phrase.phrases.length, this.settings.config.sizeScaling
+        phrase.phrases.length, this.settings.config.sizeScaling,
       )
     })
 
@@ -68,12 +68,12 @@ export class Sentence extends Phrase {
     })
   }
 
+  /**
+   * Convert relative angular sizes on subphrases to absolute angular sizes.
+   *
+   * TODO This will fail when the relative angular sizes do not average to 1.
+   */
   addAbsoluteAngularSizes (relativeAngularSizeSum: number): void {
-    /**
-     * Convert relative angular sizes on subphrases to absolute angular sizes.
-     *
-     * TODO This will fail when the relative angular sizes do not average to 1.
-     */
     this.phrases.forEach((phrase) => {
       phrase.absoluteAngularSize = (
         phrase.relativeAngularSize! * 2 * Math.PI / relativeAngularSizeSum
@@ -81,42 +81,41 @@ export class Sentence extends Phrase {
     })
   }
 
+  /**
+   * Calculate the radius of this sentence from the buffer radius.
+   */
   addRadiusFromBuffer (parent: Sentence): void {
-    /**
-     * Calculate the radius of this sentence from the buffer radius.
-     */
     const bufferWidth = parent.radius * this.settings.config.buffer.sentence
-    this.radius = this.bufferRadius! - bufferWidth
+    this.radius = this.bufferRadius - bufferWidth
   }
 
+  /**
+   * Calculates the geometry of each of this sentence's subphrases.
+   *
+   * 'Geometry' refers to the x, y, and  properties of a phrase, with
+   * angularLocation sometimes being used as an intermediary property.
+   *
+   * This method selects a positioning algorithm and then executes it.
+   *
+   * @returns void; Modifies the subphrase in place to add x, y, and radius
+   */
   addGeometry (): void {
-    /**
-     * Calculates the geometry of each of this sentence's subphrases.
-     *
-     * 'Geometry' refers to the x, y, and  properties of a phrase, with
-     * angularLocation sometimes being used as an intermediary property.
-     *
-     * This method selects a positioning algorithm and then executes it.
-     *
-     * @returns void; Modifies the subphrase in place to add x, y, and radius
-     */
-
     // Get the global default algorithm
     let positionAlgorithm = this.settings.config.positionAlgorithm
 
     // The radial algorithm is the only one that really works for single words
     if (this.phrases.length === 1) {
-      positionAlgorithm = 'Radial'
+      positionAlgorithm = "Radial"
     }
 
     // If the positioning algorithm is marked as automatic, pick the best one
-    if (positionAlgorithm === 'Automatic') {
+    if (positionAlgorithm === "Automatic") {
       if (this.phrases.length > 8) {
         // Spiral is best for long sentences
-        positionAlgorithm = 'Spiral'
+        positionAlgorithm = "Spiral"
       } else if (this.settings.config.sizeScaling === 0) {
         // If there is no size scaling, organic should be identical to radial
-        positionAlgorithm = 'Radial'
+        positionAlgorithm = "Radial"
       } else {
         // Choose between radial and organic based on disparity (the difference
         // between the longest and shortest subphrase)
@@ -125,16 +124,16 @@ export class Sentence extends Phrase {
         const lengths = this.phrases.map(phrase => phrase.phrases.length)
         const shortest = Math.min(...lengths)
         const longest = Math.max(...lengths)
-        positionAlgorithm = longest - shortest > 3 ? 'Organic' : 'Radial'
+        positionAlgorithm = longest - shortest > 3 ? "Organic" : "Radial"
       }
     }
 
     // Execute the chosen algorithm
-    if (positionAlgorithm === 'Radial') {
+    if (positionAlgorithm === "Radial") {
       addRadialGeometry(this)
-    } else if (positionAlgorithm === 'Spiral') {
+    } else if (positionAlgorithm === "Spiral") {
       addSpiralGeometry(this)
-    } else if (positionAlgorithm === 'Organic') {
+    } else if (positionAlgorithm === "Organic") {
       addOrganicGeometry(this)
     }
   }

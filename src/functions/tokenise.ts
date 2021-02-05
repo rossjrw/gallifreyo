@@ -1,38 +1,38 @@
-import { Settings } from '@/types/state'
-import { LetterData } from '@/types/alphabets'
-import { Sentence } from '@/classes/Sentence'
-import { Word } from '@/classes/Word'
-import { Letter } from '@/classes/Letter'
-import { getLetters } from '@/functions/alphabets'
+import { Settings } from "../types/state"
+import { LetterData } from "../types/alphabets"
+import { Sentence } from "../classes/Sentence"
+import { Word } from "../classes/Word"
+import { Letter } from "../classes/Letter"
+import { getLetters } from "../functions/alphabets"
 
 let ID_COUNTER = 0
 
+/**
+ * Takes a string and converts it to tokens. Tokens are dicts that instruct
+ * the renderer on what to draw e.g. what letters and shapes are present.
+ * The renderer will decide how to draw those things e.g. what size
+ * everything is.
+ *
+ * @param sentence - A string containing the sentence to be tokenised.
+ * Gallifreyo's definition of a sentence is a series of words, but what those
+ * words are can be anything. Most words will also be sentences.
+ * @param splitBy - An array of strings by which to split
+ * @param alphabets - List of alphabet names to use
+ * @param settings - A settings object to pass to the constructed phrases.
+ * @returns A list of tokenised phrases.
+ */
 export function tokeniseSentence (
   sentence: string,
   splitBy: string[],
   alphabets: string[],
   settings: Settings,
 ): Sentence[]
-export function tokeniseSentence(
+export function tokeniseSentence (
   sentence: string,
   splitBy: string[],
   alphabets: string[],
   settings: Settings,
 ): (Sentence | Word)[] {
-  /**
-   * Takes a string and converts it to tokens. Tokens are dicts that instruct
-   * the renderer on what to draw e.g. what letters and shapes are present.
-   * The renderer will decide how to draw those things e.g. what size
-   * everything is.
-   *
-   * @param sentence: A string containing the sentence to be tokenised.
-   * Gallifreyo's definition of a sentence is a series of words, but what those
-   * words are can be anything. Most words will also be sentences.
-   * @param splitBy: An array of strings by which to split
-   * @param alphabets: List of alphabet names to use
-   * @param settings: A settings object to pass to the constructed phrases.
-   * @returns A list of tokenised phrases.
-   */
   // This is a recursive function that pops from splitBy. There are two
   // possible return values:
   //    1. If there is at least one splitBy delimiter, split the text by it.
@@ -53,29 +53,29 @@ export function tokeniseSentence(
       return new Sentence(
         ID_COUNTER++,
         settings,
-        tokeniseSentence(phrase, splitBy.slice(1), alphabets, settings)
+        tokeniseSentence(phrase, splitBy.slice(1), alphabets, settings),
       )
     } else {
       // The delimiters have been used up, so sentence is a word.
       return new Word(
         ID_COUNTER++,
         settings,
-        tokeniseAWordIntoLetters(phrase, alphabets, settings)
+        tokeniseAWordIntoLetters(phrase, alphabets, settings),
       )
     }
   })
   return phrases
 }
 
-function tokeniseAWordIntoLetters(
+/**
+* Takes a word as a string. Iterates through it to return its phrases
+* property, which is an array of Letters.
+*/
+function tokeniseAWordIntoLetters (
   word: string,
   alphabets: string[],
   settings: Settings,
 ): Letter[] {
-  /**
-   * Takes a word as a string. Iterates through it to return its phrases
-   * property, which is an array of Letters.
-   */
   // I want to loop through the segments of the word in variable stages.
   // When I find a match against the alphabets, I should obey that alphabet's
   // action and use it to assign a subletter.
@@ -114,7 +114,7 @@ function tokeniseAWordIntoLetters(
 
   // Add a buffer letter after each letter
   subletterCharacters = subletterCharacters.map(
-    characters => [characters, ["BUFFER"]]
+    characters => [characters, ["BUFFER"]],
   ).flat()
 
   // Convert subletter characters to subletters
@@ -125,28 +125,28 @@ function tokeniseAWordIntoLetters(
       characters.map(
         (character: string) => {
           return {
-            depth: 'subletter',
+            depth: "subletter",
             ...getLetters(alphabets).find(
-              (letter) => letter.value === character
-            )!
+              (letter) => letter.value === character,
+            )!,
           }
-        }
-      )
+        },
+      ),
     )
   })
   return letters
 }
 
-function skimACharacterFromAWord(
+/**
+* Skims a single letter from the first part of a word and returns the
+* relevant character, as a string.
+*
+* If there is no match, returns null.
+*/
+function skimACharacterFromAWord (
   word: string,
   alphabets: string[],
 ): string | null {
-  /**
-   * Skims a single letter from the first part of a word and returns the
-   * relevant character, as a string.
-   *
-   * If there is no match, returns null.
-   */
   // Grab the alphabet directly from source
   const sourceLetters: LetterData[] = getLetters(alphabets)
   // Find the source letter that matches the start of the word
@@ -158,16 +158,16 @@ function skimACharacterFromAWord(
   return null
 }
 
-function skimSubletterCharactersFromCharacters(
+/**
+* Takes an array of characters, as strings, and returns the first subletter
+* that can be created from that array.
+*
+* Returns subletter as a list of characters, as strings.
+*/
+function skimSubletterCharactersFromCharacters (
   characters: string[],
   alphabets: string[],
 ): string[] {
-  /**
-   * Takes an array of characters, as strings, and returns the first subletter
-   * that can be created from that array.
-   *
-   * Returns subletter as a list of characters, as strings.
-   */
   // Grab the alphabet directly from source
   const sourceLetters: LetterData[] = getLetters(alphabets)
   // Iterate through letters and their actions
