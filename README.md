@@ -17,7 +17,27 @@ the BBC show Doctor Who.
 
 ## Project status
 
-Incomplete.
+The goal of Gallifreyo is to be able to recreate the first image from the
+[official guide](https://shermansplanet.com/gallifreyan/guide.pdf) to Sherman's
+Gallifreyan &mdash; a transliteration of "hello sweetie" &mdash; to a
+reasonable degree of accuracy.
+
+This target image is simple but complex. It is a good indication of how well
+Gallifreyo handles a range of requirements:
+
+* low-level requirements like word positioning and sizing, letters and vowels,
+  and sentence formation
+* medium-level requirements like dots, lines, and variance between letter types
+* high-level requirements like double-letter and -vowel merging, sentence
+  outlining, and word interlocking
+
+It's just missing punctuation, paragraphs (multiple sentences), and numbers.
+
+Theirs | Ours (v0.2.0)
+--- | ---
+<image width="350" src="https://raw.githubusercontent.com/rossjrw/gallifreyo/master/assets/hello-sweetie-sherman.png"> | <image width="350" src="https://raw.githubusercontent.com/rossjrw/gallifreyo/master/assets/hello-sweetie-0.2.0.png">
+
+Obviously, Gallifreyo is incomplete.
 
 ## Licensing
 
