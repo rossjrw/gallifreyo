@@ -35,7 +35,7 @@ It's just missing punctuation, paragraphs (multiple sentences), and numbers.
 
 Theirs | Ours (v0.2.0)
 --- | ---
-<image width="350" src="https://raw.githubusercontent.com/rossjrw/gallifreyo/master/assets/hello-sweetie-sherman.png"> | <image width="350" src="https://raw.githubusercontent.com/rossjrw/gallifreyo/master/assets/hello-sweetie-0.2.0.png">
+<image width="200" src="https://raw.githubusercontent.com/rossjrw/gallifreyo/master/assets/hello-sweetie-sherman.png"> | <image width="200" src="https://raw.githubusercontent.com/rossjrw/gallifreyo/master/assets/hello-sweetie-0.2.0.png">
 
 Obviously, Gallifreyo is incomplete.
 
