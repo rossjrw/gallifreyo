@@ -3,7 +3,7 @@ import { sum } from "lodash"
 import { Settings } from "../types/state"
 import { TextNode } from "../classes/Phrase"
 import { Word } from "../classes/Word"
-import { Subletter } from "../types/phrases"
+import { Subletter, Dot } from "../types/phrases"
 import { circleIntersectionPoints } from "../functions/geometry"
 
 export class Letter extends TextNode {
@@ -11,6 +11,7 @@ export class Letter extends TextNode {
   subletters: Subletter[]
   // Render properties
   height?: number
+  dots?: Dot[]
   // Drawing properties
   transform?: string
 
