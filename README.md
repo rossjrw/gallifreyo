@@ -21,16 +21,7 @@ Incomplete.
 
 ## Licensing
 
-Gallifreyo is licensed under
-[AGPL 3.0](https://www.gnu.org/licenses/agpl-3.0.html),
-meaning that it's open source, and that you or anyone else can copy the code
-and make changes to it, provided that the resulting code is also open source.
-See the licence for more details.
+Gallifreyo is licensed under MIT.
 
 Images produced by Gallifreyo are subject to the same licence of the text that
-created them. For example:
-
-* If you wrote the text yourself, you own the copyright.
-* If you translate text someone else wrote, they own the copyright.
-* If you translate a Wikipedia page, the result is licensed CC BY-SA.
-* If you translate Gallifreyo's source code, the result is under AGPL 3.0.
+created them &mdash; if you wrote the text yourself, you own the copyright.
