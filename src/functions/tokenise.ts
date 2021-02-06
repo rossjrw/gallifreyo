@@ -70,6 +70,8 @@ export function tokeniseSentence (
 /**
 * Takes a word as a string. Iterates through it to return its phrases
 * property, which is an array of Letters.
+*
+* Every other letter in the returned array is a buffer.
 */
 function tokeniseAWordIntoLetters (
   word: string,
@@ -79,24 +81,23 @@ function tokeniseAWordIntoLetters (
   // I want to loop through the segments of the word in variable stages.
   // When I find a match against the alphabets, I should obey that alphabet's
   // action and use it to assign a subletter.
-  // Every other letter that is returned from this function must be a buffer.
-  // [1,2,3].map(i => [i,null]).flat()
 
   // The array of matched characters, as strings
   let matchedCharacters: string[] = []
 
   // Loop through word and extract the characters
   while (word.length > 0) {
-    const nextCharacter = skimACharacterFromAWord(word, alphabets)
-    // A match has been found (although it can be null)
+    // Get the first matching character (e.g. G, A, TH)
+    const nextCharacter = getFirstCharacter(word, alphabets)
     if (nextCharacter !== null) {
       // If it wasn't null, add it to the list
       matchedCharacters.push(nextCharacter)
       // Remove that many letters from the word
       word = word.slice(nextCharacter.length)
     } else {
-      // If it was null, do not add a match
-      // Remove just one letter from the word
+      // If it was null, there was not a match for the start of the word in any
+      // of the selected alphabets. The first character therefore cannot be
+      // rendered - discard it
       word = word.slice(1)
     }
   }
@@ -113,9 +114,9 @@ function tokeniseAWordIntoLetters (
   }
 
   // Add a buffer letter after each letter
-  subletterCharacters = subletterCharacters.map(
+  subletterCharacters = subletterCharacters.flatMap(
     characters => [characters, ["BUFFER"]],
-  ).flat()
+  )
 
   // Convert subletter characters to subletters
   const letters: Letter[] = subletterCharacters.map(characters => {
@@ -138,22 +139,21 @@ function tokeniseAWordIntoLetters (
 }
 
 /**
-* Skims a single letter from the first part of a word and returns the
-* relevant character, as a string.
-*
-* If there is no match, returns null.
-*/
-function skimACharacterFromAWord (
+ * Check the start of a word against the selected alphabets case-insensitively.
+ *
+ * @returns The segment from the start of the word that matched, or null.
+ */
+function getFirstCharacter (
   word: string,
   alphabets: string[],
 ): string | null {
+  word = word.toUpperCase()
+  const matchesWord = (source: LetterData) => word.startsWith(source.value)
   // Grab the alphabet directly from source
   const sourceLetters: LetterData[] = getLetters(alphabets)
   // Find the source letter that matches the start of the word
-  for (const sourceLetter of sourceLetters) {
-    if (word.toUpperCase().startsWith(sourceLetter.value)) {
-      return sourceLetter.value
-    }
+  if (sourceLetters.some(matchesWord)) {
+    return sourceLetters.find(matchesWord)!.value
   }
   return null
 }
@@ -162,7 +162,7 @@ function skimACharacterFromAWord (
 * Takes an array of characters, as strings, and returns the first subletter
 * that can be created from that array.
 *
-* Returns subletter as a list of characters, as strings.
+* @returns Subletter as a list of characters, as strings.
 */
 function skimSubletterCharactersFromCharacters (
   characters: string[],
@@ -174,7 +174,8 @@ function skimSubletterCharactersFromCharacters (
   const subletterCharacters: string[] = []
   for (const character of characters) {
     const action = sourceLetters.find(
-      (letter) => letter.value === character)!.action
+      letter => letter.value === character,
+    )!.action
     // Regardless of action, always retain the first character
     if (subletterCharacters.length === 0) {
       subletterCharacters.push(character)
