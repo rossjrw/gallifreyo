@@ -1,15 +1,27 @@
 import { sum } from "lodash"
 
 import { Settings } from "../types/state"
-import { TextNode } from "../classes/Phrase"
+import { TextNode, Point } from "../classes/Phrase"
 import { Word } from "../classes/Word"
 import { Subletter, Dot } from "../types/phrases"
 import { circleIntersectionPoints } from "../functions/geometry"
+
+type LetterGeometry = {
+  letterRadius: number
+  vowelRadius: number
+  letterCentre: Point
+  vowelCentre: Point
+  letterStart: Point
+  letterEnd: Point
+  wordStart: Point
+  wordEnd: Point
+}
 
 export class Letter extends TextNode {
   depth: "letter"
   subletters: Subletter[]
   // Render properties
+  geometry?: LetterGeometry
   height?: number
   dots?: Dot[]
   // Drawing properties
@@ -22,14 +34,14 @@ export class Letter extends TextNode {
   }
 
   /**
-   * Generates the SVG path for a given letter and attaches it as letter.d.
+   * Generates geometry properties for this letter and attaches it to the
+   * letter's geometry property.
    *
    * @param word - The word that contains this letter.
    * @param angleSubtendedByVowel - The absolute angle to be subtended by a
    * vowel for this word.
-   * @returns void; letter retains path information.
    */
-  draw (word: Word, angleSubtendedByVowel: number): void {
+  addGeometry (word: Word, angleSubtendedByVowel: number): void {
     const subletters = this.subletters
 
     // The width of this letter as an angle
@@ -38,16 +50,10 @@ export class Letter extends TextNode {
     // The angle of this letter relative to the word
     const angle = this.angularLocation!
 
-    // The centre of the word, i.e. the top of the letter
-    const wordCentre = {
-      x: word.x,
-      y: word.y,
-    }
-
     // Base of letter, a point on the word circle
     const letterBase = {
-      x: wordCentre.x + word.radius * Math.sin(angle),
-      y: wordCentre.y - word.radius * Math.cos(angle),
+      x: word.x + word.radius * Math.sin(angle),
+      y: word.y - word.radius * Math.cos(angle),
     }
 
     // The radius of the consonant circle
@@ -68,7 +74,8 @@ export class Letter extends TextNode {
       y: letterBase.y + subletters[0].height! * letterRadius * Math.cos(angle),
     }
 
-    // Distance of the vowel from the centre of the letter, along the same angle
+    // Distance of the vowel from the centre of the letter, along the same
+    // angle
     let vowelStart = letterBase
     let vowelDistance = 0
     if (subletters.length > 1) {
@@ -101,11 +108,11 @@ export class Letter extends TextNode {
     // circle, or NaN if it does not.
     const letterStart = {
       x: circleIntersectionPoints(
-        wordCentre.x, wordCentre.y, word.radius,
+        word.x, word.y, word.radius,
         letterCentre.x, letterCentre.y, letterRadius,
       )[1],
       y: circleIntersectionPoints(
-        wordCentre.x, wordCentre.y, word.radius,
+        word.x, word.y, word.radius,
         letterCentre.x, letterCentre.y, letterRadius,
       )[3],
     }
@@ -114,11 +121,11 @@ export class Letter extends TextNode {
     // circle, or NaN if it does not.
     const letterEnd = {
       x: circleIntersectionPoints(
-        wordCentre.x, wordCentre.y, word.radius,
+        word.x, word.y, word.radius,
         letterCentre.x, letterCentre.y, letterRadius,
       )[0],
       y: circleIntersectionPoints(
-        wordCentre.x, wordCentre.y, word.radius,
+        word.x, word.y, word.radius,
         letterCentre.x, letterCentre.y, letterRadius,
       )[2],
     }
@@ -127,14 +134,14 @@ export class Letter extends TextNode {
     // to the previous one.
     const wordStart = {
       x: sum([
-        wordCentre.x,
-        (letterBase.x - wordCentre.x) * Math.cos(-angleSubtended / 2),
-        (letterBase.y - wordCentre.y) * Math.sin(-angleSubtended / 2) * -1,
+        word.x,
+        (letterBase.x - word.x) * Math.cos(-angleSubtended / 2),
+        (letterBase.y - word.y) * Math.sin(-angleSubtended / 2) * -1,
       ]),
       y: sum([
-        wordCentre.y,
-        (letterBase.x - wordCentre.x) * Math.sin(-angleSubtended / 2),
-        (letterBase.y - wordCentre.y) * Math.cos(-angleSubtended / 2),
+        word.y,
+        (letterBase.x - word.x) * Math.sin(-angleSubtended / 2),
+        (letterBase.y - word.y) * Math.cos(-angleSubtended / 2),
       ]),
     }
 
@@ -142,22 +149,56 @@ export class Letter extends TextNode {
     // the next one.
     const wordEnd = {
       x: sum([
-        wordCentre.x,
-        (letterBase.x - wordCentre.x) * Math.cos(angleSubtended / 2),
-        (letterBase.y - wordCentre.y) * Math.sin(angleSubtended / 2) * -1,
+        word.x,
+        (letterBase.x - word.x) * Math.cos(angleSubtended / 2),
+        (letterBase.y - word.y) * Math.sin(angleSubtended / 2) * -1,
       ]),
       y: sum([
-        wordCentre.y,
-        (letterBase.x - wordCentre.x) * Math.sin(angleSubtended / 2),
-        (letterBase.y - wordCentre.y) * Math.cos(angleSubtended / 2),
+        word.y,
+        (letterBase.x - word.x) * Math.sin(angleSubtended / 2),
+        (letterBase.y - word.y) * Math.cos(angleSubtended / 2),
       ]),
     }
 
-    if (["s", "p", "d", "f"].includes(subletters[0].block)) {
+    this.geometry = {
+      letterRadius,
+      vowelRadius,
+      letterCentre,
+      vowelCentre,
+      letterStart,
+      letterEnd,
+      wordStart,
+      wordEnd,
+    }
+  }
+
+  /**
+   * Generates the SVG path for a given letter and appends it to the letter's
+   * paths.
+   *
+   * @param word - The word that contains this letter.
+   */
+  drawPath (word: Word): void {
+    // Most properties actually come from this letter's first subletter
+    const letter = this.subletters[0]
+    const angleSubtended = letter.absoluteAngularSize!
+    // Other properties will have been generated in addGeometry
+    const {
+      letterRadius,
+      vowelRadius,
+      letterCentre,
+      vowelCentre,
+      letterStart,
+      letterEnd,
+      wordStart,
+      wordEnd,
+    } = this.geometry!
+
+    if (["s", "p", "d", "f"].includes(letter.block)) {
       // Start with non-vowel, non-buffer blocks
       // A letter that is 'full' has a complete circle, regardless of whether
       // or not it intersects with the word.
-      if (subletters[0].full) {
+      if (letter.full) {
         // Draw uninterrupted word segment
         this.drawArc(
           wordStart, wordEnd, word.radius,
@@ -175,7 +216,7 @@ export class Letter extends TextNode {
         // TODO determine arc programmatically, not by block
         this.drawArc(
           letterStart, letterEnd, letterRadius,
-          { largeArc: subletters[0].block === "s", sweep: false },
+          { largeArc: letter.block === "s", sweep: false },
         )
         // Draw remainder of word segment and declare finished
         this.drawArc(
@@ -184,22 +225,22 @@ export class Letter extends TextNode {
         )
       }
       // Draw any vowels
-      if (subletters.length === 2) {
+      if (this.subletters.length === 2) {
         // Jump to the vowel and draw its circle
         this.drawCircle(vowelCentre, vowelRadius)
 
         this.drawLine(
-          wordCentre, vowelCentre,
+          word, vowelCentre,
           { type: "debug", purpose: "position" },
         )
       }
-    } else if (subletters[0].block === "buffer") {
+    } else if (letter.block === "buffer") {
       // Draw the buffer, which is just an empty word segment
       this.drawArc(
         wordStart, wordEnd, word.radius,
         { largeArc: false, sweep: true },
       )
-    } else if (subletters[0].block === "v") {
+    } else if (letter.block === "v") {
       // Draw the uninterrupted word segment
       this.drawArc(
         wordStart, wordEnd, word.radius,
@@ -209,14 +250,14 @@ export class Letter extends TextNode {
       this.drawCircle(vowelCentre, vowelRadius)
 
       this.drawLine(
-        wordCentre, vowelCentre,
+        word, vowelCentre,
         { type: "debug", purpose: "position" },
       )
     }
 
     // Make a debug path to show inter-letter boundaries
     this.drawLine(
-      wordCentre, wordStart,
+      word, wordStart,
       { type: "debug", purpose: "angle" },
     )
 
