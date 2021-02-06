@@ -23,7 +23,7 @@ export class Letter extends TextNode {
   // Render properties
   geometry?: LetterGeometry
   height?: number
-  dots?: Dot[]
+  dots: Dot[]
   // Drawing properties
   transform?: string
 
@@ -31,6 +31,24 @@ export class Letter extends TextNode {
     super(id, settings)
     this.depth = "letter"
     this.subletters = subletters
+    this.dots = []
+  }
+
+  /**
+   * Set the angular location of this letter based on its position in the
+   * word.
+   *
+   * @param word - The word that contains this letter.
+   * @param index - The index of this letter in the word.
+   */
+  addAngularLocation (word: Word, index: number): void {
+    this.angularLocation = (
+      word.phrases.slice(0, index + 1).reduce((total, letter) => {
+        return total + letter.subletters[0].absoluteAngularSize!
+      }, 0) -
+      (word.phrases[0].subletters[0].absoluteAngularSize! / 2) -
+      (word.phrases[index].subletters[0].absoluteAngularSize! / 2)
+    )
   }
 
   /**
@@ -270,19 +288,53 @@ export class Letter extends TextNode {
   }
 
   /**
-   * Set the angular location of this letter based on its position in the
-   * word.
-   *
-   * @param word - The word that contains this letter.
-   * @param index - The index of this letter in the word.
+   * Generates dots for the letters that need them and adds them to the
+   * letter's dots property.
    */
-  addAngularLocation (word: Word, index: number): void {
-    this.angularLocation = (
-      word.phrases.slice(0, index + 1).reduce((total, letter) => {
-        return total + letter.subletters[0].absoluteAngularSize!
-      }, 0) -
-      (word.phrases[0].subletters[0].absoluteAngularSize! / 2) -
-      (word.phrases[index].subletters[0].absoluteAngularSize! / 2)
-    )
+  drawDots (): void {
+    const letter = this.subletters[0]
+    if (!letter.dots) {
+      return
+    }
+    // Dots must be drawn on an implict curve that follows this letter's curve
+    const {
+      letterRadius, letterCentre, letterStart, letterEnd,
+    } = this.geometry!
+    let dotCurve: Point & { radius: number } | { start: Point, end: Point }
+    if (letter.full) {
+      dotCurve = {
+        ...letterCentre,
+        radius: letterRadius * this.settings.config.dots.radiusDifference,
+      }
+      this.drawCircle(
+        dotCurve, dotCurve.radius,
+        { type: "debug", purpose: "circle" },
+      )
+    } else {
+      dotCurve = {
+        start: {
+          x: letterCentre.x + (letterStart.x - letterCentre.x) *
+            this.settings.config.dots.radiusDifference,
+          y: letterCentre.y + (letterStart.y - letterCentre.y) *
+            this.settings.config.dots.radiusDifference,
+        },
+        end: {
+          x: letterCentre.x + (letterEnd.x - letterCentre.x) *
+            this.settings.config.dots.radiusDifference,
+          y: letterCentre.y + (letterEnd.y - letterCentre.y) *
+            this.settings.config.dots.radiusDifference,
+        },
+      }
+      this.drawArc(
+        dotCurve.start, dotCurve.end,
+        letterRadius * this.settings.config.dots.radiusDifference,
+        { largeArc: letter.height! > 0, sweep: false },
+        { type: "debug", purpose: "circle" },
+      )
+    }
+
+    Array.from({ length: letter.dots }).forEach((_, index) => {
+      void index
+    })
   }
 }

@@ -47,8 +47,9 @@ export class Word extends Phrase {
       letter.addAngularLocation(this, index)
       // Calculate rendering geometry
       letter.addGeometry(this, vowelAngularSize)
-      // Draw the main path
+      // Draw the paths
       letter.drawPath(this)
+      letter.drawDots()
     })
   }
 

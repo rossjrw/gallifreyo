@@ -30,6 +30,7 @@ export default {
         automatic: { scaledLessThan: 6, spiralMoreThan: 9 },
         sizeScaling: 1,
         positionAlgorithm: "Automatic",
+        dots: { sizeScaling: 1, radiusDifference: 0.9, size: 2, spacing: 1 },
       },
     },
   } as State,
