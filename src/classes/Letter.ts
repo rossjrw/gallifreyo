@@ -5,7 +5,7 @@ import { TextNode, Point } from "../classes/Phrase"
 import { Word } from "../classes/Word"
 import { Subletter, Dot } from "../types/phrases"
 import {
-  circleIntersectionPoints, travelAlongCircle, findAngle,
+  circleIntersectionPoints, travelAlongCircle, findAngle, distanceBetween,
 } from "../functions/geometry"
 
 type LetterGeometry = {
@@ -338,24 +338,44 @@ export class Letter extends TextNode {
         // How about we just don't, for now
         return { x: 0, y: 0, radius: 0 }
       } else {
-        const startPoint = {
-          x: letterCentre.x - Math.sin(this.angularLocation!) * radius,
-          y: letterCentre.y + Math.cos(this.angularLocation!) * radius,
-        }
+        // Radius of this dot
+        // TODO Dot sizes should vary depending on sizeScaling
+        const thisDotSize = this.settings.config.dots.size
+
         // Get the angle subtended by the sweep of the letter curve. If the
         // letter height is less than 1, it is the greater value
         let letterAngularSize = findAngle(letterStart, letterCentre, letterEnd)
         if (letter.height! > 0) {
           letterAngularSize = 2 * Math.PI - letterAngularSize
         }
+
+        // The distance between dots is enough to space them evenly (for now)
         const distanceBetweenDots = (
           letterAngularSize * radius / (dotCount + 1)
         ) * this.settings.config.dots.spacing
+
+        // To calculate the position of this dot, extend the cursor to the
+        // implicit dot radius, move it along that curve by the specified
+        // distance, and then retract it towards the centre of the letter by
+        // half this dot's radius
+        const startPoint = {
+          x: letterCentre.x - Math.sin(this.angularLocation!) * radius,
+          y: letterCentre.y + Math.cos(this.angularLocation!) * radius,
+        }
+        const dotPosition = travelAlongCircle(
+          letterCentre, radius, startPoint,
+          distanceBetweenDots * (index - (dotCount - 1) / 2),
+        )
+        const retraction = (
+          thisDotSize / distanceBetween(dotPosition, letterCentre)
+        )
+        const finalDotPosition = {
+          x: dotPosition.x + (letterCentre.x - dotPosition.x) * retraction,
+          y: dotPosition.y + (letterCentre.y - dotPosition.y) * retraction,
+        }
+
         return {
-          ...travelAlongCircle(
-            letterCentre, radius, startPoint,
-            distanceBetweenDots * (index - (dotCount - 1) / 2),
-          ),
+          ...finalDotPosition,
           radius: this.settings.config.dots.size,
         }
       }

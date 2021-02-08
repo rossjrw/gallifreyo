@@ -139,3 +139,16 @@ export function findAngle (a: Point, b: Point, c: Point): number {
   const ac = Math.sqrt(Math.pow(c.x - a.x, 2) + Math.pow(c.y - a.y, 2))
   return Math.acos((bc * bc + ab * ab - ac * ac) / (2 * bc * ab))
 }
+
+/**
+ * Finds the distance between two points.
+ *
+ * @param a - A point.
+ * @param b - The other points.
+ * @returns The distance as a positive number.
+ */
+export function distanceBetween (a: Point, b: Point): number {
+  const x = a.x - b.x
+  const y = a.y - b.y
+  return Math.sqrt(x * x + y * y)
+}
