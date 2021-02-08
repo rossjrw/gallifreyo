@@ -287,13 +287,20 @@ export class Letter extends TextNode {
       { largeArc: angleSubtended > Math.PI, sweep: true },
       { type: "debug", purpose: "circle" },
     )
+
+    // Draw dots
+    this.dots.forEach(dot => {
+      this.drawCircle(dot, dot.radius)
+    })
   }
 
   /**
    * Generates dots for the letters that need them and adds them to the
    * letter's dots property.
+   *
+   * TODO Move debug line drawing to drawPath().
    */
-  drawDots (): void {
+  addDots (): void {
     const letter = this.subletters[0]
     const dotCount = letter.dots
     if (dotCount == null || dotCount === 0) {

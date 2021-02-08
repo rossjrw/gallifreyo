@@ -4,13 +4,6 @@
           :key="`path-${index}`"
           v-bind="path">
     </path>
-    <circle v-for="(dot, index) in letter.dots"
-            :key="`dot-${index}`"
-            :cx="dot.x"
-            :cy="dot.y"
-            :r="dot.radius"
-            fill="black">
-    </circle>
   </g>
 </template>
 
