@@ -10,7 +10,9 @@ export default {
     phrases: [],
     settings: {
       splits: ["\n\n", "\n", " "],
-      selectedAlphabets: ["base", "Sherman", "ShermanVowels"],
+      selectedAlphabets: [
+        "base", "Sherman", "ShermanVowels", "ShermanDoubles",
+      ],
       scaling: true, // sentence size scaling
       watermark: true,
       debug: false,
@@ -30,7 +32,7 @@ export default {
         automatic: { scaledLessThan: 6, spiralMoreThan: 9 },
         sizeScaling: 1,
         positionAlgorithm: "Automatic",
-        dots: { sizeScaling: 1, radiusDifference: 0.9, size: 2, spacing: 1 },
+        dots: { sizeScaling: 1, radiusDifference: 0.9, size: 1.5, spacing: 1 },
       },
     },
   } as State,

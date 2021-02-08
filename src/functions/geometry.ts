@@ -1,3 +1,5 @@
+import { Point } from "../classes/Phrase"
+
 /**
  * Given parameters to form a spiral and select a point on it, returns the
  * coordinates of that point.
@@ -64,6 +66,7 @@ export function getSpiralCoord (
 /**
  * Calculates the points of intersection of two circles given their
  * coordinates and radii.
+ *
  * @param x0 - x-coordinate of the first circle.
  * @param y0 - y-coordinate of the first circle.
  * @param r0 - Radius of the first circle.
@@ -95,4 +98,44 @@ export function circleIntersectionPoints (
   const yiPrime = y2 - ry
   return [xi, xiPrime, yi, yiPrime]
   // xi is positive, xiPrime is negative for the word-letter situation
+}
+
+/**
+ * For a given circle and a point on it, find the point that is a certain
+ * distance from that point along the circle's circumference.
+ *
+ * @param centre - The coords of the centre of the circle.
+ * @param radius - The radius of the circle.
+ * @param point - The initial point on the circle.
+ * @param distance - The distance to travel along the circle. Not sure if it's
+ * clockwise or anticlockwise; if it's not the one you want, invert it.
+ */
+export function travelAlongCircle (
+  centre: Point,
+  radius: number,
+  point: Point,
+  distance: number,
+): Point {
+  const a = centre.x
+  const b = centre.y
+  const { x, y } = point
+  const theta = distance / radius
+  return {
+    x: a + (x - a) * Math.cos(theta) - (y - b) * Math.sin(theta),
+    y: b + (x - a) * Math.sin(theta) + (y - b) * Math.cos(theta),
+  }
+}
+
+/**
+ * Finds the angle between two points relative to a centre point.
+ *
+ * @param a - A point.
+ * @param b - The centre point.
+ * @param c - The other point.
+ */
+export function findAngle (a: Point, b: Point, c: Point): number {
+  const ab = Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2))
+  const bc = Math.sqrt(Math.pow(b.x - c.x, 2) + Math.pow(b.y - c.y, 2))
+  const ac = Math.sqrt(Math.pow(c.x - a.x, 2) + Math.pow(c.y - a.y, 2))
+  return Math.acos((bc * bc + ab * ab - ac * ac) / (2 * bc * ab))
 }

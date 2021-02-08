@@ -8,7 +8,8 @@
             :key="`dot-${index}`"
             :cx="dot.x"
             :cy="dot.y"
-            :r="dot.radius">
+            :r="dot.radius"
+            fill="black">
     </circle>
   </g>
 </template>

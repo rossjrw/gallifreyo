@@ -4,7 +4,9 @@ import { Settings } from "../types/state"
 import { TextNode, Point } from "../classes/Phrase"
 import { Word } from "../classes/Word"
 import { Subletter, Dot } from "../types/phrases"
-import { circleIntersectionPoints } from "../functions/geometry"
+import {
+  circleIntersectionPoints, travelAlongCircle, findAngle,
+} from "../functions/geometry"
 
 type LetterGeometry = {
   letterRadius: number
@@ -293,21 +295,20 @@ export class Letter extends TextNode {
    */
   drawDots (): void {
     const letter = this.subletters[0]
-    if (!letter.dots) {
+    const dotCount = letter.dots
+    if (dotCount == null || dotCount === 0) {
       return
     }
     // Dots must be drawn on an implict curve that follows this letter's curve
     const {
       letterRadius, letterCentre, letterStart, letterEnd,
     } = this.geometry!
-    let dotCurve: Point & { radius: number } | { start: Point, end: Point }
+    const radius = letterRadius * this.settings.config.dots.radiusDifference
+    let dotCurve: Point | { start: Point, end: Point }
     if (letter.full) {
-      dotCurve = {
-        ...letterCentre,
-        radius: letterRadius * this.settings.config.dots.radiusDifference,
-      }
+      dotCurve = letterCentre
       this.drawCircle(
-        dotCurve, dotCurve.radius,
+        dotCurve, radius,
         { type: "debug", purpose: "circle" },
       )
     } else {
@@ -326,15 +327,38 @@ export class Letter extends TextNode {
         },
       }
       this.drawArc(
-        dotCurve.start, dotCurve.end,
-        letterRadius * this.settings.config.dots.radiusDifference,
+        dotCurve.start, dotCurve.end, radius,
         { largeArc: letter.height! > 0, sweep: false },
         { type: "debug", purpose: "circle" },
       )
     }
 
-    Array.from({ length: letter.dots }).forEach((_, index) => {
-      void index
+    this.dots = Array.from({ length: dotCount }).map((_, index) => {
+      if (letter.full) {
+        // How about we just don't, for now
+        return { x: 0, y: 0, radius: 0 }
+      } else {
+        const startPoint = {
+          x: letterCentre.x - Math.sin(this.angularLocation!) * radius,
+          y: letterCentre.y + Math.cos(this.angularLocation!) * radius,
+        }
+        // Get the angle subtended by the sweep of the letter curve. If the
+        // letter height is less than 1, it is the greater value
+        let letterAngularSize = findAngle(letterStart, letterCentre, letterEnd)
+        if (letter.height! > 0) {
+          letterAngularSize = 2 * Math.PI - letterAngularSize
+        }
+        const distanceBetweenDots = (
+          letterAngularSize * radius / (dotCount + 1)
+        ) * this.settings.config.dots.spacing
+        return {
+          ...travelAlongCircle(
+            letterCentre, radius, startPoint,
+            distanceBetweenDots * (index - (dotCount - 1) / 2),
+          ),
+          radius: this.settings.config.dots.size,
+        }
+      }
     })
   }
 }
