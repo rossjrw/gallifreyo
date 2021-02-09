@@ -14,7 +14,7 @@ import { LetterData } from "../types/alphabets"
  * During tokenisation, these properties will not exist.
  */
 
-export interface Path {
+export type Path = {
   d: string
   type: "default" | "debug"
   purpose?: "angle" | "position" | "circle"
@@ -27,4 +27,10 @@ export type Subletter = LetterData & {
   full?: boolean // Circle is full or cut off by word line
   relativeAngularSize?: number
   absoluteAngularSize?: number
+}
+
+export type Dot = {
+  x: number
+  y: number
+  radius: number
 }

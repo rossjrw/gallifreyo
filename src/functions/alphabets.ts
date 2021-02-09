@@ -63,13 +63,13 @@ const alphabets: AlphabetsData = {
     action: "create",
     letters: [
       { value: "CH", block: "s", dots: 2, lines: 0 },
-      { value: "WH", block: "p", dots: 1, lines: 0 },
+      { value: "PH", block: "p", dots: 1, lines: 0 },
+      { value: "WH", block: "d", dots: 1, lines: 0 },
       { value: "SH", block: "d", dots: 2, lines: 0 },
-      { value: "PH", block: "d", dots: 1, lines: 0 },
       { value: "TH", block: "f", dots: 0, lines: 0 },
       { value: "NG", block: "f", dots: 0, lines: 3 },
       { value: "QU", block: "f", dots: 0, lines: 1 },
-      { value: "GH", block: "f", dots: 1, lines: 3 },
+      { value: "GH", block: "f", dots: 1, lines: 0 },
     ],
   },
 }

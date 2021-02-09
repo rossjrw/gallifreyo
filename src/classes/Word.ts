@@ -43,12 +43,13 @@ export class Word extends Phrase {
     // Assign positions and calculate the size of each subphrase, and then
     // render them
     this.phrases.forEach((letter, index) => {
-      // XXX this is the same bit of code used in geometry; should consolidate
       // Sum the angles of the letters so far
-      // Do not need to include buffer distance spefically, because the buffers
-      // already exist as phantom letters
       letter.addAngularLocation(this, index)
-      letter.draw(this, vowelAngularSize)
+      // Calculate rendering geometry
+      letter.addGeometry(this, vowelAngularSize)
+      letter.addDots()
+      // Draw the paths
+      letter.drawPath(this)
     })
   }
 
