@@ -1,4 +1,6 @@
 import { LetterData } from "../types/alphabets"
+import type { Letter } from "../classes/Letter"
+import type { Word } from "../classes/Word"
 
 /*
  * Tokenised and Rendered Input
@@ -27,4 +29,18 @@ export type Subletter = LetterData & {
   full?: boolean // Circle is full or cut off by word line
   relativeAngularSize?: number
   absoluteAngularSize?: number
+}
+
+export type Bay = {
+  ownerWord: Word
+  letter: Letter
+  centre: { x: number; y: number }
+  radius: number
+  worldAngle: number
+}
+
+export type InterlockCandidate = {
+  wordA: Word
+  bay: Bay
+  wordB: Word
 }

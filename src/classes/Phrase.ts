@@ -69,6 +69,10 @@ export abstract class TextNode {
     const path = `M ${from.x} ${from.y} L ${to.x} ${to.y}`
     this.paths.push({ d: path, ...intent })
   }
+
+  clearPaths (): void {
+    this.paths = []
+  }
 }
 
 /**

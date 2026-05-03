@@ -25,6 +25,7 @@ export type Settings = {
   scaling: boolean
   watermark: boolean
   debug: boolean
+  interlocking: boolean
   width: number
   foregroundColour: string
   foregroundAlpha: number
@@ -43,6 +44,7 @@ export type Config = {
   automatic: AutomaticConfig
   sizeScaling: number
   positionAlgorithm: "Automatic" | "Radial" | "Organic" | "Spiral"
+  interlockGap: number
 }
 
 export type BlockConfig = {

@@ -14,6 +14,7 @@ export default {
       scaling: true, // sentence size scaling
       watermark: true,
       debug: false,
+      interlocking: true,
       automatic: true,
       width: 1024,
       foregroundColour: "#000000",
@@ -30,6 +31,7 @@ export default {
         automatic: { scaledLessThan: 6, spiralMoreThan: 9 },
         sizeScaling: 1,
         positionAlgorithm: "Automatic",
+        interlockGap: 3,
       },
     },
   } as State,

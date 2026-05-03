@@ -153,6 +153,20 @@
       <div class="field is-horizontal">
         <div class="field-label">
           <label class="label">
+            Interlocking
+          </label>
+        </div>
+        <div class="field-body">
+          <div class="field">
+            <input type="checkbox"
+                   v-model="interlocking">
+          </div>
+        </div>
+      </div>
+
+      <div class="field is-horizontal">
+        <div class="field-label">
+          <label class="label">
             Debug mode
           </label>
         </div>
@@ -186,6 +200,14 @@ export default Vue.extend({
       },
       set (value: Settings["width"]): void {
         this.store.modifySetting(s => { s.width = value })
+      },
+    },
+    interlocking: {
+      get (): Settings["interlocking"] {
+        return this.store.state.settings.interlocking
+      },
+      set (value: Settings["interlocking"]): void {
+        this.store.modifySetting(s => { s.interlocking = value })
       },
     },
     debug: {

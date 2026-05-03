@@ -16,7 +16,7 @@ import { addRadialGeometry } from "../algorithms/radial"
  * Works well for medium-to-low length phrases. Much slower than the other
  * algorithms.
  */
-export function addOrganicGeometry (sentence: Sentence): void {
+export function addOrganicGeometry (sentence: Sentence, debug = true): void {
   const collisions = new Collisions()
   const result = collisions.createResult()
   const boundaryResolution = 16
@@ -35,12 +35,13 @@ export function addOrganicGeometry (sentence: Sentence): void {
     const nextPoint = boundaryPoints[nextIndex]
     collisions.createPolygon(0, 0, [thisPoint, nextPoint])
 
-    // Draw debug lines to visualise the boundary
-    sentence.drawLine(
-      { x: thisPoint[0], y: thisPoint[1] },
-      { x: nextPoint[0], y: nextPoint[1] },
-      { type: "debug", purpose: "circle" },
-    )
+    if (debug) {
+      sentence.drawLine(
+        { x: thisPoint[0], y: thisPoint[1] },
+        { x: nextPoint[0], y: nextPoint[1] },
+        { type: "debug", purpose: "circle" },
+      )
+    }
   })
 
   // Compute initial properties on each subphrase
@@ -105,19 +106,17 @@ export function addOrganicGeometry (sentence: Sentence): void {
     subphrase.addRadiusFromBuffer(sentence)
   })
 
-  // Draw debug lines for the subphrases
-  sentence.phrases.forEach(phrase => {
-    // Draw a circle to show the buffer
-    phrase.drawCircle(
-      phrase, phrase.bufferRadius,
-      { type: "debug", purpose: "circle" },
-    )
-
-    // Draw a line to indicate the diameter of the phrase
-    sentence.drawLine(
-      { x: phrase.x - phrase.radius, y: phrase.y },
-      { x: phrase.x + phrase.radius, y: phrase.y },
-      { type: "debug", purpose: "position" },
-    )
-  })
+  if (debug) {
+    sentence.phrases.forEach(phrase => {
+      phrase.drawCircle(
+        phrase, phrase.bufferRadius,
+        { type: "debug", purpose: "circle" },
+      )
+      sentence.drawLine(
+        { x: phrase.x - phrase.radius, y: phrase.y },
+        { x: phrase.x + phrase.radius, y: phrase.y },
+        { type: "debug", purpose: "position" },
+      )
+    })
+  }
 }

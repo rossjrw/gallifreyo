@@ -4,6 +4,8 @@ import { Word } from "../classes/Word"
 import { addRadialGeometry } from "../algorithms/radial"
 import { addOrganicGeometry } from "../algorithms/organic"
 import { addSpiralGeometry } from "../algorithms/spiral"
+import { solveInterlocking } from "../algorithms/interlock"
+import { fixBoundingBox } from "../functions/box"
 
 export class Sentence extends Phrase {
   depth: "sentence"
@@ -15,31 +17,44 @@ export class Sentence extends Phrase {
     this.phrases = phrases
   }
 
-  draw (): void {
-    // If this sentence contains more than one subphrase, then draw a circle
-    // around it
-    if (this.phrases.length > 1) {
-      this.drawCircle(this, this.radius, { type: "default" })
-    }
-
-    // XXX Should relative and absolute angular sizes be computed in
-    // calculateGeometry? They're not required for all positioning algorithms
-    // Assign normalised relative angles to each subphrase
+  computeGeometry (): void {
     this.addRelativeAngularSizes()
 
-    // Calculate the sum of the relative angles
     const relativeAngularSizeSum = this.phrases.reduce((total, phrase) => {
       return total + phrase.relativeAngularSize!
     }, 0)
 
-    // Convert relative angles to absolute angles (radians)
     this.addAbsoluteAngularSizes(relativeAngularSizeSum)
-
-    // Assign positions and calculate the size of each subphrase
     this.addGeometry()
+    this.phrases.forEach(phrase => phrase.computeGeometry())
+  }
 
-    // Render them
-    this.phrases.forEach(phrase => phrase.draw())
+  generatePaths (): void {
+    if (this.phrases.length > 1) {
+      this.drawCircle(this, this.radius, { type: "default" })
+    }
+    this.phrases.forEach(phrase => phrase.generatePaths())
+  }
+
+  draw (): void {
+    this.computeGeometry()
+    this.generatePaths()
+    this.initSolvers()
+  }
+
+  private initSolvers (): void {
+    const words = this.phrases.filter(p => p.depth === "word")
+    if (words.length >= 2 && this.settings.interlocking) {
+      solveInterlocking(this, this.settings.config.interlockGap, () => { fixBoundingBox() })
+    }
+    this.phrases.forEach(phrase => {
+      if (phrase.depth === "sentence") (phrase as Sentence).initSolvers()
+    })
+  }
+
+  clearPaths (): void {
+    super.clearPaths()
+    this.phrases.forEach(p => p.clearPaths())
   }
 
   /**
